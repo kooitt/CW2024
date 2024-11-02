@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import java.lang.reflect.InvocationTargetException;
-
+import java.net.URL;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class  Main extends Application {
@@ -15,12 +18,22 @@ public class  Main extends Application {
 	@Override
 	public void start(Stage stage) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		stage.setTitle(TITLE);
-		stage.setResizable(false);
-		stage.setHeight(SCREEN_HEIGHT);
-		stage.setWidth(SCREEN_WIDTH);
-		myController = new Controller(stage);
-		myController.launchGame();
+		try {
+			URL fxmlLocation = getClass().getClassLoader().getResource("MenuScreen.fxml");
+			System.out.println("FXML Location: " + fxmlLocation);
+			FXMLLoader loader = new FXMLLoader(fxmlLocation);
+			Parent root = loader.load();
+			MenuController controller = loader.getController();
+			controller.setStage(stage);
+
+			Scene scene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
+			stage.setTitle(TITLE);
+			stage.setScene(scene);
+			stage.setResizable(false);
+			stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
