@@ -55,9 +55,17 @@ public class UserPlane extends FighterPlane {
 		updatePosition();
 	}
 	
+//	@Override
+//	public ActiveActorDestructible fireProjectile() {
+//		return new UserProjectile(PROJECTILE_X_POSITION, getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
+//	}
+
 	@Override
 	public ActiveActorDestructible fireProjectile() {
-		return new UserProjectile(PROJECTILE_X_POSITION, getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
+		double projectileX = getLayoutX() + getTranslateX() + PROJECTILE_X_POSITION;
+		double projectileY = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
+		return new UserProjectile(projectileX, projectileY);
+
 	}
 
 	private boolean isMoving() {
