@@ -9,12 +9,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import com.example.demo.LevelParent;
 
-public class Controller {
+public class GameController {
 
 	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
 	private final Stage stage;
 
-	public Controller(Stage stage) {
+	public GameController(Stage stage) {
 		this.stage = stage;
 	}
 

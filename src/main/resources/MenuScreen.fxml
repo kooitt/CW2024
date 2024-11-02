@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.controller.MenuController">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
-    <Button text="Start Game" onAction="#startGame"/>
-    <Button text="Exit" onAction="#exitGame"/>
-</VBox>
+<Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.demo.controller.MenuController">
+   <children>
+      <ImageView fx:id="backgroundImage" pickOnBounds="true" preserveRatio="false">
+         <image>
+            <Image url="@com/example/demo/images/backgroundmenu.png" />
+         </image>
+      </ImageView>
+      <VBox fx:id="buttonContainer" alignment="CENTER" spacing="10">
+         <children>
+            <Button mnemonicParsing="false" onAction="#startGame" text="Start Game" />
+            <Button mnemonicParsing="false" onAction="#exitGame" text="Exit Game" />
+         </children>
+      </VBox>
+   </children>
+</Pane>
