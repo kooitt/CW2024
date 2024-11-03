@@ -1,15 +1,17 @@
 package com.example.demo;
 
+import javafx.application.Platform;
+import javafx.scene.Group;
 import java.util.*;
 
 public class Boss extends FighterPlane {
 
 	private static final String IMAGE_NAME = "bossplane.png";
 	private static final double INITIAL_X_POSITION = 1000.0;
-	private static final double INITIAL_Y_POSITION = 400;
+	private static final double INITIAL_Y_POSITION = 400.0;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
-	private static final double BOSS_FIRE_RATE = .04;
-	private static final double BOSS_SHIELD_PROBABILITY = .002;
+	private static final double BOSS_FIRE_RATE = 0.04;
+	private static final double BOSS_SHIELD_PROBABILITY = 0.002; // 增加概率到20%以便测试
 	private static final int IMAGE_HEIGHT = 300;
 	private static final int VERTICAL_VELOCITY = 8;
 	private static final int HEALTH = 100;
@@ -19,13 +21,15 @@ public class Boss extends FighterPlane {
 	private static final int Y_POSITION_UPPER_BOUND = -100;
 	private static final int Y_POSITION_LOWER_BOUND = 475;
 	private static final int MAX_FRAMES_WITH_SHIELD = 500;
+
 	private final List<Integer> movePattern;
 	private boolean isShielded;
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
+	private ShieldImage sld;
 
-	public Boss() {
+	public Boss(Group root) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
 		movePattern = new ArrayList<>();
 		consecutiveMovesInSameDirection = 0;
@@ -33,6 +37,14 @@ public class Boss extends FighterPlane {
 		framesWithShieldActivated = 0;
 		isShielded = false;
 		initializeMovePattern();
+
+		// 初始化 ShieldImage 并添加到 root 中
+		sld = new ShieldImage(500, 500);
+		Platform.runLater(() -> {
+			root.getChildren().add(sld.getContainer());
+			sld.hideShield(); // 初始状态隐藏盾牌
+			sld.getContainer().toFront(); // 将盾牌图像置于最前
+		});
 	}
 
 	@Override
@@ -44,9 +56,10 @@ public class Boss extends FighterPlane {
 			setTranslateY(initialTranslateY);
 		}
 	}
-	
+
 	@Override
 	public void updateActor() {
+		System.out.println("Boss updateActor called");
 		updatePosition();
 		updateShield();
 	}
@@ -55,11 +68,13 @@ public class Boss extends FighterPlane {
 	public ActiveActorDestructible fireProjectile() {
 		return bossFiresInCurrentFrame() ? new BossProjectile(getProjectileInitialPosition()) : null;
 	}
-	
+
 	@Override
 	public void takeDamage() {
 		if (!isShielded) {
 			super.takeDamage();
+		} else {
+			System.out.println("Shield blocked the damage!");
 		}
 	}
 
@@ -73,9 +88,14 @@ public class Boss extends FighterPlane {
 	}
 
 	private void updateShield() {
-		if (isShielded) framesWithShieldActivated++;
-		else if (shieldShouldBeActivated()) activateShield();	
-		if (shieldExhausted()) deactivateShield();
+		if (isShielded) {
+			framesWithShieldActivated++;
+			if (shieldExhausted()) {
+				deactivateShield();
+			}
+		} else if (shieldShouldBeActivated()) {
+			activateShield();
+		}
 	}
 
 	private int getNextMove() {
@@ -105,16 +125,19 @@ public class Boss extends FighterPlane {
 	}
 
 	private boolean shieldExhausted() {
-		return framesWithShieldActivated == MAX_FRAMES_WITH_SHIELD;
+		return framesWithShieldActivated >= MAX_FRAMES_WITH_SHIELD;
 	}
 
 	private void activateShield() {
 		isShielded = true;
+		System.out.println("Shield activated");
+		sld.showShield(); // 显示盾牌
 	}
 
 	private void deactivateShield() {
 		isShielded = false;
 		framesWithShieldActivated = 0;
+		System.out.println("Shield deactivated");
+		sld.hideShield(); // 隐藏盾牌
 	}
-
 }

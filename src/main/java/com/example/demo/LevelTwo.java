@@ -9,7 +9,8 @@ public class LevelTwo extends LevelParent {
 
 	public LevelTwo(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
-		boss = new Boss();
+		System.out.println("LevelTwo constructor called with screenHeight=" + screenHeight + ", screenWidth=" + screenWidth);
+		boss = new Boss(getRoot()); // 传递根容器，确保盾牌可以添加到场景中
 	}
 
 	@Override
