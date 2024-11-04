@@ -6,7 +6,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 import java.net.URL;
-import java.util.Objects;
 
 public class ShieldImage {
 
@@ -41,6 +40,19 @@ public class ShieldImage {
 		shieldImageView.setOpacity(1.0); // 确保不透明
 		shieldImageView.setPreserveRatio(true);
 		container.getChildren().add(shieldImageView); // 将图像添加到容器中
+	}
+
+	/**
+	 * 动态设置盾牌的位置
+	 *
+	 * @param x X坐标
+	 * @param y Y坐标
+	 */
+	public void setPosition(double x, double y) {
+		Platform.runLater(() -> {
+			container.setLayoutX(x);
+			container.setLayoutY(y);
+		});
 	}
 
 	public void showShield() {
