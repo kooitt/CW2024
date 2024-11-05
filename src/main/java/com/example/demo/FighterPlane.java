@@ -18,6 +18,9 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 			this.destroy();
 		}
 	}
+	public void setHealth(int health) {
+		this.health = Math.max(health, 0);
+	}
 
 	protected double getProjectileXPosition(double xPositionOffset) {
 		return getLayoutX() + getTranslateX() + xPositionOffset;

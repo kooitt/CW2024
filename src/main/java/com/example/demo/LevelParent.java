@@ -47,7 +47,7 @@ public abstract class LevelParent extends Observable {
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
- 		this.currentNumberOfEnemies = 0;
+		this.currentNumberOfEnemies = 0;
 		initializeTimeline();
 		friendlyUnits.add(user);
 	}
@@ -87,7 +87,13 @@ public abstract class LevelParent extends Observable {
 		handleUserProjectileCollisions();
 		handleEnemyProjectileCollisions();
 		handlePlaneCollisions();
+
+		// 添加边界检查
+		removeProjectilesOutOfBounds();
+
+		// 移除已销毁的对象
 		removeAllDestroyedActors();
+
 		updateKillCount();
 		updateLevelView();
 		checkIfGameOver();
@@ -122,13 +128,25 @@ public abstract class LevelParent extends Observable {
 
 	private void fireProjectile() {
 		ActiveActorDestructible projectile = user.fireProjectile();
-		root.getChildren().add(projectile);
-		userProjectiles.add(projectile);
+		if (projectile != null) { // 确保 projectile 不为 null
+			root.getChildren().add(projectile);
+			userProjectiles.add(projectile);
+		}
 	}
 
 	private void generateEnemyFire() {
-		enemyUnits.forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
+		enemyUnits.forEach(enemy -> {
+			if (enemy instanceof FighterPlane) { // 检查是否为 FighterPlane 类型
+				FighterPlane fighter = (FighterPlane) enemy;
+				ActiveActorDestructible projectile = fighter.fireProjectile();
+				if (projectile != null) {
+					spawnEnemyProjectile(projectile);
+				}
+			}
+		});
 	}
+
+
 
 	private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
 		if (projectile != null) {
@@ -152,11 +170,13 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(actor -> actor.isDestroyed())
+		List<ActiveActorDestructible> destroyedActors = actors.stream()
+				.filter(ActiveActorDestructible::isDestroyed)
 				.collect(Collectors.toList());
 		root.getChildren().removeAll(destroyedActors);
 		actors.removeAll(destroyedActors);
 	}
+
 
 	private void handlePlaneCollisions() {
 		handleCollisions(friendlyUnits, enemyUnits);
@@ -174,12 +194,15 @@ public abstract class LevelParent extends Observable {
 		for (ActiveActorDestructible actor : actors2) {
 			for (ActiveActorDestructible otherActor : actors1) {
 				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
+					System.out.println("Collision detected between " + actor + " and " + otherActor);
 					actor.takeDamage();
 					otherActor.takeDamage();
 				}
+
 			}
 		}
 	}
+
 
 	private void handleEnemyPenetration() {
 		for (ActiveActorDestructible enemy : enemyUnits) {
@@ -231,7 +254,6 @@ public abstract class LevelParent extends Observable {
 		return root;
 	}
 
-
 	protected int getCurrentNumberOfEnemies() {
 		return enemyUnits.size();
 	}
@@ -249,6 +271,10 @@ public abstract class LevelParent extends Observable {
 		return screenWidth;
 	}
 
+	protected double getScreenHeight() { // 添加获取屏幕高度的方法
+		return screenHeight;
+	}
+
 	protected boolean userIsDestroyed() {
 		return user.isDestroyed();
 	}
@@ -257,4 +283,31 @@ public abstract class LevelParent extends Observable {
 		currentNumberOfEnemies = enemyUnits.size();
 	}
 
+	/**
+	 * 检查并移除超出边界的子弹
+	 */
+	private void removeProjectilesOutOfBounds() {
+		double screenWidth = getScreenWidth();
+		double screenHeight = getScreenHeight();
+
+		// 检查用户子弹
+		Iterator<ActiveActorDestructible> userProjIterator = userProjectiles.iterator();
+		while (userProjIterator.hasNext()) {
+			ActiveActorDestructible projectile = userProjIterator.next();
+			if (projectile.getLayoutX() > screenWidth || projectile.getLayoutX() < 0 ||
+					projectile.getLayoutY() > screenHeight || projectile.getLayoutY() < 0) {
+				projectile.destroy();
+			}
+		}
+
+		// 检查敌人子弹
+		Iterator<ActiveActorDestructible> enemyProjIterator = enemyProjectiles.iterator();
+		while (enemyProjIterator.hasNext()) {
+			ActiveActorDestructible projectile = enemyProjIterator.next();
+			if (projectile.getLayoutX() > screenWidth || projectile.getLayoutX() < 0 ||
+					projectile.getLayoutY() > screenHeight || projectile.getLayoutY() < 0) {
+				projectile.destroy();
+			}
+		}
+	}
 }

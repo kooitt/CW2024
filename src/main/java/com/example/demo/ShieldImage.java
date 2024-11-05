@@ -29,11 +29,8 @@ public class ShieldImage {
 	private void initializeShieldImage() {
 		shieldImageView = new ImageView();
 		URL imageUrl = getClass().getResource(IMAGE_NAME);
-		System.out.println("Shield image URL: " + imageUrl);
 		if (imageUrl != null) {
 			shieldImageView.setImage(new Image(imageUrl.toExternalForm()));
-		} else {
-			System.err.println("Shield image not found at path: " + IMAGE_NAME);
 		}
 		shieldImageView.setFitHeight(SHIELD_SIZE);
 		shieldImageView.setFitWidth(SHIELD_SIZE);
@@ -59,14 +56,12 @@ public class ShieldImage {
 		Platform.runLater(() -> {
 			container.setVisible(true);
 			container.toFront(); // 将盾牌图像置于最前
-			System.out.println("Shield is now visible");
 		});
 	}
 
 	public void hideShield() {
 		Platform.runLater(() -> {
 			container.setVisible(false);
-			System.out.println("Shield is now hidden");
 		});
 	}
 
