@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.shape.Rectangle;
 
 public class UserPlane extends FighterPlane {
@@ -10,9 +11,9 @@ public class UserPlane extends FighterPlane {
 	private static final double INITIAL_X_POSITION = 5.0;
 	private static final double INITIAL_Y_POSITION = 300.0;
 	private static final int IMAGE_HEIGHT = 150;
-	private static final int VERTICAL_VELOCITY = 8;
+	private static final int VERTICAL_VELOCITY = 2;
 
-	private static final int HORIZONTAL_VELOCITY = 8;
+	private static final int HORIZONTAL_VELOCITY = 2;
 	private static final int PROJECTILE_X_POSITION = 110;
 	private static final int PROJECTILE_Y_POSITION_OFFSET = 20;
 	private int verticalVelocityMultiplier; // Separate multiplier for vertical movement
@@ -25,6 +26,17 @@ public class UserPlane extends FighterPlane {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
 		verticalVelocityMultiplier = 0;
 		horizontalVelocityMultiplier = 0;
+		startAnimation();
+	}
+	//smoothens animation
+	private void startAnimation() {
+		AnimationTimer timer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				updatePosition();
+			}
+		};
+		timer.start();
 	}
 
 	@Override
@@ -54,11 +66,6 @@ public class UserPlane extends FighterPlane {
 	public void updateActor() {
 		updatePosition();
 	}
-	
-//	@Override
-//	public ActiveActorDestructible fireProjectile() {
-//		return new UserProjectile(PROJECTILE_X_POSITION, getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
-//	}
 
 	@Override
 	public ActiveActorDestructible fireProjectile() {
@@ -88,9 +95,12 @@ public class UserPlane extends FighterPlane {
 		horizontalVelocityMultiplier = 1;
 	}
 
-	public void stop() {
-		verticalVelocityMultiplier = 0; // Stop vertical movement
+	public void stopHorizontal() {
 		horizontalVelocityMultiplier = 0; // Stop horizontal movement
+	}
+
+	public void stopVertical() {
+		verticalVelocityMultiplier = 0; // Stop vertical movement
 	}
 
 	public int getNumberOfKills() {

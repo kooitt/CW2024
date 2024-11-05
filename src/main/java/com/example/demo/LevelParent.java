@@ -2,7 +2,8 @@ package com.example.demo;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+import java.util.HashSet;
+import java.util.Set;
 import javafx.animation.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -36,6 +37,9 @@ public abstract class LevelParent {
 	private LevelView levelView;
 	private final StringProperty nextLevel;
 
+	private final Set<KeyCode> pressedKeys = new HashSet<>();
+//	private final PauseMenu pauseMenu;
+	private boolean isPaused = false;
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
@@ -55,6 +59,10 @@ public abstract class LevelParent {
 		this.nextLevel = new SimpleStringProperty();
 		initializeTimeline();
 		friendlyUnits.add(user);
+//		pauseMenu = new PauseMenu(this);
+//		root.getChildren().add(pauseMenu);
+//		pauseMenu.setVisible(false);
+		initializePauseHandler();
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -70,6 +78,19 @@ public abstract class LevelParent {
 		initializeFriendlyUnits();
 		levelView.showHeartDisplay();
 		return scene;
+	}
+
+	private void initializePauseHandler(){
+		scene.setOnKeyPressed(e-> {
+			if(e.getCode() == KeyCode.ESCAPE) {
+				if (isPaused) {
+					resumeGame();
+				} else {
+					pauseGame();
+				}
+			}
+		});
+
 	}
 
 	public void startGame() {
@@ -99,6 +120,7 @@ public abstract class LevelParent {
 		updateKillCount();
 		updateLevelView();
 		checkIfGameOver();
+		updateUserPlaneMovement();
 	}
 
 	private void initializeTimeline() {
@@ -114,23 +136,26 @@ public abstract class LevelParent {
 		background.setFitWidth(screenWidth);
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP) user.moveUp();
-				if (kc == KeyCode.DOWN) user.moveDown();
-				if (kc == KeyCode.LEFT) user.moveLeft();
-				if (kc == KeyCode.RIGHT) user.moveRight();
-				if (kc == KeyCode.SPACE) fireProjectile();
+				pressedKeys.add(e.getCode());
+				if (e.getCode() == KeyCode.SPACE) fireProjectile();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN || kc == KeyCode.LEFT || kc==KeyCode.RIGHT) user.stop();
+				pressedKeys.remove(e.getCode());
 			}
 		});
 		root.getChildren().add(background);
 	}
 
+	public void updateUserPlaneMovement(){
+		if (pressedKeys.contains(KeyCode.UP)) user.moveUp();
+		if (pressedKeys.contains(KeyCode.DOWN)) user.moveDown();
+		if (pressedKeys.contains(KeyCode.LEFT)) user.moveLeft();
+		if (pressedKeys.contains(KeyCode.RIGHT)) user.moveRight();
+		if (!pressedKeys.contains(KeyCode.UP) && !pressedKeys.contains(KeyCode.DOWN)) user.stopVertical();
+		if (!pressedKeys.contains(KeyCode.LEFT) && !pressedKeys.contains(KeyCode.RIGHT)) user.stopHorizontal();
+	}
 	private void fireProjectile() {
 		ActiveActorDestructible projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
@@ -259,4 +284,27 @@ public abstract class LevelParent {
 		currentNumberOfEnemies = enemyUnits.size();
 	}
 
+	public void pauseGame(){
+		if (!isPaused){
+			timeline.pause();
+			isPaused = true;
+//			showPauseMenu();
+		}
+	}
+
+	public void resumeGame(){
+		if (isPaused){
+			timeline.play();
+			isPaused = false;
+//			hidePauseMenu();
+		}
+	}
+
+//	public void showPauseMenu(){
+//		pauseMenu.setVisible(true);
+//	}
+//
+//	public void hidePauseMenu(){
+//		pauseMenu.setVisible(false);
+//	}
 }

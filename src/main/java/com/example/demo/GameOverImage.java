@@ -14,6 +14,8 @@ public class GameOverImage extends ImageView {
 //		setImage(ImageSetUp.getImageList().get(ImageSetUp.getGameOver()));
 		setLayoutX(xPosition);
 		setLayoutY(yPosition);
+		setFitHeight(480);
+		setPreserveRatio(true);
 	}
 
 }

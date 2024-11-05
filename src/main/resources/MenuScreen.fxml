@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.demo.controller.MenuController">
+<Pane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.controller.MenuController">
    <children>
       <ImageView fx:id="backgroundImage" pickOnBounds="true" preserveRatio="false">
          <image>
@@ -15,6 +15,11 @@
       </ImageView>
       <VBox fx:id="buttonContainer" alignment="CENTER" spacing="10">
          <children>
+            <ImageView fitHeight="134.0" fitWidth="572.0">
+               <image>
+                  <Image url="@com/example/demo/images/logo.png" />
+               </image>
+            </ImageView>
             <Button mnemonicParsing="false" onAction="#startGame" text="Start Game" />
             <Button mnemonicParsing="false" onAction="#exitGame" text="Exit Game" />
          </children>

@@ -11,7 +11,7 @@ import com.example.demo.LevelParent;
 
 public class GameController {
 
-	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
+	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelTwo";
 	private final Stage stage;
 
 	public GameController(Stage stage) {
