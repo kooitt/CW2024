@@ -36,8 +36,7 @@ public abstract class LevelParent {
 
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
-	private final StringProperty nextLevel;
-
+	private final StringProperty nextLevelProperty = new SimpleStringProperty();
 	private final Set<KeyCode> pressedKeys = new HashSet<>();
 //	private final PauseMenu pauseMenu;
 	private Map<ActiveActor, Rectangle> actorHitboxes = new HashMap<>();
@@ -60,7 +59,7 @@ public abstract class LevelParent {
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
-		this.nextLevel = new SimpleStringProperty();
+//		this.nextLevel = new SimpleStringProperty();
 		initializeTimeline();
 		friendlyUnits.add(user);
 //		pauseMenu = new PauseMenu(this);
@@ -102,12 +101,12 @@ public abstract class LevelParent {
 		timeline.play();
 	}
 
-	public void goToNextLevel(String levelName) {
-		nextLevel.set(levelName);
+	protected void goToNextLevel(String nextLevelClassName, String nextLevelName) {
+		nextLevelProperty.set(nextLevelClassName + "," + nextLevelName);
 	}
 
 	public StringProperty nextLevelProperty() {
-		return nextLevel;
+		return nextLevelProperty;
 	}
 
 	//refactor this!

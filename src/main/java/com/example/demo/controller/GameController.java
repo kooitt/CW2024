@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import com.example.demo.LevelTransitionScreen;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -14,6 +15,7 @@ public class GameController {
 	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
 	private final Stage stage;
 
+
 	public GameController(Stage stage) {
 		this.stage = stage;
 	}
@@ -22,17 +24,30 @@ public class GameController {
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
 
 		stage.show();
-		goToLevel(LEVEL_ONE_CLASS_NAME);
+		goToLevel(LEVEL_ONE_CLASS_NAME, "Level 1");
 	}
 
-	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
+	private void goToLevel(String className, String levelname) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		LevelTransitionScreen transitionScreen = new LevelTransitionScreen(stage, levelname, () -> {
+			try {
+				startLevel(className);
+			} catch (Exception e) {
+				showErrorAlert(e);
+			}
+		});
+		transitionScreen.show();
+	}
+
+	private void startLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Class<?> myClass = Class.forName(className);
 		Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
 		LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
 		myLevel.nextLevelProperty().addListener((observable, oldValue, newValue) -> {
 			try {
-				goToLevel(newValue);
+				String[] levelInfo = newValue.split(",");
+				goToLevel(levelInfo[0], levelInfo[1]);
 			} catch (Exception e) {
 				showErrorAlert(e);
 			}
