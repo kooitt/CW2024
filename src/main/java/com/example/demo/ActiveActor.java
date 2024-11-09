@@ -1,8 +1,8 @@
 package com.example.demo;
 
 import javafx.scene.image.*;
-
 import java.util.Objects;
+
 
 public abstract class ActiveActor extends ImageView {
 	
@@ -26,5 +26,6 @@ public abstract class ActiveActor extends ImageView {
 	protected void moveVertically(double verticalMove) {
 		this.setTranslateY(getTranslateY() + verticalMove);
 	}
+
 
 }

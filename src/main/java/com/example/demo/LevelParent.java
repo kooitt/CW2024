@@ -12,6 +12,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public abstract class LevelParent {
@@ -39,7 +40,10 @@ public abstract class LevelParent {
 
 	private final Set<KeyCode> pressedKeys = new HashSet<>();
 //	private final PauseMenu pauseMenu;
+	private Map<ActiveActor, Rectangle> actorHitboxes = new HashMap<>();
 	private boolean isPaused = false;
+
+
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
@@ -174,11 +178,37 @@ public abstract class LevelParent {
 	}
 
 	private void updateActors() {
-		friendlyUnits.forEach(plane -> plane.updateActor());
-		enemyUnits.forEach(enemy -> enemy.updateActor());
-		userProjectiles.forEach(projectile -> projectile.updateActor());
-		enemyProjectiles.forEach(projectile -> projectile.updateActor());
+		friendlyUnits.forEach(plane -> {
+			plane.updateActor();
+			addHitboxToScene(plane);
+		});
+		enemyUnits.forEach(enemy -> {
+			enemy.updateActor();
+			addHitboxToScene(enemy);
+		});
+		userProjectiles.forEach(projectile -> {
+			projectile.updateActor();
+			addHitboxToScene(projectile);
+		});
+		enemyProjectiles.forEach(projectile -> {
+			projectile.updateActor();
+			addHitboxToScene(projectile);
+		});
 	}
+
+	private void addHitboxToScene(ActiveActorDestructible actor) {
+		// Remove the old hitbox if it exists
+		if (actorHitboxes.containsKey(actor)) {
+			root.getChildren().remove(actorHitboxes.get(actor));
+		}
+
+		// Add the new hitbox
+		Rectangle hitbox = actor.getHitboxRectangle();
+		actorHitboxes.put(actor, hitbox);
+		root.getChildren().add(hitbox);
+	}
+
+
 
 	private void removeAllDestroyedActors() {
 		removeDestroyedActors(friendlyUnits);
@@ -188,9 +218,11 @@ public abstract class LevelParent {
 	}
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(actor -> actor.isDestroyed())
+		List<ActiveActorDestructible> destroyedActors = actors.stream()
+				.filter(ActiveActorDestructible::isDestroyed)
 				.collect(Collectors.toList());
 		root.getChildren().removeAll(destroyedActors);
+		destroyedActors.forEach(actor -> root.getChildren().remove(actorHitboxes.remove(actor)));
 		actors.removeAll(destroyedActors);
 	}
 

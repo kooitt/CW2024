@@ -1,5 +1,9 @@
 package com.example.demo;
 
+import javafx.geometry.Bounds;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
 public abstract class ActiveActorDestructible extends ActiveActor implements Destructible {
 
 	private boolean isDestroyed;
@@ -29,5 +33,12 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 	public boolean isDestroyed() {
 		return isDestroyed;
 	}
-	
+
+	public Rectangle getHitboxRectangle() {
+		Bounds bounds = this.getBoundsInParent();
+		Rectangle hitbox = new Rectangle(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
+		hitbox.setStroke(Color.RED);
+		hitbox.setFill(Color.TRANSPARENT);
+		return hitbox;
+	}
 }
