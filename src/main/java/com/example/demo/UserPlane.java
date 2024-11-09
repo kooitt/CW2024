@@ -18,8 +18,6 @@ public class UserPlane extends FighterPlane {
 	private static final int PROJECTILE_Y_POSITION_OFFSET = 20;
 	private int verticalVelocityMultiplier; // Separate multiplier for vertical movement
 	private int horizontalVelocityMultiplier; // Separate multiplier for horizontal movement
-
-	// ... (Your existing code) ...
 	private int numberOfKills;
 
 	public UserPlane(int initialHealth) {
