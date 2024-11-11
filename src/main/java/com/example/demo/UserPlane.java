@@ -75,7 +75,8 @@ public class UserPlane extends FighterPlane {
 	}
 
 	public void stop() {
-		velocityMultiplier = 0;
+		verticalVelocityMultiplier = 0;
+		horizontalVelocityMultiplier = 0;
 	}
 
 	public int getNumberOfKills() {
