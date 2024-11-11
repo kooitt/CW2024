@@ -6,7 +6,7 @@ public class UserPlane extends FighterPlane {
 	private static final double Y_UPPER_BOUND = -40;
 	private static final double Y_LOWER_BOUND = 600.0;
 	private static final double X_LEFT_BOUND = 0.0;
-	private static final double X_RIGHT_BOUND = 800.0; //TEMPORARY VALUE ONLY
+	private static final double X_RIGHT_BOUND = 800.0; // TEMPORARY VALUE ONLY
 	private static final double INITIAL_X_POSITION = 5.0;
 	private static final double INITIAL_Y_POSITION = 300.0;
 	private static final int IMAGE_HEIGHT = 150;
@@ -23,7 +23,7 @@ public class UserPlane extends FighterPlane {
 		verticalVelocityMultiplier = 0;
 		horizontalVelocityMultiplier = 0;
 	}
-	
+
 	@Override
 	public void updatePosition() {
 		if (isMoving()) {
@@ -44,15 +44,16 @@ public class UserPlane extends FighterPlane {
 			}
 		}
 	}
-	
+
 	@Override
 	public void updateActor() {
 		updatePosition();
 	}
-	
+
 	@Override
 	public ActiveActorDestructible fireProjectile() {
-		return new UserProjectile(getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET), getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
+		return new UserProjectile(getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET),
+				getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
 	}
 
 	private boolean isMoving() {
@@ -70,6 +71,7 @@ public class UserPlane extends FighterPlane {
 	public void moveLeft() {
 		horizontalVelocityMultiplier = -1;
 	}
+
 	public void moveRight() {
 		horizontalVelocityMultiplier = 1;
 	}
