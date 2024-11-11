@@ -56,7 +56,7 @@ public abstract class LevelParent extends Observable {
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
 
-		this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
+		this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
@@ -69,7 +69,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Initializes the background image for the level.
+	 * Initializes the background image for the level and adds it to the root group.
 	 */
 	private void initializeBackground() {
 		background.setFocusTraversable(true);
@@ -79,13 +79,33 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Initializes the timeline, setting the game loop's cycle count to indefinite and
-	 * defining the delay between each frame.
+	 * Initializes the timeline to create a game loop, setting its cycle count to indefinite
+	 * and defining the delay between each frame.
 	 */
 	private void initializeTimeline() {
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		KeyFrame gameLoop = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> updateScene());
 		timeline.getKeyFrames().add(gameLoop);
+	}
+
+	/**
+	 * Adds a projectile to the level, adding it to the user projectiles list and the root group.
+	 *
+	 * @param projectile The projectile to add.
+	 */
+	public void addProjectile(ActiveActorDestructible projectile) {
+		userProjectiles.add(projectile);
+		root.getChildren().add(projectile);
+	}
+
+	/**
+	 * Adds an enemy unit to the level by adding it to the enemy units list and the root group.
+	 *
+	 * @param enemyUnit The enemy unit to add.
+	 */
+	public void addEnemyUnit(ActiveActorDestructible enemyUnit) {
+		enemyUnits.add(enemyUnit);
+		root.getChildren().add(enemyUnit);
 	}
 
 	/**
@@ -98,6 +118,7 @@ public abstract class LevelParent extends Observable {
 		generateEnemyFire();
 		handleEnemyProjectileCollisions();
 		handlePlaneCollisions();
+		handleUserProjectileCollisions();
 		removeAllDestroyedActors();
 		updateKillCount();
 		updateLevelView();
@@ -105,7 +126,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Starts the game by playing the timeline animation.
+	 * Starts the game by focusing on the background and playing the timeline animation.
 	 */
 	public void startGame() {
 		background.requestFocus();
@@ -124,25 +145,25 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Handles game loss by displaying the game-over image.
+	 * Handles game loss by displaying the game-over image and stopping the game loop.
 	 */
 	protected void loseGame() {
 		levelView.showGameOverImage();
-		timeline.stop();  // Stop the game loop
+		timeline.stop();
 	}
 
 	/**
-	 * Handles game win by displaying the win image.
+	 * Handles game win by displaying the win image and stopping the game loop.
 	 */
 	protected void winGame() {
 		levelView.showWinImage();
-		timeline.stop();  // Stop the game loop
+		timeline.stop();
 	}
 
 	/**
-	 * Returns the current number of enemies.
+	 * Returns the current number of enemies that are not destroyed.
 	 *
-	 * @return the number of enemies on screen
+	 * @return The number of enemies on screen.
 	 */
 	protected int getCurrentNumberOfEnemies() {
 		return (int) enemyUnits.stream().filter(enemy -> !enemy.isDestroyed()).count();
@@ -151,7 +172,7 @@ public abstract class LevelParent extends Observable {
 	/**
 	 * Notifies the controller to move to the next level.
 	 *
-	 * @param nextLevel the class name of the next level
+	 * @param nextLevel The class name of the next level.
 	 */
 	protected void goToNextLevel(String nextLevel) {
 		setChanged();
@@ -159,7 +180,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Updates the actors in the game by moving them and updating their positions.
+	 * Updates all actors in the game by moving them and updating their positions.
 	 */
 	private void updateActors() {
 		friendlyUnits.forEach(ActiveActorDestructible::updateActor);
@@ -169,7 +190,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Generates enemy fire by making enemy planes shoot projectiles at certain intervals.
+	 * Makes enemy planes fire projectiles at certain intervals and adds them to the game.
 	 */
 	private void generateEnemyFire() {
 		for (ActiveActorDestructible enemy : enemyUnits) {
@@ -182,7 +203,34 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Handles collisions between planes (friendly and enemy) in the game.
+	 * Handles collisions between user projectiles and enemy planes.
+	 * If a collision is detected, both the projectile and the enemy plane are destroyed.
+	 */
+	private void handleUserProjectileCollisions() {
+		List<ActiveActorDestructible> projectilesToRemove = new ArrayList<>();
+		List<ActiveActorDestructible> enemiesToRemove = new ArrayList<>();
+
+		for (ActiveActorDestructible projectile : userProjectiles) {
+			for (ActiveActorDestructible enemy : enemyUnits) {
+				if (projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+					projectile.destroy();
+					enemy.destroy();
+					projectilesToRemove.add(projectile);
+					enemiesToRemove.add(enemy);
+					break;
+				}
+			}
+		}
+
+		userProjectiles.removeAll(projectilesToRemove);
+		enemyUnits.removeAll(enemiesToRemove);
+		root.getChildren().removeAll(projectilesToRemove);
+		root.getChildren().removeAll(enemiesToRemove);
+	}
+
+	/**
+	 * Handles collisions between the user plane and enemy planes.
+	 * If a collision is detected, both the user and the enemy take damage.
 	 */
 	private void handlePlaneCollisions() {
 		for (ActiveActorDestructible enemy : enemyUnits) {
@@ -214,7 +262,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	/**
-	 * Removes actors that are destroyed from both the game screen and relevant lists.
+	 * Removes destroyed actors from both the game screen and relevant lists.
 	 *
 	 * @param actors The list of actors to remove if destroyed.
 	 */
@@ -227,13 +275,13 @@ public abstract class LevelParent extends Observable {
 
 	/**
 	 * Handles collisions between enemy projectiles and the user plane.
-	 * Reduces user health only if a projectile directly hits the user plane.
+	 * If a collision is detected, the user takes damage, and the projectile is destroyed.
 	 */
 	private void handleEnemyProjectileCollisions() {
 		for (ActiveActorDestructible projectile : enemyProjectiles) {
 			if (projectile.getBoundsInParent().intersects(user.getBoundsInParent())) {
-				user.takeDamage(); // Reduce heart life only if projectile hits the user plane
-				projectile.destroy(); // Destroy the projectile upon collision
+				user.takeDamage();
+				projectile.destroy();
 			}
 		}
 	}
@@ -245,79 +293,61 @@ public abstract class LevelParent extends Observable {
 		levelView.removeHearts(user.getHealth());
 	}
 
-	/**
-	 * Abstract method to initialize friendly units in the level.
-	 * Subclasses must define how friendly units are set up.
-	 */
+	// Abstract methods for subclasses to implement specific level functionality
 	protected abstract void initializeFriendlyUnits();
-
-	/**
-	 * Abstract method to check if the game is over.
-	 * Subclasses must define game-over conditions.
-	 */
 	protected abstract void checkIfGameOver();
-
-	/**
-	 * Abstract method to spawn enemy units in the level.
-	 * Subclasses must define specific enemy spawning behavior.
-	 */
 	protected abstract void spawnEnemyUnits();
-
-	/**
-	 * Abstract method to instantiate the level view.
-	 * Each subclass must provide its specific LevelView implementation.
-	 *
-	 * @return The LevelView instance specific to the level.
-	 */
 	protected abstract LevelView instantiateLevelView();
 
-	/**
-	 * Adds an enemy unit to the level.
-	 *
-	 * @param enemy The enemy unit to add.
-	 */
-	protected void addEnemyUnit(ActiveActorDestructible enemy) {
-		enemyUnits.add(enemy);
-		root.getChildren().add(enemy);
-	}
+	// Getter methods for access to user plane and other game details
 
 	/**
-	 * @return The user's current plane instance.
+	 * Returns the user plane instance in the game.
+	 *
+	 * @return The user plane.
 	 */
 	public UserPlane getUser() {
 		return user;
 	}
 
 	/**
-	 * @return The root Group that holds all game objects in the level.
+	 * Returns the root group of the level, which contains all game objects.
+	 *
+	 * @return The root group.
 	 */
 	protected Group getRoot() {
 		return root;
 	}
 
 	/**
-	 * @return The maximum y-position at which an enemy can spawn.
+	 * Returns the maximum y-position for enemy spawning within the level.
+	 *
+	 * @return The maximum y-position for enemies.
 	 */
 	protected double getEnemyMaximumYPosition() {
 		return enemyMaximumYPosition;
 	}
 
 	/**
-	 * @return The width of the game screen.
+	 * Returns the screen width of the level.
+	 *
+	 * @return The screen width.
 	 */
 	protected double getScreenWidth() {
 		return screenWidth;
 	}
 
 	/**
-	 * @return true if the user plane has been destroyed, false otherwise.
+	 * Checks if the user plane is destroyed.
+	 *
+	 * @return True if the user is destroyed, false otherwise.
 	 */
 	protected boolean userIsDestroyed() {
 		return user.isDestroyed();
 	}
 
 	/**
-	 * Updates the number of enemies currently on the screen.
+	 * Updates the current number of enemies.
 	 */
 	private void updateNumberOfEnemies() {
 		currentNumberOfEnemies = enemyUnits.size();

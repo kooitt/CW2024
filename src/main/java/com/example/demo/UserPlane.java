@@ -17,8 +17,9 @@ public class UserPlane extends FighterPlane {
 	public UserPlane(int initialHealth) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
 		velocityMultiplier = 0;
+		numberOfKills = 0;  // Initialize kill count
 	}
-	
+
 	@Override
 	public void updatePosition() {
 		if (isMoving()) {
@@ -30,12 +31,12 @@ public class UserPlane extends FighterPlane {
 			}
 		}
 	}
-	
+
 	@Override
 	public void updateActor() {
 		updatePosition();
 	}
-	
+
 	@Override
 	public ActiveActorDestructible fireProjectile() {
 		return new UserProjectile(PROJECTILE_X_POSITION, getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
@@ -57,10 +58,18 @@ public class UserPlane extends FighterPlane {
 		velocityMultiplier = 0;
 	}
 
+	/**
+	 * Returns the number of enemies killed by the user.
+	 *
+	 * @return the kill count of the user
+	 */
 	public int getNumberOfKills() {
 		return numberOfKills;
 	}
 
+	/**
+	 * Increments the user's kill count by one.
+	 */
 	public void incrementKillCount() {
 		numberOfKills++;
 	}
