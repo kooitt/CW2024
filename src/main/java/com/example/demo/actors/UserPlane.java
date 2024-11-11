@@ -1,7 +1,6 @@
-package com.example.demo;
+package com.example.demo.actors;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.shape.Rectangle;
 
 public class UserPlane extends FighterPlane {
 

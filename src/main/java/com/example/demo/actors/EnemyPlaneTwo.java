@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.actors;
 
 public class EnemyPlaneTwo extends FighterPlane{
     private static final String IMAGE_NAME = "enemyplane2.png";

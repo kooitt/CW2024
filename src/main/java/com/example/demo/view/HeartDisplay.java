@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.view;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -8,8 +8,8 @@ import java.util.Objects;
 
 public class HeartDisplay {
 	
-	private static final String HEART_IMAGE_NAME = "/com/example/demo/images/heart.png";
-	private static final int HEART_HEIGHT = 50;
+	private static final String HEART_IMAGE_NAME = "/com/example/demo/images/heart2.png";
+	private static final int HEART_HEIGHT = 40;
 	private static final int INDEX_OF_FIRST_ITEM = 0;
 	private HBox container;
 	private double containerXPosition;

@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.LevelParent;
+import com.example.demo.levels.LevelParent;
 import javafx.fxml.FXML;
 
 public class PauseMenuController {
