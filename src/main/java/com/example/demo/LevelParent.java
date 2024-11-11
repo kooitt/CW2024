@@ -1,10 +1,8 @@
 package com.example.demo;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javafx.animation.*;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
