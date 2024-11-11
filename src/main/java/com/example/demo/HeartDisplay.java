@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
+import java.util.Objects;
+
 public class HeartDisplay {
 	
 	private static final String HEART_IMAGE_NAME = "/com/example/demo/images/heart.png";
@@ -30,7 +32,7 @@ public class HeartDisplay {
 	
 	private void initializeHearts() {
 		for (int i = 0; i < numberOfHeartsToDisplay; i++) {
-			ImageView heart = new ImageView(new Image(getClass().getResource(HEART_IMAGE_NAME).toExternalForm()));
+			ImageView heart = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(HEART_IMAGE_NAME)).toExternalForm()));
 
 			heart.setFitHeight(HEART_HEIGHT);
 			heart.setPreserveRatio(true);
