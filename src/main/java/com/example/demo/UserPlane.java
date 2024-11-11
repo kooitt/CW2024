@@ -56,7 +56,7 @@ public class UserPlane extends FighterPlane {
 	}
 
 	private boolean isMoving() {
-		return velocityMultiplier != 0;
+		return verticalVelocityMultiplier != 0 || horizontalVelocityMultiplier != 0;
 	}
 
 	public void moveUp() {
