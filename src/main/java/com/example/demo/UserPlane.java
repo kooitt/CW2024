@@ -28,10 +28,19 @@ public class UserPlane extends FighterPlane {
 	public void updatePosition() {
 		if (isMoving()) {
 			double initialTranslateY = getTranslateY();
-			this.moveVertically(VERTICAL_VELOCITY * velocityMultiplier);
-			double newPosition = getLayoutY() + getTranslateY();
-			if (newPosition < Y_UPPER_BOUND || newPosition > Y_LOWER_BOUND) {
+			double initialTranslateX = getTranslateX();
+
+			this.moveVertically(VERTICAL_VELOCITY * verticalVelocityMultiplier);
+			this.moveHorizontally(HORIZONTAL_VELOCITY * horizontalVelocityMultiplier);
+
+			double newYPosition = getLayoutY() + getTranslateY();
+			double newXPosition = getLayoutX() + getTranslateX();
+
+			if (newYPosition < Y_UPPER_BOUND || newYPosition > Y_LOWER_BOUND) {
 				this.setTranslateY(initialTranslateY);
+			}
+			if (newXPosition < X_LEFT_BOUND || newXPosition > X_RIGHT_BOUND) {
+				this.setTranslateX(initialTranslateX);
 			}
 		}
 	}
