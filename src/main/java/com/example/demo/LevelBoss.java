@@ -4,6 +4,7 @@ public class LevelBoss extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background3.jpg";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
+	private static final int KILLS_TO_ADVANCE = 1;
 	private final Boss boss;
 	private LevelBossView levelView;
 
@@ -37,7 +38,7 @@ public class LevelBoss extends LevelParent {
 
 	@Override
 	protected LevelView instantiateLevelView() {
-		levelView = new LevelBossView(getRoot(), PLAYER_INITIAL_HEALTH);
+		levelView = new LevelBossView(getRoot(), PLAYER_INITIAL_HEALTH, KILLS_TO_ADVANCE);
 		return levelView;
 	}
 

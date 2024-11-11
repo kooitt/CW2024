@@ -33,7 +33,7 @@ public class LevelTwo extends LevelParent{
         int currentNumberOfEnemies = getCurrentNumberOfEnemies();
         for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
             if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-                double newEnemyInitialYPosition = 25 + Math.random() * (getEnemyMaximumYPosition() - ENEMY_Y_UPPER_BOUND);
+                double newEnemyInitialYPosition = 30 + Math.random() * (getEnemyMaximumYPosition() - ENEMY_Y_UPPER_BOUND);
                 ActiveActorDestructible newEnemy = new EnemyPlaneTwo(getScreenWidth(), newEnemyInitialYPosition);
                 addEnemyUnit(newEnemy);
             }
@@ -42,11 +42,11 @@ public class LevelTwo extends LevelParent{
 
     @Override
     protected LevelView instantiateLevelView() {
-        return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+        return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH, KILLS_TO_ADVANCE);
     }
 
     private boolean userHasReachedKillTarget() {
-        return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
+        return getUser().getKillCount() >= KILLS_TO_ADVANCE;
     }
 
 }

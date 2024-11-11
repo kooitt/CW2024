@@ -101,7 +101,7 @@ public class UserPlane extends FighterPlane {
 		verticalVelocityMultiplier = 0; // Stop vertical movement
 	}
 
-	public int getNumberOfKills() {
+	public int getKillCount() {
 		return numberOfKills;
 	}
 
@@ -110,3 +110,4 @@ public class UserPlane extends FighterPlane {
 	}
 
 }
+

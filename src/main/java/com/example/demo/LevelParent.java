@@ -59,7 +59,6 @@ public abstract class LevelParent {
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
-//		this.nextLevel = new SimpleStringProperty();
 		initializeTimeline();
 		friendlyUnits.add(user);
 //		pauseMenu = new PauseMenu(this);
@@ -80,6 +79,7 @@ public abstract class LevelParent {
 		initializeBackground();
 		initializeFriendlyUnits();
 		levelView.showHeartDisplay();
+		levelView.showKillCountDisplay();
 		return scene;
 	}
 
@@ -120,7 +120,7 @@ public abstract class LevelParent {
 		handleEnemyProjectileCollisions();
 		handlePlaneCollisions();
 		removeAllDestroyedActors();
-		updateKillCount();
+		updateUserKillCount();
 		updateLevelView();
 		checkIfGameOver();
 		updateUserPlaneMovement();
@@ -260,9 +260,10 @@ public abstract class LevelParent {
 
 	private void updateLevelView() {
 		levelView.removeHearts(user.getHealth());
+		levelView.updateKillCount(user.getKillCount());
 	}
 
-	private void updateKillCount() {
+	private void updateUserKillCount() {
 		for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
 			user.incrementKillCount();
 		}
@@ -297,6 +298,7 @@ public abstract class LevelParent {
 	protected void addEnemyUnit(ActiveActorDestructible enemy) {
 		enemyUnits.add(enemy);
 		root.getChildren().add(enemy);
+
 	}
 
 	protected double getEnemyMaximumYPosition() {

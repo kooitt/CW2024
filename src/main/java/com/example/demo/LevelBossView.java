@@ -9,16 +9,13 @@ public class LevelBossView extends LevelView {
 	private final Group root;
 	private final ShieldImage shieldImage;
 	
-	public LevelBossView(Group root, int heartsToDisplay) {
-		super(root, heartsToDisplay);
+	public LevelBossView(Group root, int heartsToDisplay, int maxKills) {
+		super(root, heartsToDisplay, maxKills);
 		this.root = root;
 		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
 		showShieldImage();
 	}
-	
-//	private void addImagesToRoot() {
-//		root.getChildren().addAll(shieldImage);
-//	}
+
 	
 	public void showShieldImage() {
 		shieldImage.showShield();
@@ -26,9 +23,9 @@ public class LevelBossView extends LevelView {
 		System.out.println("Added Shield");
 		shieldImage.showShield();
 	}
-//
-//	public void hideShieldImage() {
-//		shieldImage.hideShield();
-//	}
+
+	public void hideShieldImage() {
+		shieldImage.hideShield();
+	}
 
 }
