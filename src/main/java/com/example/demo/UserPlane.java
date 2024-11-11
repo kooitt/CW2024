@@ -67,6 +67,13 @@ public class UserPlane extends FighterPlane {
 		verticalVelocityMultiplier = 1;
 	}
 
+	public void moveLeft() {
+		horizontalVelocityMultiplier = -1;
+	}
+	public void moveRight() {
+		horizontalVelocityMultiplier = 1;
+	}
+
 	public void stop() {
 		velocityMultiplier = 0;
 	}
