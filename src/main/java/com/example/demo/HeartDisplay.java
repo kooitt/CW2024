@@ -12,9 +12,9 @@ public class HeartDisplay {
 	private static final int HEART_HEIGHT = 50;
 	private static final int INDEX_OF_FIRST_ITEM = 0;
 	private HBox container;
-	private double containerXPosition;
-	private double containerYPosition;
-	private int numberOfHeartsToDisplay;
+	private final double containerXPosition;
+	private final double containerYPosition;
+	private final int numberOfHeartsToDisplay;
 	
 	public HeartDisplay(double xPosition, double yPosition, int heartsToDisplay) {
 		this.containerXPosition = xPosition;
