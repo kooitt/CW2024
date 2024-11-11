@@ -27,7 +27,7 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyUnits;
 	private final List<ActiveActorDestructible> userProjectiles;
 	private final List<ActiveActorDestructible> enemyProjectiles;
-	
+
 	private int currentNumberOfEnemies;
 	private final LevelView levelView;
 
@@ -41,7 +41,8 @@ public abstract class LevelParent extends Observable {
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
 
-		this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
+		this.background = new ImageView(
+				new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
@@ -102,17 +103,23 @@ public abstract class LevelParent extends Observable {
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
 		background.setOnKeyPressed(e -> {
-            KeyCode kc = e.getCode();
-            if (kc == KeyCode.UP) user.moveUp();
-            if (kc == KeyCode.DOWN) user.moveDown();
-			if (kc == KeyCode.LEFT) user.moveLeft();
-			if (kc == KeyCode.RIGHT) user.moveRight();
-            if (kc == KeyCode.SPACE) fireProjectile();
-        });
+			KeyCode kc = e.getCode();
+			if (kc == KeyCode.UP)
+				user.moveUp();
+			if (kc == KeyCode.DOWN)
+				user.moveDown();
+			if (kc == KeyCode.LEFT)
+				user.moveLeft();
+			if (kc == KeyCode.RIGHT)
+				user.moveRight();
+			if (kc == KeyCode.SPACE)
+				fireProjectile();
+		});
 		background.setOnKeyReleased(e -> {
-            KeyCode kc = e.getCode();
-            if (kc == KeyCode.UP || kc == KeyCode.DOWN || kc == KeyCode.LEFT || kc == KeyCode.RIGHT) user.stop();
-        });
+			KeyCode kc = e.getCode();
+			if (kc == KeyCode.UP || kc == KeyCode.DOWN || kc == KeyCode.LEFT || kc == KeyCode.RIGHT)
+				user.stop();
+		});
 		root.getChildren().add(background);
 	}
 
