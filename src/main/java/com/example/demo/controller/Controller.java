@@ -48,6 +48,7 @@ public class Controller implements Observer {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setContentText(e.getClass().toString());
 			alert.show();
+			e.printStackTrace();
 		}
 	}
 
