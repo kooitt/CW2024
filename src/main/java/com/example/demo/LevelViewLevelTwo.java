@@ -16,7 +16,9 @@ public class LevelViewLevelTwo extends LevelView {
 	}
 
 	private void addImagesToRoot() {
-		root.getChildren().addAll(shieldImage);
+		if (!root.getChildren().contains(shieldImage)) {
+			root.getChildren().addAll(shieldImage);
+		}
 	}
 
 	public void showShield() {
