@@ -138,7 +138,6 @@ public abstract class LevelParent {
 		timeline.getKeyFrames().add(gameLoop);
 	}
 
-	//movement
 	private void initializeBackground() {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
