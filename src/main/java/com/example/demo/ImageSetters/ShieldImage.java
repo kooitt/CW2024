@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.ImageSetters;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,7 +23,7 @@ public class ShieldImage extends ImageView {
 	public void showShield() {
 		this.setVisible(true);
 	}
-	
+
 	public void hideShield() {
 		this.setVisible(false);
 	}
