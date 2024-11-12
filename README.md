@@ -1,6 +1,6 @@
 # CW2024 Sky Battle
 
-## github repository link:
+## Github repository link:
 https://github.com/davidjt01/CW2024
 
 ## Compilation Instructions:
