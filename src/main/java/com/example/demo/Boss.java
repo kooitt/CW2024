@@ -1,7 +1,4 @@
-package com.example.demo.Actors;
-
-import com.example.demo.Projectiles.BossProjectile;
-import com.example.demo.Levels.LevelViewLevelTwo;
+package com.example.demo;
 
 import java.util.*;
 

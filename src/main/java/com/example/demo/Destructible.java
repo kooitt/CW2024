@@ -1,4 +1,4 @@
-package com.example.demo.Actors;
+package com.example.demo;
 
 public interface Destructible {
 
