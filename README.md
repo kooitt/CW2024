@@ -5,9 +5,9 @@ https://github.com/davidjt01/CW2024
 
 ## Compilation Instructions:
 
-## Features Implemented and Working Properly:
+## Features Implemented And Working Properly:
 
-## Features Implemented but Not Working Properly:
+## Features Implemented But Not Working Properly:
 
 ## Features Not Implemented:
 
