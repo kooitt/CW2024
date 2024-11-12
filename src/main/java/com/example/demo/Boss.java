@@ -124,6 +124,7 @@ public class Boss extends FighterPlane {
 		isShielded = false;
 		framesWithShieldActivated = 0;
 		levelView.hideShield();
+		System.out.println("hide shield");
 	}
 
 }
