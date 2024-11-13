@@ -18,7 +18,6 @@ public class LevelOne extends LevelParent {
 		if (userIsDestroyed()) {
 			loseGame();
 		} else if (userHasReachedKillTarget()) {
-			timeline.stop();
 			goToNextLevel(NEXT_LEVEL);
 		}
 	}
