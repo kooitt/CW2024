@@ -18,7 +18,7 @@ public abstract class LevelParent extends Observable {
 	private final double enemyMaximumYPosition;
 
 	private final Group root;
-	public final Timeline timeline;
+	private final Timeline timeline;
 	private final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
@@ -73,6 +73,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	public void goToNextLevel(String levelName) {
+		timeline.stop();
 		setChanged();
 		notifyObservers(levelName);
 	}
