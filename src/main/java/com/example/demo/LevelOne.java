@@ -1,7 +1,11 @@
 package com.example.demo;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
 public class LevelOne extends LevelParent {
-	
+
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
 	private static final String NEXT_LEVEL = "com.example.demo.LevelTwo";
 	private static final int TOTAL_ENEMIES = 5;
@@ -20,6 +24,23 @@ public class LevelOne extends LevelParent {
 		}
 		else if (userHasReachedKillTarget())
 			goToNextLevel(NEXT_LEVEL);
+	}
+
+	/**
+	 * Creates the game loop specific to LevelOne.
+	 *
+	 * @return The Timeline object that defines the game loop for LevelOne.
+	 */
+	@Override
+	protected Timeline createGameLoop() {
+		// Define the game loop here. This can include updating positions of actors, checking collisions, etc.
+		Timeline timeline;
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1.0 / 60), e -> updateGame()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+		return timeline;
+	}
+
+	private void updateGame() {
 	}
 
 	@Override

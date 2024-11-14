@@ -20,7 +20,7 @@ public abstract class LevelParent extends Observable {
 	private final double enemyMaximumYPosition;
 
 	private final Group root;
-	private final Timeline timeline;
+	private Timeline timeline;
 	private final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
@@ -52,6 +52,24 @@ public abstract class LevelParent extends Observable {
 		initializeTimeline();
 		friendlyUnits.add(user);
 	}
+
+
+	/**
+	 * Stops the game loop when the game is paused.
+	 */
+	public void stopGame() {
+		if (timeline != null) {
+			timeline.stop();
+		}
+	}
+
+	/**
+	 * Creates and returns the game loop Timeline for the level.
+	 * This should be overridden by specific levels to define the game's behavior.
+	 *
+	 * @return The Timeline that controls the game loop.
+	 */
+	protected abstract Timeline createGameLoop();
 
 	protected abstract void initializeFriendlyUnits();
 
