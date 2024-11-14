@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -41,11 +42,11 @@ public abstract class LevelParent {
 	private LevelView levelView;
 	private final StringProperty nextLevelProperty = new SimpleStringProperty();
 	private final Set<KeyCode> pressedKeys = new HashSet<>();
-	private Map<ActiveActorDestructible, javafx.scene.shape.Rectangle> actorHitboxes = new HashMap<>();
-	private boolean isPaused = false;
+	private Map<ActiveActorDestructible, Rectangle> actorHitboxes = new HashMap<>();
 
 	private final CollisionHandler collisionHandler;
 	private final InputHandler inputHandler;
+	private final PauseHandler pauseHandler;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -65,9 +66,9 @@ public abstract class LevelParent {
 		this.currentNumberOfEnemies = 0;
 		this.collisionHandler = new CollisionHandler();
 		this.inputHandler = new InputHandler(pressedKeys, user, background, root, userProjectiles);
+		this.pauseHandler = new PauseHandler(scene, this::pauseGame, this::resumeGame);
 		initializeTimeline();
 		friendlyUnits.add(user);
-		initializePauseHandler();
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -80,22 +81,11 @@ public abstract class LevelParent {
 
 	public Scene initializeScene() {
 		initializeBackground();
+		pauseHandler.initializePauseHandler();
 		initializeFriendlyUnits();
 		levelView.showHeartDisplay();
 		levelView.showKillCountDisplay();
 		return scene;
-	}
-
-	private void initializePauseHandler() {
-		scene.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.ESCAPE) {
-				if (isPaused) {
-					resumeGame();
-				} else {
-					pauseGame();
-				}
-			}
-		});
 	}
 
 	public void startGame() {
@@ -175,7 +165,7 @@ public abstract class LevelParent {
 		if (actorHitboxes.containsKey(actor)) {
 			root.getChildren().remove(actorHitboxes.get(actor));
 		}
-		javafx.scene.shape.Rectangle hitbox = actor.getHitboxRectangle();
+		Rectangle hitbox = actor.getHitboxRectangle();
 		actorHitboxes.put(actor, hitbox);
 		root.getChildren().add(hitbox);
 	}
@@ -220,16 +210,6 @@ public abstract class LevelParent {
 		return Math.abs(enemy.getTranslateX()) > screenWidth;
 	}
 
-	protected void winGame() {
-		timeline.stop();
-		levelView.showWinImage();
-	}
-
-	protected void loseGame() {
-		timeline.stop();
-		levelView.showGameOverImage();
-	}
-
 	protected UserPlane getUser() {
 		return user;
 	}
@@ -264,16 +244,24 @@ public abstract class LevelParent {
 	}
 
 	public void pauseGame() {
-		if (!isPaused) {
+		if (!pauseHandler.isPaused()) {
 			timeline.pause();
-			isPaused = true;
 		}
 	}
 
 	public void resumeGame() {
-		if (isPaused) {
+		if (pauseHandler.isPaused()) {
 			timeline.play();
-			isPaused = false;
 		}
+	}
+
+	protected void winGame() {
+		timeline.stop();
+		levelView.showWinImage();
+	}
+
+	protected void loseGame() {
+		timeline.stop();
+		levelView.showGameOverImage();
 	}
 }
