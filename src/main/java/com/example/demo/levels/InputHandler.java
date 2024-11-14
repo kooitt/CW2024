@@ -2,10 +2,8 @@ package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.UserPlane;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.image.ImageView;
 
 import java.util.List;
@@ -28,17 +26,11 @@ public class InputHandler {
     }
 
     public void initializeFireProjectileHandler() {
-        background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            public void handle(KeyEvent e) {
-                pressedKeys.add(e.getCode());
-                if (e.getCode() == KeyCode.SPACE) fireProjectile();
-            }
+        background.setOnKeyPressed(e -> {
+            pressedKeys.add(e.getCode());
+            if (e.getCode() == KeyCode.SPACE) fireProjectile();
         });
-        background.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            public void handle(KeyEvent e) {
-                pressedKeys.remove(e.getCode());
-            }
-        });
+        background.setOnKeyReleased(e -> pressedKeys.remove(e.getCode()));
     }
 
     private void fireProjectile() {

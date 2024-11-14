@@ -17,7 +17,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class LevelParent {
 
@@ -39,10 +38,9 @@ public abstract class LevelParent {
 	private final List<ActiveActorDestructible> enemyProjectiles;
 
 	private int currentNumberOfEnemies;
-	private LevelView levelView;
+	private final LevelView levelView;
 	private final StringProperty nextLevelProperty = new SimpleStringProperty();
-	private final Set<KeyCode> pressedKeys = new HashSet<>();
-	private Map<ActiveActorDestructible, Rectangle> actorHitboxes = new HashMap<>();
+    private final Map<ActiveActorDestructible, Rectangle> actorHitboxes = new HashMap<>();
 
 	private final CollisionHandler collisionHandler;
 	private final InputHandler inputHandler;
@@ -65,7 +63,8 @@ public abstract class LevelParent {
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
 		this.collisionHandler = new CollisionHandler();
-		this.inputHandler = new InputHandler(pressedKeys, user, background, root, userProjectiles);
+        Set<KeyCode> pressedKeys = new HashSet<>();
+        this.inputHandler = new InputHandler(pressedKeys, user, background, root, userProjectiles);
 		this.pauseHandler = new PauseHandler(scene, this::pauseGame, this::resumeGame);
 		initializeTimeline();
 		friendlyUnits.add(user);
@@ -180,7 +179,7 @@ public abstract class LevelParent {
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
 		List<ActiveActorDestructible> destroyedActors = actors.stream()
 				.filter(ActiveActorDestructible::isDestroyed)
-				.collect(Collectors.toList());
+				.toList();
 		root.getChildren().removeAll(destroyedActors);
 		destroyedActors.forEach(actor -> root.getChildren().remove(actorHitboxes.remove(actor)));
 		actors.removeAll(destroyedActors);
