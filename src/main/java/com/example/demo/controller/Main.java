@@ -35,35 +35,6 @@ public class  Main extends Application {
 		}
 	}
 
-//	@Override
-//	public void start(Stage stage) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-//			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		try {
-//			URL fxmlLocation = getClass().getClassLoader().getResource("MenuScreen.fxml");
-//			FXMLLoader loader = new FXMLLoader(fxmlLocation);
-////			Parent root = loader.load();
-//			Group root = new Group();
-////			MenuController controller = loader.getController();
-////			controller.setStage(stage);
-//
-//			Scene scene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
-//			stage.setTitle(TITLE);
-//			Image test = new Image(getClass().getResourceAsStream("/com/example/demo/images/shield.png"));
-//			ImageView piece = new ImageView(test);
-//			piece.setX(10);
-//			piece.setY(10);
-//
-//			Rectangle rct = new Rectangle(50, 150, 500, 300);
-//			rct.setFill(Color.GRAY);
-//
-//			root.getChildren().addAll(rct, piece);
-//			stage.setScene(scene);
-//			stage.show();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
 	public static void main(String[] args) {
 		launch();
 	}
