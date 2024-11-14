@@ -142,6 +142,11 @@ public abstract class LevelParent {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
+		initializeFireProjectileHandler();
+		root.getChildren().add(background);
+	}
+
+	private void initializeFireProjectileHandler() {
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				pressedKeys.add(e.getCode());
@@ -153,7 +158,6 @@ public abstract class LevelParent {
 				pressedKeys.remove(e.getCode());
 			}
 		});
-		root.getChildren().add(background);
 	}
 
 	public void updateUserPlaneMovement(){
@@ -168,6 +172,8 @@ public abstract class LevelParent {
 		ActiveActorDestructible projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
 		userProjectiles.add(projectile);
+
+		root.getChildren().add(background);
 	}
 
 	private void generateEnemyFire() {
