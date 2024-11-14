@@ -1,25 +1,22 @@
 package com.example.demo.levels;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.example.demo.actors.ActiveActor;
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.FighterPlane;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.view.LevelView;
-import javafx.animation.*;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.image.*;
-import javafx.scene.input.*;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.util.Duration;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class LevelParent {
 
@@ -44,10 +41,11 @@ public abstract class LevelParent {
 	private LevelView levelView;
 	private final StringProperty nextLevelProperty = new SimpleStringProperty();
 	private final Set<KeyCode> pressedKeys = new HashSet<>();
-//	private final PauseMenu pauseMenu;
-	private Map<ActiveActor, Rectangle> actorHitboxes = new HashMap<>();
+	private Map<ActiveActorDestructible, javafx.scene.shape.Rectangle> actorHitboxes = new HashMap<>();
 	private boolean isPaused = false;
 
+	private final CollisionHandler collisionHandler;
+	private final InputHandler inputHandler;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -65,11 +63,10 @@ public abstract class LevelParent {
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
+		this.collisionHandler = new CollisionHandler();
+		this.inputHandler = new InputHandler(pressedKeys, user, background, root, userProjectiles);
 		initializeTimeline();
 		friendlyUnits.add(user);
-//		pauseMenu = new PauseMenu(this);
-//		root.getChildren().add(pauseMenu);
-//		pauseMenu.setVisible(false);
 		initializePauseHandler();
 	}
 
@@ -89,9 +86,9 @@ public abstract class LevelParent {
 		return scene;
 	}
 
-	private void initializePauseHandler(){
-		scene.setOnKeyPressed(e-> {
-			if(e.getCode() == KeyCode.ESCAPE) {
+	private void initializePauseHandler() {
+		scene.setOnKeyPressed(e -> {
+			if (e.getCode() == KeyCode.ESCAPE) {
 				if (isPaused) {
 					resumeGame();
 				} else {
@@ -99,7 +96,6 @@ public abstract class LevelParent {
 				}
 			}
 		});
-
 	}
 
 	public void startGame() {
@@ -115,21 +111,20 @@ public abstract class LevelParent {
 		return nextLevelProperty;
 	}
 
-	//refactor this!
 	private void updateScene() {
 		spawnEnemyUnits();
 		updateActors();
 		generateEnemyFire();
 		updateNumberOfEnemies();
 		handleEnemyPenetration();
-		handleUserProjectileCollisions();
-		handleEnemyProjectileCollisions();
-		handlePlaneCollisions();
+		collisionHandler.handleUserProjectileCollisions(userProjectiles, enemyUnits);
+		collisionHandler.handleEnemyProjectileCollisions(enemyProjectiles, friendlyUnits);
+		collisionHandler.handlePlaneCollisions(friendlyUnits, enemyUnits);
 		removeAllDestroyedActors();
 		updateUserKillCount();
 		updateLevelView();
 		checkIfGameOver();
-		updateUserPlaneMovement();
+		inputHandler.updateUserPlaneMovement();
 	}
 
 	private void initializeTimeline() {
@@ -142,37 +137,7 @@ public abstract class LevelParent {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
-		initializeFireProjectileHandler();
-		root.getChildren().add(background);
-	}
-
-	private void initializeFireProjectileHandler() {
-		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				pressedKeys.add(e.getCode());
-				if (e.getCode() == KeyCode.SPACE) fireProjectile();
-			}
-		});
-		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				pressedKeys.remove(e.getCode());
-			}
-		});
-	}
-
-	public void updateUserPlaneMovement(){
-		if (pressedKeys.contains(KeyCode.UP)) user.moveUp();
-		if (pressedKeys.contains(KeyCode.DOWN)) user.moveDown();
-		if (pressedKeys.contains(KeyCode.LEFT)) user.moveLeft();
-		if (pressedKeys.contains(KeyCode.RIGHT)) user.moveRight();
-		if (!pressedKeys.contains(KeyCode.UP) && !pressedKeys.contains(KeyCode.DOWN)) user.stopVertical();
-		if (!pressedKeys.contains(KeyCode.LEFT) && !pressedKeys.contains(KeyCode.RIGHT)) user.stopHorizontal();
-	}
-	private void fireProjectile() {
-		ActiveActorDestructible projectile = user.fireProjectile();
-		root.getChildren().add(projectile);
-		userProjectiles.add(projectile);
-
+		inputHandler.initializeFireProjectileHandler();
 		root.getChildren().add(background);
 	}
 
@@ -207,18 +172,13 @@ public abstract class LevelParent {
 	}
 
 	private void addHitboxToScene(ActiveActorDestructible actor) {
-		// Remove the old hitbox if it exists
 		if (actorHitboxes.containsKey(actor)) {
 			root.getChildren().remove(actorHitboxes.get(actor));
 		}
-
-		// Add the new hitbox
-		Rectangle hitbox = actor.getHitboxRectangle();
+		javafx.scene.shape.Rectangle hitbox = actor.getHitboxRectangle();
 		actorHitboxes.put(actor, hitbox);
 		root.getChildren().add(hitbox);
 	}
-
-
 
 	private void removeAllDestroyedActors() {
 		removeDestroyedActors(friendlyUnits);
@@ -234,30 +194,6 @@ public abstract class LevelParent {
 		root.getChildren().removeAll(destroyedActors);
 		destroyedActors.forEach(actor -> root.getChildren().remove(actorHitboxes.remove(actor)));
 		actors.removeAll(destroyedActors);
-	}
-
-	private void handlePlaneCollisions() {
-		handleCollisions(friendlyUnits, enemyUnits);
-	}
-
-	private void handleUserProjectileCollisions() {
-		handleCollisions(userProjectiles, enemyUnits);
-	}
-
-	private void handleEnemyProjectileCollisions() {
-		handleCollisions(enemyProjectiles, friendlyUnits);
-	}
-
-	private void handleCollisions(List<ActiveActorDestructible> actors1,
-								  List<ActiveActorDestructible> actors2) {
-		for (ActiveActorDestructible actor : actors2) {
-			for (ActiveActorDestructible otherActor : actors1) {
-				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					actor.takeDamage();
-					otherActor.takeDamage();
-				}
-			}
-		}
 	}
 
 	private void handleEnemyPenetration() {
@@ -309,7 +245,6 @@ public abstract class LevelParent {
 	protected void addEnemyUnit(ActiveActorDestructible enemy) {
 		enemyUnits.add(enemy);
 		root.getChildren().add(enemy);
-
 	}
 
 	protected double getEnemyMaximumYPosition() {
@@ -328,27 +263,17 @@ public abstract class LevelParent {
 		currentNumberOfEnemies = enemyUnits.size();
 	}
 
-	public void pauseGame(){
-		if (!isPaused){
+	public void pauseGame() {
+		if (!isPaused) {
 			timeline.pause();
 			isPaused = true;
-//			showPauseMenu();
 		}
 	}
 
-	public void resumeGame(){
-		if (isPaused){
+	public void resumeGame() {
+		if (isPaused) {
 			timeline.play();
 			isPaused = false;
-//			hidePauseMenu();
 		}
 	}
-
-//	public void showPauseMenu(){
-//		pauseMenu.setVisible(true);
-//	}
-//
-//	public void hidePauseMenu(){
-//		pauseMenu.setVisible(false);
-//	}
 }
