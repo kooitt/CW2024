@@ -9,18 +9,31 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * Represents the screen displayed during level transitions.
+ */
 public class LevelTransitionScreen {
 
     private final Stage stage;
     private final String levelName;
     private final Runnable onTransitionComplete;
 
+    /**
+     * Constructs a LevelTransitionScreen with the specified stage, level name, and transition completion handler.
+     *
+     * @param stage the stage on which the transition screen is displayed.
+     * @param levelName the name of the level to display.
+     * @param onTransitionComplete the handler to run when the transition is complete.
+     */
     public LevelTransitionScreen(Stage stage, String levelName, Runnable onTransitionComplete) {
         this.stage = stage;
         this.levelName = levelName;
         this.onTransitionComplete = onTransitionComplete;
     }
 
+    /**
+     * Displays the level transition screen with a fade-in and fade-out effect.
+     */
     public void show() {
         StackPane root = new StackPane();
         Text levelText = new Text(levelName);

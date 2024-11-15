@@ -6,10 +6,18 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * Controller class for the main menu of the application.
+ */
 public class MenuController {
 
     private Stage stage;
 
+    /**
+     * Sets the stage for this controller.
+     *
+     * @param stage the primary stage for this application.
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -20,6 +28,10 @@ public class MenuController {
     @FXML
     private VBox buttonContainer;
 
+    /**
+     * Initializes the controller class. This method is automatically called
+     * after the FXML file has been loaded.
+     */
     @FXML
     private void initialize() {
         // Bind the ImageView size to the Pane size
@@ -30,16 +42,23 @@ public class MenuController {
         buttonContainer.layoutXProperty().bind(((Pane) buttonContainer.getParent()).widthProperty().subtract(buttonContainer.widthProperty()).divide(2));
         buttonContainer.layoutYProperty().bind(((Pane) buttonContainer.getParent()).heightProperty().subtract(buttonContainer.heightProperty()).divide(2));
     }
+
+    /**
+     * Starts the game by creating a new GameController and launching the game.
+     */
     @FXML
     private void startGame() {
-            try {
-                GameController gameController = new GameController(stage);
-                gameController.launchGame();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            GameController gameController = new GameController(stage);
+            gameController.launchGame();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Exits the game by closing the stage.
+     */
     @FXML
     private void exitGame() {
         stage.close();
