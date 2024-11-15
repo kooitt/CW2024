@@ -11,6 +11,9 @@ import javafx.scene.image.ImageView;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Handles user input for controlling the user's plane and firing projectiles.
+ */
 public class InputHandler {
 
     private final Set<KeyCode> pressedKeys;
@@ -19,6 +22,15 @@ public class InputHandler {
     private final Group root;
     private final List<ActiveActorDestructible> userProjectiles;
 
+    /**
+     * Constructs an InputHandler with the specified parameters.
+     *
+     * @param pressedKeys the set of currently pressed keys.
+     * @param user the user's plane.
+     * @param background the background image view.
+     * @param root the root group of the scene.
+     * @param userProjectiles the list of user projectiles.
+     */
     public InputHandler(Set<KeyCode> pressedKeys, UserPlane user, ImageView background, Group root, List<ActiveActorDestructible> userProjectiles) {
         this.pressedKeys = pressedKeys;
         this.user = user;
@@ -27,6 +39,9 @@ public class InputHandler {
         this.userProjectiles = userProjectiles;
     }
 
+    /**
+     * Initializes the event handlers for firing projectiles and tracking key presses.
+     */
     public void initializeFireProjectileHandler() {
         background.setOnKeyPressed(new EventHandler<KeyEvent>() {
             public void handle(KeyEvent e) {
@@ -41,12 +56,18 @@ public class InputHandler {
         });
     }
 
+    /**
+     * Fires a projectile from the user's plane.
+     */
     private void fireProjectile() {
         ActiveActorDestructible projectile = user.fireProjectile();
         root.getChildren().add(projectile);
         userProjectiles.add(projectile);
     }
 
+    /**
+     * Updates the movement of the user's plane based on the currently pressed keys.
+     */
     public void updateUserPlaneMovement() {
         if (pressedKeys.contains(KeyCode.UP)) user.moveUp();
         if (pressedKeys.contains(KeyCode.DOWN)) user.moveDown();

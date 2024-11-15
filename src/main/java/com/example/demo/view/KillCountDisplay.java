@@ -5,6 +5,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+/**
+ * Represents a display for the kill count in the game.
+ */
 public class KillCountDisplay {
 
     private static final int LABEL_FONT_SIZE = 24;
@@ -17,6 +20,13 @@ public class KillCountDisplay {
     private final int maxKills;
     private Label killCountLabel;
 
+    /**
+     * Constructs a KillCountDisplay with the specified position and maximum kills.
+     *
+     * @param xPosition the x-coordinate position of the kill count display.
+     * @param yPosition the y-coordinate position of the kill count display.
+     * @param maxKills the maximum number of kills to display.
+     */
     public KillCountDisplay(double xPosition, double yPosition, int maxKills) {
         this.containerXPosition = xPosition;
         this.containerYPosition = yPosition;
@@ -26,12 +36,18 @@ public class KillCountDisplay {
         initializeKillCountLabel();
     }
 
+    /**
+     * Initializes the container for the kill count display.
+     */
     private void initializeContainer() {
         container = new HBox();
         container.setLayoutX(containerXPosition);
         container.setLayoutY(containerYPosition);
     }
 
+    /**
+     * Initializes the kill count label.
+     */
     private void initializeKillCountLabel() {
         killCountLabel = new Label("Kills: " + currentKills + "/" + maxKills);
         killCountLabel.setFont(Font.font(LABEL_FONT_FAMILY, FontWeight.BOLD, LABEL_FONT_SIZE));
@@ -39,11 +55,21 @@ public class KillCountDisplay {
         container.getChildren().add(killCountLabel);
     }
 
+    /**
+     * Updates the kill count display with the specified number of kills.
+     *
+     * @param kills the current number of kills.
+     */
     public void updateKillCount(int kills) {
         this.currentKills = kills;
         killCountLabel.setText("Kills: " + currentKills + "/" + maxKills);
     }
 
+    /**
+     * Returns the container for the kill count display.
+     *
+     * @return the container for the kill count display.
+     */
     public HBox getContainer() {
         return container;
     }
