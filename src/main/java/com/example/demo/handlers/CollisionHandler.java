@@ -1,4 +1,4 @@
-package com.example.demo.levels;
+package com.example.demo.handlers;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import java.util.List;
