@@ -46,9 +46,9 @@ public class MainMenu {
         menuLayout.setStyle("-fx-padding: 30; -fx-alignment: center;");
 
         // Set up the title
-        Text title = new Text("Welcome to the Game!");
+        Text title = new Text("Welcome to the Sky Battle Game!");
         title.setFont(Font.font("Arial", 40));
-        title.setFill(Color.WHITE); // White text color to stand out against background
+        title.setFill(Color.BLACK); // White text color to stand out against background
 
         // Set up buttons with styling
         Button startButton = createStyledButton("Start Game");
@@ -67,7 +67,7 @@ public class MainMenu {
         setBackground(menuLayout);
 
         // Return the scene with the menu layout
-        return new Scene(menuLayout, 600, 400);
+        return new Scene(menuLayout, 1300, 750);
     }
 
     /**

@@ -32,12 +32,12 @@ public class Instructions {
      */
     public Scene createInstructionsScene() {
         VBox instructionsLayout = new VBox(20);
-        instructionsLayout.setStyle("-fx-padding: 30; -fx-alignment: center;");
+        instructionsLayout.setStyle("-fx-padding: 30; -fx-alignment: left;");
 
         // Title text for Instructions
         Text title = new Text("Game Instructions");
         title.setFont(Font.font("Arial", 40));
-        title.setFill(Color.WHITE);
+        title.setFill(Color.BLACK);
 
         // Mock instructions text
         Text instructionsText = new Text("1. Use the arrow keys to move your plane up and down.\n"
@@ -46,7 +46,7 @@ public class Instructions {
                 + "4. Defeat the boss to win the game!\n\n"
                 + "Good luck and have fun!");
         instructionsText.setFont(Font.font("Arial", 18));
-        instructionsText.setFill(Color.WHITE);
+        instructionsText.setFill(Color.BLACK);
 
         // Back button to return to the main menu
         Button backButton = new Button("Back to Main Menu");
@@ -69,7 +69,7 @@ public class Instructions {
         setBackground(instructionsLayout);
 
         // Return the scene with instructions layout
-        return new Scene(instructionsLayout, 600, 400);
+        return new Scene(instructionsLayout, 1300, 750);
     }
 
     /**
