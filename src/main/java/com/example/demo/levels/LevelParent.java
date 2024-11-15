@@ -6,6 +6,7 @@ import com.example.demo.actors.UserPlane;
 import com.example.demo.handlers.CollisionHandler;
 import com.example.demo.handlers.InputHandler;
 import com.example.demo.handlers.PauseHandler;
+import com.example.demo.handlers.GameInitializer;
 import com.example.demo.view.LevelView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,7 +21,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.util.*;
-import java.util.stream.Collectors;
+		import java.util.stream.Collectors;
 
 /**
  * Represents a parent class for all levels in the game.
@@ -53,6 +54,7 @@ public abstract class LevelParent {
 	private final CollisionHandler collisionHandler;
 	private final InputHandler inputHandler;
 	private final PauseHandler pauseHandler;
+	private final GameInitializer gameInitializer;
 
 	/**
 	 * Constructs a LevelParent with the specified parameters.
@@ -81,6 +83,7 @@ public abstract class LevelParent {
 		this.collisionHandler = new CollisionHandler();
 		this.inputHandler = new InputHandler(pressedKeys, user, background, root, userProjectiles);
 		this.pauseHandler = new PauseHandler(scene, this::pauseGame, this::resumeGame);
+		this.gameInitializer = new GameInitializer(root, scene, background, user, levelView, pauseHandler);
 		initializeTimeline();
 		friendlyUnits.add(user);
 	}
@@ -113,11 +116,8 @@ public abstract class LevelParent {
 	 * @return the initialized scene.
 	 */
 	public Scene initializeScene() {
-		initializeBackground();
-		pauseHandler.initializePauseHandler();
-		initializeFriendlyUnits();
-		levelView.showHeartDisplay();
-		levelView.showKillCountDisplay();
+		gameInitializer.initializeGame();
+		inputHandler.initializeFireProjectileHandler();
 		return scene;
 	}
 
@@ -174,17 +174,6 @@ public abstract class LevelParent {
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		KeyFrame gameLoop = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> updateScene());
 		timeline.getKeyFrames().add(gameLoop);
-	}
-
-	/**
-	 * Initializes the background for the level.
-	 */
-	private void initializeBackground() {
-		background.setFocusTraversable(true);
-		background.setFitHeight(screenHeight);
-		background.setFitWidth(screenWidth);
-		inputHandler.initializeFireProjectileHandler();
-		root.getChildren().add(background);
 	}
 
 	/**
