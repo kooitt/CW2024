@@ -74,6 +74,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	public void goToNextLevel(String levelName) {
+		endGame();
 		setChanged();
 		notifyObservers(levelName);
 	}
@@ -248,4 +249,22 @@ public abstract class LevelParent extends Observable {
 		currentNumberOfEnemies = enemyUnits.size();
 	}
 
+	public void endGame() {
+		// stop the game loop
+		timeline.stop();
+		timeline.getKeyFrames().clear();
+
+		// remove all event handlers
+		background.setOnKeyPressed(null);
+		background.setOnKeyReleased(null);
+
+		// clear all actors from the scene graph
+		root.getChildren().clear();
+
+		// reset state variables
+		friendlyUnits.clear();
+		enemyUnits.clear();
+		userProjectiles.clear();
+		enemyProjectiles.clear();
+	}
 }
