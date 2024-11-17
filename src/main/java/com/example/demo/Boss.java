@@ -12,7 +12,7 @@ public class Boss extends FighterPlane {
 	private static final double BOSS_SHIELD_PROBABILITY = .002;
 	private static final int IMAGE_HEIGHT = 300;
 	private static final int VERTICAL_VELOCITY = 8;
-	private static final int HEALTH = 100;
+	private static final int HEALTH = 1;
 	private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
 	private static final int ZERO = 0;
 	private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
@@ -61,6 +61,15 @@ public class Boss extends FighterPlane {
 		if (!isShielded) {
 			super.takeDamage();
 		}
+		// check if health reaches zero
+		if (getHealth() <= 0) {
+			destroy();
+		}
+	}
+
+	// add an isDestroyed method
+	public boolean isDestroyed() {
+		return getHealth() <= 0;
 	}
 
 	private void initializeMovePattern() {
