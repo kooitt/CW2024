@@ -1,7 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.EnemyPlane;
+import com.example.demo.actors.planes.EnemyPlane;
 import com.example.demo.view.LevelView;
 
 /**

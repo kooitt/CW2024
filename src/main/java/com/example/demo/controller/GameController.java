@@ -15,7 +15,8 @@ import com.example.demo.levels.LevelParent;
  */
 public class GameController {
 
-	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
+	private static final String START_LEVEL_CLASS_NAME = "com.example.demo.levels.LevelOne";
+	private static final String STAR_LEVEL_DISPLAY_NAME = "Level 1";
 	private final Stage stage;
 
 	/**
@@ -41,7 +42,7 @@ public class GameController {
 	public void launchGame() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		stage.show();
-		goToLevel(LEVEL_ONE_CLASS_NAME, "Level 1");
+		goToLevel(START_LEVEL_CLASS_NAME, STAR_LEVEL_DISPLAY_NAME);
 	}
 
 	/**

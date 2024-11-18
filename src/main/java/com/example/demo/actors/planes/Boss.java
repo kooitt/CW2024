@@ -1,4 +1,7 @@
-package com.example.demo.actors;
+package com.example.demo.actors.planes;
+
+import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.projectiles.BossProjectile;
 
 import java.util.*;
 
@@ -11,7 +14,7 @@ public class Boss extends FighterPlane {
 	private static final double INITIAL_X_POSITION = 1000.0;
 	private static final double INITIAL_Y_POSITION = 400;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 20.0;
-	private static final double BOSS_FIRE_RATE = .08;
+	private static final double BOSS_FIRE_RATE = .05;
 	private static final double BOSS_SHIELD_PROBABILITY = .002;
 	private static final int IMAGE_HEIGHT = 60;
 	private static final int VERTICAL_VELOCITY = 8;
@@ -100,9 +103,14 @@ public class Boss extends FighterPlane {
 	 * Updates the shield status of the boss.
 	 */
 	private void updateShield() {
-		if (isShielded) framesWithShieldActivated++;
-		else if (shieldShouldBeActivated()) activateShield();
-		if (shieldExhausted()) deactivateShield();
+		if (isShielded) {
+			framesWithShieldActivated++;
+			if (shieldExhausted()) {
+				deactivateShield();
+			}
+		} else if (shieldShouldBeActivated()) {
+			activateShield();
+		}
 	}
 
 	/**
@@ -173,5 +181,10 @@ public class Boss extends FighterPlane {
 	private void deactivateShield() {
 		isShielded = false;
 		framesWithShieldActivated = 0;
+	}
+
+
+	public boolean isShielded() {
+		return isShielded;
 	}
 }

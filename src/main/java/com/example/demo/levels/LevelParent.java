@@ -1,8 +1,8 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.FighterPlane;
-import com.example.demo.actors.UserPlane;
+import com.example.demo.actors.planes.FighterPlane;
+import com.example.demo.actors.planes.UserPlane;
 import com.example.demo.handlers.CollisionHandler;
 import com.example.demo.handlers.InputHandler;
 import com.example.demo.handlers.PauseHandler;
@@ -270,7 +270,7 @@ public abstract class LevelParent {
 	/**
 	 * Updates the level view.
 	 */
-	private void updateLevelView() {
+	protected void updateLevelView() {
 		levelView.removeHearts(user.getHealth());
 		levelView.updateKillCount(user.getKillCount());
 	}

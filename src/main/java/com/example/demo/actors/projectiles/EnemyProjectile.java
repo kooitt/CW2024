@@ -1,4 +1,4 @@
-package com.example.demo.actors;
+package com.example.demo.actors.projectiles;
 
 /**
  * Represents a projectile fired by an enemy in the game.

@@ -1,7 +1,7 @@
 package com.example.demo.handlers;
 
 import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.UserPlane;
+import com.example.demo.actors.planes.UserPlane;
 import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 import javafx.scene.image.ImageView;

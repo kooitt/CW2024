@@ -1,7 +1,6 @@
 package com.example.demo.handlers;
 
-import com.example.demo.actors.UserPlane;
-import com.example.demo.handlers.PauseHandler;
+import com.example.demo.actors.planes.UserPlane;
 import com.example.demo.view.LevelView;
 import javafx.scene.Group;
 import javafx.scene.Scene;

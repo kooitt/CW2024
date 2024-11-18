@@ -1,4 +1,6 @@
-package com.example.demo.actors;
+package com.example.demo.actors.planes;
+
+import com.example.demo.actors.ActiveActorDestructible;
 
 /**
  * Represents a fighter plane in the game, which is a type of ActiveActorDestructible.

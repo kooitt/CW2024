@@ -1,4 +1,7 @@
-package com.example.demo.actors;
+package com.example.demo.actors.planes;
+
+import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.projectiles.EnemyProjectile;
 
 /**
  * Represents an enemy plane in level Two of the game, which is a type of FighterPlane.

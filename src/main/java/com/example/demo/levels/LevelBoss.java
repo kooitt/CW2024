@@ -1,8 +1,9 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.Boss;
+import com.example.demo.actors.planes.Boss;
 import com.example.demo.view.LevelBossView;
 import com.example.demo.view.LevelView;
+import com.example.demo.view.ShieldImage;
 
 /**
  * Represents the boss level in the game.
@@ -14,6 +15,9 @@ public class LevelBoss extends LevelParent {
 	private static final int KILLS_TO_ADVANCE = 1;
 	private final Boss boss;
 	private LevelBossView levelView;
+	private final ShieldImage shieldImage;
+	private static final int SHIELD_X_POSITION = 1100; // X-coordinate position of the shield
+	private static final int SHIELD_Y_POSITION = 0; // Y-coordinate position of the shield
 
 	/**
 	 * Constructs a LevelBoss with the specified screen dimensions.
@@ -24,7 +28,7 @@ public class LevelBoss extends LevelParent {
 	public LevelBoss(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
 		boss = new Boss();
-		//levelView.showShield();
+		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
 	}
 
 	/**
@@ -54,7 +58,13 @@ public class LevelBoss extends LevelParent {
 	protected void spawnEnemyUnits() {
 		if (getCurrentNumberOfEnemies() == 0) {
 			addEnemyUnit(boss);
+			addShieldImage();
 		}
+	}
+
+	private void addShieldImage() {
+		shieldImage.setVisible(false);
+		getRoot().getChildren().add(shieldImage);
 	}
 
 	/**
@@ -66,5 +76,15 @@ public class LevelBoss extends LevelParent {
 	protected LevelView instantiateLevelView() {
 		levelView = new LevelBossView(getRoot(), PLAYER_INITIAL_HEALTH, KILLS_TO_ADVANCE);
 		return levelView;
+	}
+
+	@Override
+	protected void updateLevelView() {
+		super.updateLevelView();
+		if (boss.isShielded()) {
+			shieldImage.showShield();
+		} else {
+			shieldImage.hideShield();
+		}
 	}
 }

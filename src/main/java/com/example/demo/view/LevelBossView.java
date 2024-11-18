@@ -7,8 +7,8 @@ import javafx.scene.Group;
  */
 public class LevelBossView extends LevelView {
 
-	private static final int SHIELD_X_POSITION = 355; // X-coordinate position of the shield
-	private static final int SHIELD_Y_POSITION = 175; // Y-coordinate position of the shield
+	private static final int SHIELD_X_POSITION = 1100; // X-coordinate position of the shield
+	private static final int SHIELD_Y_POSITION = 0; // Y-coordinate position of the shield
 	private final Group root;
 	private final ShieldImage shieldImage;
 
@@ -23,23 +23,14 @@ public class LevelBossView extends LevelView {
 		super(root, heartsToDisplay, maxKills);
 		this.root = root;
 		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
-		showShieldImage();
+		addImagesToRoot();
 	}
 
-	/**
-	 * Shows the shield image by adding it to the root group and making it visible.
-	 */
-	public void showShieldImage() {
-		shieldImage.showShield();
-		root.getChildren().add(shieldImage);
-		System.out.println("Added Shield");
-		shieldImage.showShield();
-	}
 
 	/**
-	 * Hides the shield image from the view.
+	 * Adds images to root
 	 */
-	public void hideShieldImage() {
-		shieldImage.hideShield();
+	private void addImagesToRoot() {
+		root.getChildren().addAll(shieldImage);
 	}
 }
