@@ -59,14 +59,4 @@ public class GameInitializer {
         root.getChildren().add(background);
     }
 
-    /**
-     * Initializes the friendly units in the game.
-     */
-//    private void initializeFriendlyUnits() {
-//        if (!root.getChildren().contains(user)) {
-//            System.out.println("Adding user plane to root");
-//            root.getChildren().add(user);
-//        }
-//
-//    }
 }

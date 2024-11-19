@@ -32,15 +32,9 @@ public class UserPlane extends FighterPlane {
 
 //			super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
 		super("userplane.png", IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
-		try {
-			verticalVelocityMultiplier = 0;
-			horizontalVelocityMultiplier = 0;
-			startAnimation();
-			// Debug statement
-			System.out.println("Image loaded: " + getClass().getResource("/com/example/demo/images/" + IMAGE_NAME));
-		} catch (Exception e) {
-			System.out.println("Error loading image: " + e.getMessage());
-		}
+		verticalVelocityMultiplier = 0;
+		horizontalVelocityMultiplier = 0;
+		startAnimation();
 	}
 
 	/**
@@ -115,28 +109,28 @@ public class UserPlane extends FighterPlane {
 	 * Moves the user's plane up by setting the vertical velocity multiplier to -1.
 	 */
 	public void moveUp() {
-		verticalVelocityMultiplier = -1;
+		verticalVelocityMultiplier = -2;
 	}
 
 	/**
 	 * Moves the user's plane down by setting the vertical velocity multiplier to 1.
 	 */
 	public void moveDown() {
-		verticalVelocityMultiplier = 1;
+		verticalVelocityMultiplier = 2;
 	}
 
 	/**
 	 * Moves the user's plane left by setting the horizontal velocity multiplier to -1.
 	 */
 	public void moveLeft() {
-		horizontalVelocityMultiplier = -1;
+		horizontalVelocityMultiplier = -2;
 	}
 
 	/**
 	 * Moves the user's plane right by setting the horizontal velocity multiplier to 1.
 	 */
 	public void moveRight() {
-		horizontalVelocityMultiplier = 1;
+		horizontalVelocityMultiplier = 2;
 	}
 
 	/**
@@ -167,5 +161,9 @@ public class UserPlane extends FighterPlane {
 	 */
 	public void incrementKillCount() {
 		numberOfKills++;
+	}
+
+	public void decrementKillCount() {
+		numberOfKills--;
 	}
 }

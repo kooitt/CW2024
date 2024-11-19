@@ -30,7 +30,6 @@ public class EntityManager {
 
     public void addFriendlyUnit(ActiveActorDestructible unit) {
         friendlyUnits.add(unit);
-        root.getChildren().add(unit);
     }
 
     public void addEnemyUnit(ActiveActorDestructible enemy) {
@@ -42,10 +41,10 @@ public class EntityManager {
         enemyDestroyedListeners.add(listener);
     }
 
-    public void addUserProjectile(ActiveActorDestructible projectile) {
-        userProjectiles.add(projectile);
-        root.getChildren().add(projectile);
-    }
+//    public void addUserProjectile(ActiveActorDestructible projectile) {
+//        userProjectiles.add(projectile);
+//        root.getChildren().add(projectile);
+//    }
 
     public void addEnemyProjectile(ActiveActorDestructible projectile) {
         if (projectile != null) {
@@ -84,14 +83,6 @@ public class EntityManager {
         removeDestroyedFromList(enemyProjectiles);
     }
 
-//    private void removeDestroyedFromList(List<ActiveActorDestructible> actors) {
-//        List<ActiveActorDestructible> destroyedActors = actors.stream()
-//                .filter(ActiveActorDestructible::isDestroyed)
-//                .collect(Collectors.toList());
-//        root.getChildren().removeAll(destroyedActors);
-//        destroyedActors.forEach(actor -> root.getChildren().remove(actorHitboxes.remove(actor)));
-//        actors.removeAll(destroyedActors);
-//    }
 
     private void removeDestroyedFromList(List<ActiveActorDestructible> actors) {
         List<ActiveActorDestructible> destroyedActors = actors.stream()
