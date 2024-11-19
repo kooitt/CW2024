@@ -3,7 +3,7 @@ package com.example.demo;
 public class UserPlane extends FighterPlane {
 
 	private static final String IMAGE_NAME = "userplane.png";
-	private static final double Y_UPPER_BOUND = -40;
+	private static final double Y_UPPER_BOUND = 20;
 	private static final double Y_LOWER_BOUND = 600.0;
 	private static final double X_LEFT_BOUND = 0.0;
 	private static final double X_RIGHT_BOUND = 800.0; // TEMPORARY VALUE ONLY
