@@ -24,7 +24,7 @@ public abstract class LevelParent extends Observable {
 	private final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
-
+	private boolean isGameActive;
 	private final List<ActiveActorDestructible> friendlyUnits;
 	private final List<ActiveActorDestructible> enemyUnits;
 	private final List<ActiveActorDestructible> userProjectiles;
@@ -70,10 +70,33 @@ public abstract class LevelParent extends Observable {
 
 	public void startGame() {
 		background.requestFocus();
+		isGameActive = true; //Add a value to help the game decide if the game is running at the moment. Useful
 		timeline.play();
 	}
 
+	public void pauseGame() {
+		if (isGameActive) {
+			isGameActive = false;
+			timeline.pause();
+		}
+		else {
+			isGameActive = true;
+			timeline.play();
+		}
+	} //Pauses the game if the game is active, and starts the game again if it is already paused.
+
+	private void cleanAssets() {
+		//Do a proper cleaning of all assets on the screen before proceeding to the next level.
+		user.destroy();
+		userProjectiles.clear();
+		friendlyUnits.clear();
+		enemyUnits.clear();
+		enemyProjectiles.clear();
+	}
+
 	public void goToNextLevel(String levelName) {
+		timeline.stop(); //Fixes the memory leaks produced from not having the user plane cleared when level is cleared
+		cleanAssets(); //Clean all assets on current screen
 		setChanged();
 		notifyObservers(levelName);
 	}
@@ -106,15 +129,24 @@ public abstract class LevelParent extends Observable {
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
+				if (kc == KeyCode.ESCAPE) pauseGame(); // Must be above isgameactive so it will work outside of an active game.
+				if (!isGameActive) return; //Void all inputs if the game is currently not active.
 				if (kc == KeyCode.UP) user.moveUp();
 				if (kc == KeyCode.DOWN) user.moveDown();
+				if (kc == KeyCode.LEFT) user.moveLeft();
+				if (kc == KeyCode.RIGHT) user.moveRight();
 				if (kc == KeyCode.SPACE) fireProjectile();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
+				if (kc == KeyCode.UP || kc == KeyCode.DOWN) {
+					user.stopY();
+				}
+				else if (kc == KeyCode.LEFT || kc == KeyCode.RIGHT) {
+					user.stopX();
+				}
 			}
 		});
 		root.getChildren().add(background);
@@ -207,11 +239,13 @@ public abstract class LevelParent extends Observable {
 
 	protected void winGame() {
 		timeline.stop();
+		isGameActive = false;
 		levelView.showWinImage();
 	}
 
 	protected void loseGame() {
 		timeline.stop();
+		isGameActive = false;
 		levelView.showGameOverImage();
 	}
 
