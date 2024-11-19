@@ -3,10 +3,7 @@ package com.example.demo.levels;
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.planes.FighterPlane;
 import com.example.demo.actors.planes.UserPlane;
-import com.example.demo.handlers.CollisionHandler;
-import com.example.demo.handlers.InputHandler;
-import com.example.demo.handlers.PauseHandler;
-import com.example.demo.handlers.GameInitializer;
+import com.example.demo.handlers.*;
 import com.example.demo.view.LevelView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -39,13 +36,14 @@ public abstract class LevelParent {
 	private final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
+	private final EntityManager entityManager;
 
-	private final List<ActiveActorDestructible> friendlyUnits;
-	private final List<ActiveActorDestructible> enemyUnits;
-	private final List<ActiveActorDestructible> userProjectiles;
-	private final List<ActiveActorDestructible> enemyProjectiles;
+//	private final List<ActiveActorDestructible> friendlyUnits;
+//	private final List<ActiveActorDestructible> enemyUnits;
+//	private final List<ActiveActorDestructible> userProjectiles;
+//	private final List<ActiveActorDestructible> enemyProjectiles;
 
-	private int currentNumberOfEnemies;
+//	private int currentNumberOfEnemies;
 	private LevelView levelView;
 	private final StringProperty nextLevelProperty = new SimpleStringProperty();
 	private final Set<KeyCode> pressedKeys = new HashSet<>();
@@ -69,29 +67,39 @@ public abstract class LevelParent {
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
 		this.user = new UserPlane(playerInitialHealth);
-		this.friendlyUnits = new ArrayList<>();
-		this.enemyUnits = new ArrayList<>();
-		this.userProjectiles = new ArrayList<>();
-		this.enemyProjectiles = new ArrayList<>();
+//		this.friendlyUnits = new ArrayList<>();
+//		this.enemyUnits = new ArrayList<>();
+//		this.userProjectiles = new ArrayList<>();
+//		this.enemyProjectiles = new ArrayList<>();
+		this.entityManager = new EntityManager(root);
 
 		this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
-		this.currentNumberOfEnemies = 0;
+//		this.currentNumberOfEnemies = 0;
 		this.collisionHandler = new CollisionHandler();
-		this.inputHandler = new InputHandler(pressedKeys, user, background, root, userProjectiles);
+		this.inputHandler = new InputHandler(pressedKeys, user, background, root, entityManager.getUserProjectiles());
 		this.pauseHandler = new PauseHandler(scene, this::pauseGame, this::resumeGame);
 		this.gameInitializer = new GameInitializer(root, scene, background, user, levelView, pauseHandler);
 		initializeTimeline();
-		friendlyUnits.add(user);
+//		entityManager.addFriendlyUnit(user);
+		entityManager.addEnemyDestroyedListener(enemy -> user.incrementKillCount());
 	}
 
 	/**
 	 * Initializes the friendly units in the level.
 	 */
-	protected abstract void initializeFriendlyUnits();
+	private void initializeFriendlyUnits(){
+		System.out.println("Checking if user plane exists in root");
+		if (!root.getChildren().contains(user)) {
+			System.out.println("Adding user plane to root in initializeFriendlyUnits");
+			root.getChildren().add(user);
+		}else{
+			System.out.println("User plane already exists in root");
+		}
+	};
 
 	/**
 	 * Checks if the game is over.
@@ -118,6 +126,7 @@ public abstract class LevelParent {
 	public Scene initializeScene() {
 		gameInitializer.initializeGame();
 		inputHandler.initializeFireProjectileHandler();
+//		initializeFriendlyUnits();
 		return scene;
 	}
 
@@ -152,16 +161,27 @@ public abstract class LevelParent {
 	 * Updates the scene.
 	 */
 	private void updateScene() {
+		initializeFriendlyUnits();
 		spawnEnemyUnits();
-		updateActors();
+		entityManager.updateActors();
 		generateEnemyFire();
-		updateNumberOfEnemies();
 		handleEnemyPenetration();
-		collisionHandler.handleUserProjectileCollisions(userProjectiles, enemyUnits);
-		collisionHandler.handleEnemyProjectileCollisions(enemyProjectiles, friendlyUnits);
-		collisionHandler.handlePlaneCollisions(friendlyUnits, enemyUnits);
-		removeAllDestroyedActors();
-		updateUserKillCount();
+
+		collisionHandler.handleUserProjectileCollisions(
+				entityManager.getUserProjectiles(),
+				entityManager.getEnemyUnits()
+		);
+		collisionHandler.handleEnemyProjectileCollisions(
+				entityManager.getEnemyProjectiles(),
+				entityManager.getFriendlyUnits()
+		);
+		collisionHandler.handlePlaneCollisions(
+				entityManager.getFriendlyUnits(),
+				entityManager.getEnemyUnits()
+		);
+
+		entityManager.removeDestroyedActors();
+//		updateUserKillCount();
 		updateLevelView();
 		checkIfGameOver();
 		inputHandler.updateUserPlaneMovement();
@@ -180,7 +200,7 @@ public abstract class LevelParent {
 	 * Generates enemy fire.
 	 */
 	private void generateEnemyFire() {
-		enemyUnits.forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
+		entityManager.getEnemyUnits().forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
 	}
 
 	/**
@@ -190,76 +210,18 @@ public abstract class LevelParent {
 	 */
 	private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
 		if (projectile != null) {
-			root.getChildren().add(projectile);
-			enemyProjectiles.add(projectile);
+			entityManager.addEnemyProjectile(projectile);
 		}
 	}
 
-	/**
-	 * Updates the actors in the level.
-	 */
-	private void updateActors() {
-		friendlyUnits.forEach(plane -> {
-			plane.updateActor();
-			addHitboxToScene(plane);
-		});
-		enemyUnits.forEach(enemy -> {
-			enemy.updateActor();
-			addHitboxToScene(enemy);
-		});
-		userProjectiles.forEach(projectile -> {
-			projectile.updateActor();
-			addHitboxToScene(projectile);
-		});
-		enemyProjectiles.forEach(projectile -> {
-			projectile.updateActor();
-			addHitboxToScene(projectile);
-		});
-	}
 
-	/**
-	 * Adds a hitbox to the scene for the specified actor.
-	 *
-	 * @param actor the actor to add a hitbox for.
-	 */
-	private void addHitboxToScene(ActiveActorDestructible actor) {
-		if (actorHitboxes.containsKey(actor)) {
-			root.getChildren().remove(actorHitboxes.get(actor));
-		}
-		Rectangle hitbox = actor.getHitboxRectangle();
-		actorHitboxes.put(actor, hitbox);
-		root.getChildren().add(hitbox);
-	}
 
-	/**
-	 * Removes all destroyed actors from the scene.
-	 */
-	private void removeAllDestroyedActors() {
-		removeDestroyedActors(friendlyUnits);
-		removeDestroyedActors(enemyUnits);
-		removeDestroyedActors(userProjectiles);
-		removeDestroyedActors(enemyProjectiles);
-	}
-
-	/**
-	 * Removes destroyed actors from the specified list.
-	 *
-	 * @param actors the list of actors to remove destroyed actors from.
-	 */
-	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream()
-				.filter(ActiveActorDestructible::isDestroyed)
-				.collect(Collectors.toList());
-		root.getChildren().removeAll(destroyedActors);
-		destroyedActors.forEach(actor -> root.getChildren().remove(actorHitboxes.remove(actor)));
-		actors.removeAll(destroyedActors);
-	}
 
 	/**
 	 * Handles enemy penetration.
 	 */
 	private void handleEnemyPenetration() {
-		for (ActiveActorDestructible enemy : enemyUnits) {
+		for (ActiveActorDestructible enemy : entityManager.getEnemyUnits()) {
 			if (enemyHasPenetratedDefenses(enemy)) {
 				user.takeDamage();
 				enemy.destroy();
@@ -278,11 +240,20 @@ public abstract class LevelParent {
 	/**
 	 * Updates the user's kill count.
 	 */
-	private void updateUserKillCount() {
-		for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
-			user.incrementKillCount();
-		}
-	}
+//	private void updateUserKillCount() {
+//		int previousNumberOfEnemies = entityManager.getCurrentNumberOfEnemies();
+//		System.out.println("previousNumberOfEnemies: " + previousNumberOfEnemies);
+//
+//		// Ensure enemy units are properly removed
+//		entityManager.removeDestroyedActors();
+//
+//		int currentNumberOfEnemies = entityManager.getEnemyUnits().size();
+//		System.out.println("currentNumberOfEnemies: " + currentNumberOfEnemies);
+//
+//		for (int i = 0; i < previousNumberOfEnemies - currentNumberOfEnemies; i++) {
+//			user.incrementKillCount();
+//		}
+//	}
 
 	/**
 	 * Checks if an enemy has penetrated the defenses.
@@ -318,7 +289,7 @@ public abstract class LevelParent {
 	 * @return the current number of enemies.
 	 */
 	protected int getCurrentNumberOfEnemies() {
-		return enemyUnits.size();
+		return entityManager.getCurrentNumberOfEnemies();
 	}
 
 	/**
@@ -327,8 +298,7 @@ public abstract class LevelParent {
 	 * @param enemy the enemy unit to add.
 	 */
 	protected void addEnemyUnit(ActiveActorDestructible enemy) {
-		enemyUnits.add(enemy);
-		root.getChildren().add(enemy);
+		entityManager.addEnemyUnit(enemy);
 	}
 
 	/**
@@ -358,12 +328,7 @@ public abstract class LevelParent {
 		return user.isDestroyed();
 	}
 
-	/**
-	 * Updates the number of enemies.
-	 */
-	private void updateNumberOfEnemies() {
-		currentNumberOfEnemies = enemyUnits.size();
-	}
+
 
 	/**
 	 * Pauses the game.

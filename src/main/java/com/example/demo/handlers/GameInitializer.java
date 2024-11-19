@@ -24,7 +24,7 @@ public class GameInitializer {
      * @param root the root group of the scene.
      * @param scene the scene of the game.
      * @param background the background image view.
-     * @param user the user's plane.
+//     * @param user the user's plane.
      * @param levelView the view for the level.
      * @param pauseHandler the handler for pausing the game.
      */
@@ -35,6 +35,7 @@ public class GameInitializer {
         this.user = user;
         this.levelView = levelView;
         this.pauseHandler = pauseHandler;
+        System.out.println("GameInitializer Constructor: User plane created");
     }
 
     /**
@@ -43,7 +44,7 @@ public class GameInitializer {
     public void initializeGame() {
         initializeBackground();
         pauseHandler.initializePauseHandler();
-        initializeFriendlyUnits();
+//        initializeFriendlyUnits();
         levelView.showHeartDisplay();
         levelView.showKillCountDisplay();
     }
@@ -61,7 +62,11 @@ public class GameInitializer {
     /**
      * Initializes the friendly units in the game.
      */
-    private void initializeFriendlyUnits() {
-        root.getChildren().add(user);
-    }
+//    private void initializeFriendlyUnits() {
+//        if (!root.getChildren().contains(user)) {
+//            System.out.println("Adding user plane to root");
+//            root.getChildren().add(user);
+//        }
+//
+//    }
 }

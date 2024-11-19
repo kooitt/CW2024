@@ -34,10 +34,10 @@ public class LevelBoss extends LevelParent {
 	/**
 	 * Initializes the friendly units in the level.
 	 */
-	@Override
-	protected void initializeFriendlyUnits() {
-		getRoot().getChildren().add(getUser());
-	}
+//	@Override
+//	protected void initializeFriendlyUnits() {
+//		getRoot().getChildren().add(getUser());
+//	}
 
 	/**
 	 * Checks if the game is over by evaluating the state of the user and the boss.

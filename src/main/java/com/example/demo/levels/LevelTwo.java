@@ -42,10 +42,10 @@ public class LevelTwo extends LevelParent {
     /**
      * Initializes the friendly units in the level.
      */
-    @Override
-    protected void initializeFriendlyUnits() {
-        getRoot().getChildren().add(getUser());
-    }
+//    @Override
+//    protected void initializeFriendlyUnits() {
+//        getRoot().getChildren().add(getUser());
+//    }
 
     /**
      * Spawns enemy units in the level based on the spawn probability.

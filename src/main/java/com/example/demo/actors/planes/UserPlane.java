@@ -29,10 +29,18 @@ public class UserPlane extends FighterPlane {
 	 * @param initialHealth the initial health of the user's plane.
 	 */
 	public UserPlane(int initialHealth) {
-		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
-		verticalVelocityMultiplier = 0;
-		horizontalVelocityMultiplier = 0;
-		startAnimation();
+
+//			super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
+		super("userplane.png", IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
+		try {
+			verticalVelocityMultiplier = 0;
+			horizontalVelocityMultiplier = 0;
+			startAnimation();
+			// Debug statement
+			System.out.println("Image loaded: " + getClass().getResource("/com/example/demo/images/" + IMAGE_NAME));
+		} catch (Exception e) {
+			System.out.println("Error loading image: " + e.getMessage());
+		}
 	}
 
 	/**

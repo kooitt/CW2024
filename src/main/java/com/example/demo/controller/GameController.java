@@ -65,6 +65,7 @@ public class GameController {
 				startLevel(className);
 			} catch (Exception e) {
 				showErrorAlert(e);
+				e.printStackTrace();
 			}
 		});
 		transitionScreen.show();
