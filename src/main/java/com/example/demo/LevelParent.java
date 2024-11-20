@@ -74,6 +74,17 @@ public abstract class LevelParent extends Observable {
 
 	public void goToNextLevel(String levelName) {
 		timeline.stop();
+		timeline.getKeyFrames().clear();
+
+		background.setOnKeyPressed(null);
+		background.setOnKeyReleased(null);
+
+		root.getChildren().clear();
+
+		friendlyUnits.clear();
+		enemyUnits.clear();
+		userProjectiles.clear();
+		enemyProjectiles.clear();
 		setChanged();
 		notifyObservers(levelName);
 	}
