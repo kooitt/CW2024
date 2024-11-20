@@ -62,7 +62,8 @@ public class UserPlane extends FighterPlane {
 	}
 
 	public void incrementKillCount() {
-		numberOfKills++;
+	    numberOfKills++; // Increment kill count
 	}
+
 
 }

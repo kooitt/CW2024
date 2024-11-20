@@ -23,6 +23,8 @@ public class LevelOne extends LevelParent {
         else if (userHasReachedKillTarget()) {
             goToNextLevel(NEXT_LEVEL);
         }
+        System.out.println("Kill Target Reached: " + getUser().getNumberOfKills());
+
     }
 
     @Override

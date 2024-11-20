@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
+import javafx.scene.text.Text;
 
 public abstract class LevelParent extends Observable {
 
@@ -36,6 +37,10 @@ public abstract class LevelParent extends Observable {
 
     private int currentNumberOfEnemies;
     private LevelView levelView;
+    
+    private int score; // Field to track the score
+    private Text scoreDisplay; // UI element to show the score
+
 
     public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
         this.root = new Group();
@@ -53,6 +58,14 @@ public abstract class LevelParent extends Observable {
         this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
         this.levelView = instantiateLevelView();
         this.currentNumberOfEnemies = 0;
+        
+        this.score = 0; // Initialize score
+        this.scoreDisplay = new Text(screenWidth -150, 50, "Score: 0"); // Create the score display
+        scoreDisplay.setStyle("-fx-font-size: 24px; -fx-fill: white;"); // Style the text
+        getRoot().getChildren().add(scoreDisplay); // Add to the game root
+        scoreDisplay.toFront(); // Bring to the front
+        System.out.println("Root children: " + getRoot().getChildren());
+
 
         initializeTimeline();
         friendlyUnits.add(user);
@@ -223,13 +236,41 @@ public abstract class LevelParent extends Observable {
     private void updateLevelView() {
         levelView.removeHearts(user.getHealth());
     }
+    
+    private void updateScoreDisplay() {
+        scoreDisplay.setText("Score: " + score); // Update the score text
+        updateScoreDisplayPosition();
+        scoreDisplay.toFront(); // Ensure it's on top
+        System.out.println("Score Updated to: " + score); // Debugging
+
+    }
 
     // Update kill count
     private void updateKillCount() {
-        for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
-            user.incrementKillCount();
+        int kills = currentNumberOfEnemies - enemyUnits.size();
+        if (kills > 0) {
+            for (int i = 0; i < kills; i++) {
+                score += 100; // Increment score for each kill
+                getUser().incrementKillCount();
+            }
+            currentNumberOfEnemies = enemyUnits.size(); // Update enemy count
+            updateScoreDisplay();// Refresh score on UI
+            System.out.println("Kill Count: " + getUser().getNumberOfKills());
+            System.out.println("Score: " + score);
+
         }
     }
+
+    
+    
+    private void updateScoreDisplayPosition() {
+        scoreDisplay.setX(screenWidth - 150); // Dynamically adjust x-coordinate for top-right
+    }
+
+    public int getScore() {
+        return score; // Getter for score
+    }
+
 
     private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
         return Math.abs(enemy.getTranslateX()) > screenWidth;
