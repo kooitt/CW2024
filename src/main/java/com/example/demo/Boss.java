@@ -61,15 +61,6 @@ public class Boss extends FighterPlane {
 		if (!isShielded) {
 			super.takeDamage();
 		}
-		// check if health reaches zero
-		if (getHealth() <= 0) {
-			destroy();
-		}
-	}
-
-	// add an isDestroyed method
-	public boolean isDestroyed() {
-		return getHealth() <= 0;
 	}
 
 	private void initializeMovePattern() {
