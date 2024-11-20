@@ -146,7 +146,7 @@ public abstract class LevelParent {
 		for (ActiveActorDestructible enemy : entityManager.getEnemyUnits()) {
 			if (enemyHasPenetratedDefenses(enemy)) {
 				user.decrementKillCount();
-				user.takeDamage();
+//				user.takeDamage();
 				enemy.destroy();
 			}
 		}

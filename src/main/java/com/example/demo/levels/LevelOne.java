@@ -1,7 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.planes.EnemyPlane;
+import com.example.demo.factory.EnemyFactory;
 import com.example.demo.view.LevelView;
 
 /**
@@ -16,7 +16,8 @@ public class LevelOne extends LevelParent {
 	private static final int KILLS_TO_ADVANCE = 5;
 	private static final double ENEMY_SPAWN_PROBABILITY = .20;
 	private static final int PLAYER_INITIAL_HEALTH = 5;
-	private static final double ENEMY_Y_LOWER_BOUND = 30;
+	private static final double ENEMY_Y_UPPER_BOUND = 30;
+	private final EnemyFactory enemyFactory;
 
 	/**
 	 * Constructs a LevelOne with the specified screen dimensions.
@@ -26,6 +27,7 @@ public class LevelOne extends LevelParent {
 	 */
 	public LevelOne(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+		this.enemyFactory = new EnemyFactory(EnemyFactory.EnemyType.ENEMYPLANEONE);
 	}
 
 	/**
@@ -58,8 +60,8 @@ public class LevelOne extends LevelParent {
 		int currentNumberOfEnemies = getCurrentNumberOfEnemies();
 		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
 			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-				double newEnemyInitialYPosition = ENEMY_Y_LOWER_BOUND + Math.random() * getEnemyMaximumYPosition();
-				ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+				double newEnemyInitialYPosition = ENEMY_Y_UPPER_BOUND + Math.random() * getEnemyMaximumYPosition();
+				ActiveActorDestructible newEnemy = enemyFactory.createActor(getScreenWidth(), newEnemyInitialYPosition);
 				addEnemyUnit(newEnemy);
 			}
 		}

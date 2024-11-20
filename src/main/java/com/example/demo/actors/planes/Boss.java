@@ -2,6 +2,7 @@ package com.example.demo.actors.planes;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.projectiles.BossProjectile;
+import com.example.demo.factory.ProjectileFactory;
 
 import java.util.*;
 
@@ -30,13 +31,14 @@ public class Boss extends FighterPlane {
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
+	private final ProjectileFactory projectileFactory;
 
 	/**
 	 * Constructs a Boss instance with predefined attributes.
 	 */
 	public Boss() {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
-
+		this.projectileFactory = new ProjectileFactory(ProjectileFactory.ProjectileType.BOSS);
 		movePattern = new ArrayList<>();
 		consecutiveMovesInSameDirection = 0;
 		indexOfCurrentMove = 0;
@@ -75,7 +77,7 @@ public class Boss extends FighterPlane {
 	 */
 	@Override
 	public ActiveActorDestructible fireProjectile() {
-		return bossFiresInCurrentFrame() ? new BossProjectile(getProjectileInitialPosition()) : null;
+		return bossFiresInCurrentFrame() ? projectileFactory.createActor(getLayoutX(), getProjectileInitialPosition()) : null;
 	}
 
 	/**

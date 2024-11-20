@@ -1,7 +1,7 @@
 package com.example.demo.actors.planes;
 
 import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.projectiles.UserProjectile;
+import com.example.demo.factory.ProjectileFactory;
 import javafx.animation.AnimationTimer;
 
 /**
@@ -22,6 +22,8 @@ public class UserPlane extends FighterPlane {
 	private int verticalVelocityMultiplier; // Separate multiplier for vertical movement
 	private int horizontalVelocityMultiplier; // Separate multiplier for horizontal movement
 	private int numberOfKills;
+	private final ProjectileFactory projectileFactory;
+
 
 	/**
 	 * Constructs a UserPlane with the specified initial health.
@@ -30,8 +32,8 @@ public class UserPlane extends FighterPlane {
 	 */
 	public UserPlane(int initialHealth) {
 
-//			super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
-		super("userplane.png", IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
+		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
+		this.projectileFactory = new ProjectileFactory(ProjectileFactory.ProjectileType.USER);
 		verticalVelocityMultiplier = 0;
 		horizontalVelocityMultiplier = 0;
 		startAnimation();
@@ -93,7 +95,7 @@ public class UserPlane extends FighterPlane {
 	public ActiveActorDestructible fireProjectile() {
 		double projectileX = getLayoutX() + getTranslateX() + PROJECTILE_X_POSITION;
 		double projectileY = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
-		return new UserProjectile(projectileX, projectileY);
+		return projectileFactory.createActor(projectileX, projectileY);
 	}
 
 	/**
@@ -109,28 +111,28 @@ public class UserPlane extends FighterPlane {
 	 * Moves the user's plane up by setting the vertical velocity multiplier to -1.
 	 */
 	public void moveUp() {
-		verticalVelocityMultiplier = -2;
+		verticalVelocityMultiplier = -1;
 	}
 
 	/**
 	 * Moves the user's plane down by setting the vertical velocity multiplier to 1.
 	 */
 	public void moveDown() {
-		verticalVelocityMultiplier = 2;
+		verticalVelocityMultiplier = 1;
 	}
 
 	/**
 	 * Moves the user's plane left by setting the horizontal velocity multiplier to -1.
 	 */
 	public void moveLeft() {
-		horizontalVelocityMultiplier = -2;
+		horizontalVelocityMultiplier = -1;
 	}
 
 	/**
 	 * Moves the user's plane right by setting the horizontal velocity multiplier to 1.
 	 */
 	public void moveRight() {
-		horizontalVelocityMultiplier = 2;
+		horizontalVelocityMultiplier = 1;
 	}
 
 	/**

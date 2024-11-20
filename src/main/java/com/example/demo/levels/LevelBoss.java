@@ -1,6 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.planes.Boss;
+import com.example.demo.factory.EnemyFactory;
 import com.example.demo.view.LevelBossView;
 import com.example.demo.view.LevelView;
 import com.example.demo.view.ShieldImage;
@@ -18,6 +19,7 @@ public class LevelBoss extends LevelParent {
 	private final ShieldImage shieldImage;
 	private static final int SHIELD_X_POSITION = 1100; // X-coordinate position of the shield
 	private static final int SHIELD_Y_POSITION = 0; // Y-coordinate position of the shield
+	private final EnemyFactory enemyFactory;
 
 	/**
 	 * Constructs a LevelBoss with the specified screen dimensions.
@@ -27,7 +29,8 @@ public class LevelBoss extends LevelParent {
 	 */
 	public LevelBoss(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
-		boss = new Boss();
+		this.enemyFactory = new EnemyFactory(EnemyFactory.EnemyType.BOSS);
+		this.boss = (Boss) enemyFactory.createActor(0,0);
 		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
 	}
 

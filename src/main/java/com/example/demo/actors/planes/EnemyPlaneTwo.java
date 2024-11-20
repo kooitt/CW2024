@@ -1,7 +1,7 @@
 package com.example.demo.actors.planes;
 
 import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.projectiles.EnemyProjectile;
+import com.example.demo.factory.ProjectileFactory;
 
 /**
  * Represents an enemy plane in level Two of the game, which is a type of FighterPlane.
@@ -13,8 +13,9 @@ public class EnemyPlaneTwo extends FighterPlane {
     private static final int HORIZONTAL_VELOCITY = -6;
     private static final double PROJECTILE_X_POSITION_OFFSET = -100.0;
     private static final double PROJECTILE_Y_POSITION_OFFSET = 20.0;
-    private static final int INITIAL_HEALTH = 2;
+    private static final int INITIAL_HEALTH = 1;
     private static final double FIRE_RATE = .03;
+    private final ProjectileFactory projectileFactory;
 
     /**
      * Constructs an EnemyPlaneTwo with the specified initial position.
@@ -24,6 +25,7 @@ public class EnemyPlaneTwo extends FighterPlane {
      */
     public EnemyPlaneTwo(double initialXPos, double initialYPos) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
+        this.projectileFactory = new ProjectileFactory(ProjectileFactory.ProjectileType.ENEMY);
     }
 
     /**
@@ -44,7 +46,7 @@ public class EnemyPlaneTwo extends FighterPlane {
         if (Math.random() < FIRE_RATE) {
             double projectileXPosition = getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET);
             double projectileYPostion = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
-            return new EnemyProjectile(projectileXPosition, projectileYPostion);
+            return projectileFactory.createActor(projectileXPosition, projectileYPostion);
         }
         return null;
     }
