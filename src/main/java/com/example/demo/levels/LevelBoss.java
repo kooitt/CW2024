@@ -31,13 +31,6 @@ public class LevelBoss extends LevelParent {
 		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
 	}
 
-	/**
-	 * Initializes the friendly units in the level.
-	 */
-//	@Override
-//	protected void initializeFriendlyUnits() {
-//		getRoot().getChildren().add(getUser());
-//	}
 
 	/**
 	 * Checks if the game is over by evaluating the state of the user and the boss.

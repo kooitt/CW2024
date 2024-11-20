@@ -65,6 +65,7 @@ public class Boss extends FighterPlane {
 	public void updateActor() {
 		updatePosition();
 		updateShield();
+		System.out.println("Boss health: " + getHealth());
 	}
 
 	/**
@@ -187,4 +188,9 @@ public class Boss extends FighterPlane {
 	public boolean isShielded() {
 		return isShielded;
 	}
+
+	public int getHealth() {
+		return super.getHealth();
+	}
+
 }

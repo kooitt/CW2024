@@ -104,6 +104,7 @@ public abstract class LevelParent {
 		entityManager.updateActors();
 		generateEnemyFire();
 		handleEnemyPenetration();
+//		entityManager.removeDestroyedActors();
 
 		collisionHandler.handleUserProjectileCollisions(
 				entityManager.getUserProjectiles(),

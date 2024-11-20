@@ -11,11 +11,13 @@ public class LevelTwo extends LevelParent {
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
     private static final String NEXT_LEVEL = "com.example.demo.levels.LevelBoss";
     private static final String NEXT_LEVEL_NAME = "Boss Level";
-    private static final int TOTAL_ENEMIES = 7;
-    private static final int KILLS_TO_ADVANCE = 10;
+    private static final int TOTAL_ENEMIES = 5;
+    private static final int KILLS_TO_ADVANCE = 100;
     private static final double ENEMY_SPAWN_PROBABILITY = .20;
-    private static final int PLAYER_INITIAL_HEALTH = 5;
-    private static final double ENEMY_Y_UPPER_BOUND = 100;
+    private static final int PLAYER_INITIAL_HEALTH = 10;
+    private static final double ENEMY_Y_LOWER_BOUND = 30;
+    private static final double ENEMY_Y_UPPER_BOUND = 110;
+
 
     /**
      * Constructs a LevelTwo with the specified screen dimensions.
@@ -55,7 +57,8 @@ public class LevelTwo extends LevelParent {
         int currentNumberOfEnemies = getCurrentNumberOfEnemies();
         for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
             if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-                double newEnemyInitialYPosition = 30 + Math.random() * (getEnemyMaximumYPosition() - ENEMY_Y_UPPER_BOUND);
+
+                double newEnemyInitialYPosition = ENEMY_Y_LOWER_BOUND + Math.random() * (getEnemyMaximumYPosition() - ENEMY_Y_UPPER_BOUND);
                 ActiveActorDestructible newEnemy = new EnemyPlaneTwo(getScreenWidth(), newEnemyInitialYPosition);
                 addEnemyUnit(newEnemy);
             }

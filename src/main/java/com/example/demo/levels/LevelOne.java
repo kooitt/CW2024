@@ -16,6 +16,7 @@ public class LevelOne extends LevelParent {
 	private static final int KILLS_TO_ADVANCE = 5;
 	private static final double ENEMY_SPAWN_PROBABILITY = .20;
 	private static final int PLAYER_INITIAL_HEALTH = 5;
+	private static final double ENEMY_Y_LOWER_BOUND = 30;
 
 	/**
 	 * Constructs a LevelOne with the specified screen dimensions.
@@ -57,7 +58,7 @@ public class LevelOne extends LevelParent {
 		int currentNumberOfEnemies = getCurrentNumberOfEnemies();
 		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
 			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-				double newEnemyInitialYPosition = 30 + Math.random() * getEnemyMaximumYPosition();
+				double newEnemyInitialYPosition = ENEMY_Y_LOWER_BOUND + Math.random() * getEnemyMaximumYPosition();
 				ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
 				addEnemyUnit(newEnemy);
 			}
