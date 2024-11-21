@@ -24,6 +24,7 @@ public class Boss extends FighterPlane {
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
+	private final ShieldImage shieldImage;
 
 	public Boss() {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
@@ -33,6 +34,7 @@ public class Boss extends FighterPlane {
 		framesWithShieldActivated = 0;
 		isShielded = false;
 		initializeMovePattern();
+		shieldImage = new ShieldImage(INITIAL_X_POSITION, INITIAL_Y_POSITION);
 	}
 
 	@Override
@@ -73,9 +75,17 @@ public class Boss extends FighterPlane {
 	}
 
 	private void updateShield() {
-		if (isShielded) framesWithShieldActivated++;
-		else if (shieldShouldBeActivated()) activateShield();	
-		if (shieldExhausted()) deactivateShield();
+		if (isShielded) {
+			framesWithShieldActivated++;
+		}
+		else if (shieldShouldBeActivated()) {
+			activateShield();
+			shieldImage.showShield(); // show shield when activated
+		}
+		if (shieldExhausted()) {
+			deactivateShield();
+			shieldImage.hideShield(); // hide shield when exhausted
+		}
 	}
 
 	private int getNextMove() {
@@ -117,4 +127,7 @@ public class Boss extends FighterPlane {
 		framesWithShieldActivated = 0;
 	}
 
+	public ShieldImage getShieldImage(){
+		return shieldImage;
+	}
 }
