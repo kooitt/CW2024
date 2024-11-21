@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 public abstract class ActiveActorDestructible extends ActiveActor implements Destructible {
 
 	private boolean isDestroyed;
+	private DestructionType destructionType;
 
 	/**
 	 * Constructs an ActiveActorDestructible with the specified parameters.
@@ -47,6 +48,15 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 	@Override
 	public void destroy() {
 		setDestroyed(true);
+	}
+
+	public void destroy(DestructionType type) {
+		this.destructionType = type;
+		this.isDestroyed = true;
+	}
+
+	public DestructionType getDestructionType() {
+		return destructionType;
 	}
 
 	/**

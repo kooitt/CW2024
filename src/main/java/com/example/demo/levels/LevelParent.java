@@ -1,6 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.DestructionType;
 import com.example.demo.actors.planes.FighterPlane;
 import com.example.demo.actors.planes.UserPlane;
 import com.example.demo.handlers.*;
@@ -145,9 +146,9 @@ public abstract class LevelParent {
 	private void handleEnemyPenetration() {
 		for (ActiveActorDestructible enemy : entityManager.getEnemyUnits()) {
 			if (enemyHasPenetratedDefenses(enemy)) {
-				user.decrementKillCount();
+//				user.decrementKillCount();
 				user.takeDamage();
-				enemy.destroy();
+				enemy.destroy(DestructionType.PENETRATED_DEFENSE);
 			}
 		}
 	}

@@ -1,6 +1,8 @@
 package com.example.demo.handlers;
 
 import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.DestructionType;
+import com.example.demo.actors.planes.FighterPlane;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 
@@ -15,8 +17,7 @@ public class EntityManager {
     private final List<ActiveActorDestructible> enemyProjectiles;
     private final Map<ActiveActorDestructible, Rectangle> actorHitboxes;
     private final Group root;
-    private int currentNumberOfEnemies;
-    private final List<Consumer<ActiveActorDestructible>> enemyDestroyedListeners = new ArrayList<>();
+    private final List<Consumer<ActiveActorDestructible>> enemyDestroyedListeners;
 
     public EntityManager(Group root) {
         this.root = root;
@@ -25,7 +26,7 @@ public class EntityManager {
         this.userProjectiles = new ArrayList<>();
         this.enemyProjectiles = new ArrayList<>();
         this.actorHitboxes = new HashMap<>();
-        this.currentNumberOfEnemies = 0;
+        this.enemyDestroyedListeners = new ArrayList<>();
     }
 
     public void addFriendlyUnit(ActiveActorDestructible unit) {
@@ -41,10 +42,10 @@ public class EntityManager {
         enemyDestroyedListeners.add(listener);
     }
 
-//    public void addUserProjectile(ActiveActorDestructible projectile) {
-//        userProjectiles.add(projectile);
-//        root.getChildren().add(projectile);
-//    }
+    public void addUserProjectile(ActiveActorDestructible projectile) {
+        userProjectiles.add(projectile);
+        root.getChildren().add(projectile);
+    }
 
     public void addEnemyProjectile(ActiveActorDestructible projectile) {
         if (projectile != null) {
@@ -68,8 +69,9 @@ public class EntityManager {
     }
 
     private void updateHitbox(ActiveActorDestructible actor) {
-        if (actorHitboxes.containsKey(actor)) {
-            root.getChildren().remove(actorHitboxes.get(actor));
+        Rectangle oldHitbox = actorHitboxes.get(actor);
+        if (oldHitbox != null) {
+            root.getChildren().remove(oldHitbox);
         }
         Rectangle hitbox = actor.getHitboxRectangle();
         actorHitboxes.put(actor, hitbox);
@@ -83,25 +85,28 @@ public class EntityManager {
         removeDestroyedFromList(enemyProjectiles);
     }
 
-
     private void removeDestroyedFromList(List<ActiveActorDestructible> actors) {
         List<ActiveActorDestructible> destroyedActors = actors.stream()
                 .filter(ActiveActorDestructible::isDestroyed)
                 .collect(Collectors.toList());
-        root.getChildren().removeAll(destroyedActors);
+
         destroyedActors.forEach(actor -> {
+            root.getChildren().remove(actor);
             root.getChildren().remove(actorHitboxes.remove(actor));
-            if (enemyUnits.contains(actor)) {
+
+            // Only notify if it's an enemy fighter plane destroyed by projectile
+            if (enemyUnits.contains(actor) &&
+                    actor instanceof FighterPlane &&
+                    actor.getDestructionType() == DestructionType.PROJECTILE_KILL) {
                 notifyEnemyDestroyed(actor);
             }
         });
+
         actors.removeAll(destroyedActors);
     }
 
     private void notifyEnemyDestroyed(ActiveActorDestructible enemy) {
-        for (Consumer<ActiveActorDestructible> listener : enemyDestroyedListeners) {
-            listener.accept(enemy);
-        }
+        enemyDestroyedListeners.forEach(listener -> listener.accept(enemy));
     }
 
     public List<ActiveActorDestructible> getFriendlyUnits() {
