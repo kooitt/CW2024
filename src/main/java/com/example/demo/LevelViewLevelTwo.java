@@ -30,4 +30,8 @@ public class LevelViewLevelTwo extends LevelView {
 		shieldImage.hideShield();
 	}
 
+	public void updateShieldPosition(double x, double y) {
+		shieldImage.updatePosition(x, y);
+	}
+
 }
