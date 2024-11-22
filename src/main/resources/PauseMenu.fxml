@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.geometry.Insets?>
+
+<StackPane fx:id="pauseRoot" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.demo.controller.PauseMenuController">
+
+    <Rectangle fx:id="overlay"
+               width="${controller.screenWidth}"
+               height="${controller.screenHeight}"
+               fill="#000000" opacity="0.5"/>
+
+    <VBox alignment="CENTER" spacing="20"
+          style="-fx-background-color: rgba(0, 0, 0, 0.8); -fx-padding: 20; -fx-background-radius: 10;">
+        <padding>
+            <Insets top="20" right="40" bottom="20" left="40"/>
+        </padding>
+
+        <Text fx:id="pauseTitle"
+              text="PAUSED"
+              style="-fx-fill: white; -fx-font-size: 30; -fx-font-family: 'Arial'"/>
+
+        <Button fx:id="resumeButton"
+                text="Resume"
+                onAction="#handleResume"
+                style="-fx-pref-width: 200; -fx-pref-height: 40"/>
+
+        <Button fx:id="restartButton"
+                text="Restart"
+                onAction="#handleRestart"
+                style="-fx-pref-width: 200; -fx-pref-height: 40"/>
+
+        <Button fx:id="mainMenuButton"
+                text="Main Menu"
+                onAction="#handleMainMenu"
+                style="-fx-pref-width: 200; -fx-pref-height: 40"/>
+    </VBox>
+
+</StackPane>
