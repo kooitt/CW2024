@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.ImageInitializers.GameOverImage;
+import com.example.demo.ImageInitializers.HeartDisplay;
+import com.example.demo.ImageInitializers.WinImage;
 import javafx.scene.Group;
 
 public class LevelView {
