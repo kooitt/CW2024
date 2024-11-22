@@ -5,34 +5,21 @@ import com.example.demo.actors.DestructionType;
 import com.example.demo.actors.planes.FighterPlane;
 import com.example.demo.actors.planes.UserPlane;
 import com.example.demo.config.GameConfig;
-import com.example.demo.controller.GameController;
-import com.example.demo.controller.Main;
-import com.example.demo.controller.MainMenuController;
+import com.example.demo.config.GameState;
 import com.example.demo.handlers.*;
 import com.example.demo.view.LevelView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.net.URL;
 import java.util.*;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-
-
 
 public abstract class LevelParent {
 
@@ -58,6 +45,7 @@ public abstract class LevelParent {
 	private final InputHandler inputHandler;
 	private final PauseHandler pauseHandler;
 	private final GameInitializer gameInitializer;
+	private final NavigationManager navigationManager;
 
 	public LevelParent(String backgroundImageName, int playerInitialHealth) {
 		this.screenHeight = GameConfig.SCREEN_HEIGHT;
@@ -83,6 +71,7 @@ public abstract class LevelParent {
 				this::restartLevel     // Add restart action
 		);
 		this.gameInitializer = new GameInitializer(root, scene, background, user, levelView, pauseHandler);
+		this.navigationManager = new NavigationManager(scene, screenWidth, screenHeight);
 		initializeTimeline();
 		entityManager.addFriendlyUnit(user);
 		entityManager.addEnemyDestroyedListener(enemy -> user.incrementKillCount());
@@ -213,80 +202,40 @@ public abstract class LevelParent {
 		return user.isDestroyed();
 	}
 
-
 	protected void goToMainMenu() {
 		timeline.stop();
-		try {
-			URL fxmlLocation = getClass().getClassLoader().getResource("MenuScreen.fxml");
-			FXMLLoader loader = new FXMLLoader(fxmlLocation);
-			Parent menuRoot = loader.load();
-
-			// Create new scene with static dimensions
-			Scene menuScene = new Scene(menuRoot, screenWidth, screenHeight);
-
-			// Get the stage and set the new scene
-			Stage stage = (Stage) scene.getWindow();
-			MainMenuController controller = loader.getController();
-			controller.setStage(stage);
-			stage.setScene(menuScene);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		navigationManager.goToMainMenu();
 	}
 
 	protected void restartLevel() {
 		timeline.stop();
-		try {
-			// Create new instance using the no-args constructor
-			Class<?> currentLevelClass = this.getClass();
-			Constructor<?> constructor = currentLevelClass.getConstructor();
-			LevelParent newLevel = (LevelParent) constructor.newInstance();
-
-			Stage stage = (Stage) scene.getWindow();
-
-			newLevel.nextLevelProperty().addListener((observable, oldValue, newValue) -> {
-				try {
-					String[] levelInfo = newValue.split(",");
-					GameController gameController = new GameController(stage);
-					gameController.goToLevel(levelInfo[0], levelInfo[1]);
-				} catch (Exception e) {
-					e.printStackTrace();
-					Alert alert = new Alert(AlertType.ERROR);
-					alert.setContentText(e.getClass().toString());
-					alert.show();
-				}
-			});
-
-			Scene newScene = newLevel.initializeScene();
-			stage.setScene(newScene);
-			newLevel.startGame();
-		} catch (Exception e) {
-			e.printStackTrace();
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setContentText(e.getClass().toString());
-			alert.show();
-		}
+		navigationManager.restartLevel(this.getClass());
 	}
 
 	// Update existing pause/resume methods
 	public void pauseGame() {
 		if (!pauseHandler.isPaused()) {
 			timeline.pause();
+			inputHandler.setGameState(GameState.PAUSED);
 		}
 	}
 
 	public void resumeGame() {
 		if (pauseHandler.isPaused()) {
 			timeline.play();
+			inputHandler.setGameState(GameState.ACTIVE);
 		}
 	}
+
 	protected void winGame() {
 		timeline.stop();
+		inputHandler.setGameState(GameState.WIN);
 		levelView.showWinImage();
 	}
 
 	protected void loseGame() {
 		timeline.stop();
+		inputHandler.setGameState(GameState.LOSE);
 		levelView.showGameOverImage();
 	}
 }

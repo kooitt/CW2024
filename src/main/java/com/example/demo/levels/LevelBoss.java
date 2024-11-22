@@ -17,7 +17,7 @@ public class LevelBoss extends LevelParent {
 	private final Boss boss;
 	private LevelBossView levelView;
 	private final ShieldImage shieldImage;
-	private static final int SHIELD_X_POSITION = 1200; // X-coordinate position of the shield
+	private static final int SHIELD_X_POSITION = 1190; // X-coordinate position of the shield
 	private static final int SHIELD_Y_POSITION = 0; // Y-coordinate position of the shield
 	private final EnemyFactory enemyFactory;
 

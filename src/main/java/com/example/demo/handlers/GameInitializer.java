@@ -35,7 +35,6 @@ public class GameInitializer {
         this.user = user;
         this.levelView = levelView;
         this.pauseHandler = pauseHandler;
-        System.out.println("GameInitializer Constructor: User plane created");
     }
 
     /**
