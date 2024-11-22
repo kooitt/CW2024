@@ -1,9 +1,13 @@
-package com.example.demo;
+package com.example.demo.Levels;
+
+import com.example.demo.Boss;
+import com.example.demo.LevelView;
+import com.example.demo.LevelViewBoss;
 
 public class LevelFive extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
-    private static final String NEXT_LEVEL = "com.example.demo.LevelThree";
+    private static final String NEXT_LEVEL = "com.example.demo.Levels.LevelThree";
     private static final int PLAYER_INITIAL_HEALTH = 5;
     private final Boss boss;
     private LevelViewBoss levelView;
