@@ -23,7 +23,7 @@ public class LevelFour extends LevelParent {
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
             loseGame();
-        } else if (boss.isDestroyed()) {
+        } else if (boss1.isDestroyed() && boss2.isDestroyed()) {
             // goToNextLevel(NEXT_LEVEL);
             winGame();
         }
