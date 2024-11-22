@@ -25,9 +25,9 @@ public class Boss extends FighterPlane {
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
 
-	private LevelViewLevelTwo levelView;
+	private LevelViewBoss levelView;
 
-	public Boss(LevelViewLevelTwo levelView) {
+	public Boss(LevelViewBoss levelView) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
 		this.levelView = levelView;
 		movePattern = new ArrayList<>();

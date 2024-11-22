@@ -9,7 +9,7 @@ public class LevelThree extends LevelParent {
     private static final int PLAYER_INITIAL_HEALTH = 5;
     private boolean bossSpawned = false;
     private final Boss boss;
-    private LevelViewLevelTwo levelView;
+    private LevelViewBoss levelView;
 
     public LevelThree(double screenHeight, double screenWidth) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
@@ -49,7 +49,7 @@ public class LevelThree extends LevelParent {
 
     @Override
     protected LevelView instantiateLevelView() {
-        levelView = new LevelViewLevelTwo(getRoot(), PLAYER_INITIAL_HEALTH);
+        levelView = new LevelViewBoss(getRoot(), PLAYER_INITIAL_HEALTH);
         return levelView;
     }
 
