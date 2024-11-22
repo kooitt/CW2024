@@ -2,6 +2,7 @@ package com.example.demo.handlers;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.DestructionType;
+import com.example.demo.actors.planes.FighterPlane;
 
 import java.util.List;
 
@@ -13,7 +14,15 @@ public class CollisionHandler {
             for (ActiveActorDestructible enemy : enemyUnits) {
                 if (friendly.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
                     friendly.takeDamage();
-                    enemy.destroy(DestructionType.COLLISION);
+                    enemy.takeDamage();
+
+                    // Check if either plane should be destroyed
+                    if (friendly instanceof FighterPlane && ((FighterPlane) friendly).getHealth() <= 0) {
+                        friendly.destroy(DestructionType.COLLISION);
+                    }
+                    if (enemy instanceof FighterPlane && ((FighterPlane) enemy).getHealth() <= 0) {
+                        enemy.destroy(DestructionType.COLLISION);
+                    }
                 }
             }
         }
@@ -24,8 +33,13 @@ public class CollisionHandler {
         for (ActiveActorDestructible enemy : enemyUnits) {
             for (ActiveActorDestructible projectile : userProjectiles) {
                 if (enemy.getBoundsInParent().intersects(projectile.getBoundsInParent())) {
-                    enemy.destroy(DestructionType.PROJECTILE_KILL);
+                    enemy.takeDamage();  // Call takeDamage() instead of destroy()
                     projectile.destroy(DestructionType.COLLISION);
+
+                    // If the enemy's health reaches 0, then destroy it
+                    if (enemy instanceof FighterPlane && ((FighterPlane) enemy).getHealth() <= 0) {
+                        enemy.destroy(DestructionType.PROJECTILE_KILL);
+                    }
                 }
             }
         }
