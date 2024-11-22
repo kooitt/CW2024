@@ -76,8 +76,11 @@ public class UserPlane extends FighterPlane {
 		horizontalVelocityMultiplier = 1;
 	}
 
-	public void stop() {
+	public void stopVerticalMovement() {
 		verticalVelocityMultiplier = 0;
+	}
+
+	public void stopHorizontalMovement() {
 		horizontalVelocityMultiplier = 0;
 	}
 

@@ -129,8 +129,10 @@ public abstract class LevelParent extends Observable {
 		});
 		background.setOnKeyReleased(e -> {
 			KeyCode kc = e.getCode();
-			if (kc == KeyCode.UP || kc == KeyCode.DOWN || kc == KeyCode.LEFT || kc == KeyCode.RIGHT)
-				user.stop();
+			if (kc == KeyCode.UP || kc == KeyCode.DOWN)
+				user.stopVerticalMovement();
+			if (kc == KeyCode.LEFT || kc == KeyCode.RIGHT)
+				user.stopHorizontalMovement();
 		});
 		root.getChildren().add(background);
 	}
