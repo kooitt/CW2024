@@ -30,8 +30,18 @@ public class LevelThree extends LevelParent {
 
     @Override
     protected void spawnEnemyUnits() {
-        if (getCurrentNumberOfEnemies() == 0) {
+        if (!bossSpawned) {
             addEnemyUnit(boss);
+            bossSpawned = true;
+        }
+
+        int currentNumberOfEnemies = getCurrentNumberOfEnemies();
+        for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
+            if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
+                double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
+                ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+                addEnemyUnit(newEnemy);
+            }
         }
     }
 
