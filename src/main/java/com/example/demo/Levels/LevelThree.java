@@ -1,14 +1,19 @@
-package com.example.demo;
+package com.example.demo.Levels;
 
-public class LevelTwo extends LevelParent {
+import com.example.demo.*;
+
+public class LevelThree extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
-    private static final String NEXT_LEVEL = "com.example.demo.LevelThree";
+    private static final String NEXT_LEVEL = "com.example.demo.Levels.LevelFour";
+    private static final int TOTAL_ENEMIES = 5;
+    private static final double ENEMY_SPAWN_PROBABILITY = .20;
     private static final int PLAYER_INITIAL_HEALTH = 5;
     private final Boss boss;
+    private boolean bossSpawned = false;
     private LevelViewBoss levelView;
 
-    public LevelTwo(double screenHeight, double screenWidth) {
+    public LevelThree(double screenHeight, double screenWidth) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
         boss = new Boss(levelView);
     }
@@ -29,8 +34,18 @@ public class LevelTwo extends LevelParent {
 
     @Override
     protected void spawnEnemyUnits() {
-        if (getCurrentNumberOfEnemies() == 0) {
+        if (!bossSpawned) {
             addEnemyUnit(boss);
+            bossSpawned = true;
+        }
+
+        int currentNumberOfEnemies = getCurrentNumberOfEnemies();
+        for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
+            if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
+                double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
+                ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+                addEnemyUnit(newEnemy);
+            }
         }
     }
 
