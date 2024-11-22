@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.LevelViews;
 
 import com.example.demo.ImageInitializers.GameOverImage;
 import com.example.demo.ImageInitializers.HeartDisplay;

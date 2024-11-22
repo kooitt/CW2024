@@ -2,7 +2,7 @@ package com.example.demo.Levels;
 
 import com.example.demo.ActiveActorDestructible;
 import com.example.demo.EnemyPlane;
-import com.example.demo.LevelView;
+import com.example.demo.LevelViews.LevelView;
 
 public class LevelOne extends LevelParent {
 

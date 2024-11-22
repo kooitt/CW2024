@@ -1,8 +1,8 @@
 package com.example.demo.Levels;
 
 import com.example.demo.Boss;
-import com.example.demo.LevelView;
-import com.example.demo.LevelViewBoss;
+import com.example.demo.LevelViews.LevelView;
+import com.example.demo.LevelViews.LevelViewBoss;
 
 public class LevelFive extends LevelParent {
 

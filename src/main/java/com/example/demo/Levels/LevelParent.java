@@ -2,7 +2,7 @@ package com.example.demo.Levels;
 
 import com.example.demo.ActiveActorDestructible;
 import com.example.demo.FighterPlane;
-import com.example.demo.LevelView;
+import com.example.demo.LevelViews.LevelView;
 import com.example.demo.UserPlane;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
