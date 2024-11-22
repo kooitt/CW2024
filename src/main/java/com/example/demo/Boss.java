@@ -42,6 +42,10 @@ public class Boss extends FighterPlane {
 		double initialTranslateY = getTranslateY();
 		moveVertically(getNextMove());
 		double currentPosition = getLayoutY() + getTranslateY();
+
+		shieldImage.setLayoutX(getLayoutX()); //adjust shield horizontal position
+		shieldImage.setLayoutY(currentPosition); //adjust shield vertical position
+
 		if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
 			setTranslateY(initialTranslateY);
 		}
