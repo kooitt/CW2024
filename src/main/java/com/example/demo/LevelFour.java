@@ -3,6 +3,7 @@ package com.example.demo;
 public class LevelFour extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
+    private static final String NEXT_LEVEL = "com.example.demo.LevelFive";
     private static final int PLAYER_INITIAL_HEALTH = 5;
     private final Boss boss1;
     private final Boss boss2;
@@ -24,8 +25,7 @@ public class LevelFour extends LevelParent {
         if (userIsDestroyed()) {
             loseGame();
         } else if (boss1.isDestroyed() && boss2.isDestroyed()) {
-            // goToNextLevel(NEXT_LEVEL);
-            winGame();
+            goToNextLevel(NEXT_LEVEL);
         }
     }
 
