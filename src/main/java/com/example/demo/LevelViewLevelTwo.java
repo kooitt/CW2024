@@ -6,6 +6,8 @@ public class LevelViewLevelTwo extends LevelView {
 
 	private static final int SHIELD_X_POSITION = 1150;
 	private static final int SHIELD_Y_POSITION = 500;
+	private static final double SHIELD_X_POSITION_OFFSET = 0.0;
+	private static final double SHIELD_Y_POSITION_OFFSET = 0.0;
 	private final Group root;
 	private final ShieldImage shieldImage;
 
