@@ -23,7 +23,7 @@ public class LevelTwo extends LevelParent {
 		if (userIsDestroyed()) {
 			loseGame();
 		} else if (boss.isDestroyed()) {
-			winGame();
+			goToNextLevel(NEXT_LEVEL);
 		}
 	}
 
