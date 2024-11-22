@@ -32,7 +32,8 @@ public class LevelFour extends LevelParent {
     @Override
     protected void spawnEnemyUnits() {
         if (getCurrentNumberOfEnemies() == 0) {
-            addEnemyUnit(boss);
+            addEnemyUnit(boss1);
+            addEnemyUnit(boss2);
         }
     }
 
