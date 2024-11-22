@@ -7,8 +7,8 @@ public class LevelThree extends LevelParent {
     private static final int TOTAL_ENEMIES = 5;
     private static final double ENEMY_SPAWN_PROBABILITY = .20;
     private static final int PLAYER_INITIAL_HEALTH = 5;
-    private boolean bossSpawned = false;
     private final Boss boss;
+    private boolean bossSpawned = false;
     private LevelViewBoss levelView;
 
     public LevelThree(double screenHeight, double screenWidth) {
