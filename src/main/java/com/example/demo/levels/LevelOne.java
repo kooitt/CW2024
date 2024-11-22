@@ -21,12 +21,9 @@ public class LevelOne extends LevelParent {
 
 	/**
 	 * Constructs a LevelOne with the specified screen dimensions.
-	 *
-	 * @param screenHeight the height of the screen.
-	 * @param screenWidth the width of the screen.
 	 */
-	public LevelOne(double screenHeight, double screenWidth) {
-		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+	public LevelOne() {
+		super(BACKGROUND_IMAGE_NAME,  PLAYER_INITIAL_HEALTH);
 		this.enemyFactory = new EnemyFactory(EnemyFactory.EnemyType.ENEMYPLANEONE);
 	}
 

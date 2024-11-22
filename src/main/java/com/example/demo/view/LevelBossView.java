@@ -7,10 +7,11 @@ import javafx.scene.Group;
  */
 public class LevelBossView extends LevelView {
 
-	private static final int SHIELD_X_POSITION = 1100; // X-coordinate position of the shield
-	private static final int SHIELD_Y_POSITION = 0; // Y-coordinate position of the shield
+//	private static final int SHIELD_X_POSITION = 1200; // X-coordinate position of the shield
+//	private static final int SHIELD_Y_POSITION = 350; // Y-coordinate position of the shield
+//	//no use
 	private final Group root;
-	private final ShieldImage shieldImage;
+//	private final ShieldImage shieldImage;
 
 	/**
 	 * Constructs a LevelBossView with the specified root group, number of hearts to display, and maximum kills.
@@ -22,15 +23,15 @@ public class LevelBossView extends LevelView {
 	public LevelBossView(Group root, int heartsToDisplay, int maxKills) {
 		super(root, heartsToDisplay, maxKills);
 		this.root = root;
-		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
-		addImagesToRoot();
+//		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
+//		addImagesToRoot();
 	}
 
 
 	/**
 	 * Adds images to root
 	 */
-	private void addImagesToRoot() {
-		root.getChildren().addAll(shieldImage);
-	}
+//	private void addImagesToRoot() {
+//		root.getChildren().addAll(shieldImage);
+//	}
 }

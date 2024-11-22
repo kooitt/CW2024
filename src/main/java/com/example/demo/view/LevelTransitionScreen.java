@@ -1,5 +1,6 @@
 package com.example.demo.view;
 
+import com.example.demo.config.GameConfig;
 import javafx.animation.FadeTransition;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -45,7 +46,7 @@ public class LevelTransitionScreen {
         root.getChildren().add(levelText);
         root.setStyle("-fx-background-color: black;");
 
-        Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
+        Scene scene = new Scene(root, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
         stage.setScene(scene);
 
         FadeTransition fadeIn = new FadeTransition(Duration.seconds(2), root);

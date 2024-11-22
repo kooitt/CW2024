@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 /**
  * Controller class for the main menu of the application.
  */
-public class MenuController {
+public class MainMenuController {
 
     private Stage stage;
 

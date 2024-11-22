@@ -1,35 +1,50 @@
 package com.example.demo.handlers;
 
+import com.example.demo.controller.PauseMenuController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 
-/**
- * Handles pausing and resuming the game when the ESCAPE key is pressed.
- */
-public class PauseHandler {
+import java.io.IOException;
+import java.net.URL;
 
+public class PauseHandler {
     private final Scene scene;
     private boolean isPaused = false;
     private final Runnable pauseAction;
     private final Runnable resumeAction;
+    private final Group root;
+    private PauseMenuController pauseMenuController;
 
-    /**
-     * Constructs a PauseHandler with the specified scene and actions for pausing and resuming the game.
-     *
-     * @param scene the scene to attach the pause handler to.
-     * @param pauseAction the action to perform when the game is paused.
-     * @param resumeAction the action to perform when the game is resumed.
-     */
-    public PauseHandler(Scene scene, Runnable pauseAction, Runnable resumeAction) {
+    public PauseHandler(Scene scene, Group root, Runnable pauseAction, Runnable resumeAction,
+                        Runnable mainMenuAction, Runnable restartAction) {
         this.scene = scene;
+        this.root = root;
         this.pauseAction = pauseAction;
         this.resumeAction = resumeAction;
+
+        initializePauseMenu(resumeAction, restartAction, mainMenuAction);
         initializePauseHandler();
     }
 
-    /**
-     * Initializes the pause handler by setting a key press event handler on the scene.
-     */
+    private void initializePauseMenu(Runnable resumeAction, Runnable restartAction, Runnable mainMenuAction) {
+        try {
+             URL resource = PauseHandler.class.getResource("/PauseMenu.fxml");
+             System.out.println("Resource: " + resource);
+             FXMLLoader loader = new FXMLLoader(resource);
+            loader.load();
+            pauseMenuController = loader.getController();
+            pauseMenuController.setActions(
+                    () -> resumeGame(),
+                    restartAction,
+                    mainMenuAction
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void initializePauseHandler() {
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
@@ -42,27 +57,22 @@ public class PauseHandler {
         });
     }
 
-    /**
-     * Pauses the game by running the pause action and setting the paused state to true.
-     */
     private void pauseGame() {
         pauseAction.run();
+        if (pauseMenuController != null) {
+            root.getChildren().add(pauseMenuController.getPauseRoot());
+        }
         isPaused = true;
     }
 
-    /**
-     * Resumes the game by running the resume action and setting the paused state to false.
-     */
     private void resumeGame() {
         resumeAction.run();
+        if (pauseMenuController != null) {
+            root.getChildren().remove(pauseMenuController.getPauseRoot());
+        }
         isPaused = false;
     }
 
-    /**
-     * Returns whether the game is currently paused.
-     *
-     * @return true if the game is paused, false otherwise.
-     */
     public boolean isPaused() {
         return isPaused;
     }

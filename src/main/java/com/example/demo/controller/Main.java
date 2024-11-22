@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+
+import com.example.demo.config.GameConfig;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,10 +14,6 @@ import javafx.stage.Stage;
  * Main class that serves as the entry point for the JavaFX application.
  */
 public class Main extends Application {
-
-	private static final int SCREEN_WIDTH = 1300;
-	private static final int SCREEN_HEIGHT = 750;
-	private static final String TITLE = "Sky Battle";
 
 	/**
 	 * The main entry point for all JavaFX applications.
@@ -38,11 +36,11 @@ public class Main extends Application {
 			System.out.println("FXML Location: " + fxmlLocation);
 			FXMLLoader loader = new FXMLLoader(fxmlLocation);
 			Parent root = loader.load();
-			MenuController controller = loader.getController();
+			MainMenuController controller = loader.getController();
 			controller.setStage(stage);
 
-			Scene scene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
-			stage.setTitle(TITLE);
+			Scene scene = new Scene(root, GameConfig.SCREEN_WIDTH, GameConfig.SCREEN_HEIGHT);
+			stage.setTitle(GameConfig.TITLE);
 			stage.setScene(scene);
 			stage.setResizable(false);
 			stage.show();

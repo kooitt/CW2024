@@ -15,7 +15,7 @@ import com.example.demo.levels.LevelParent;
  */
 public class GameController {
 
-		private static final String START_LEVEL_CLASS_NAME = "com.example.demo.levels.LevelBoss";
+	private static final String START_LEVEL_CLASS_NAME = "com.example.demo.levels.LevelBoss";
 	private static final String START_LEVEL_DISPLAY_NAME = "Level 1";
 	private final Stage stage;
 
@@ -58,7 +58,7 @@ public class GameController {
 	 * @throws IllegalArgumentException if the method is invoked with incorrect arguments.
 	 * @throws InvocationTargetException if the underlying constructor throws an exception.
 	 */
-	private void goToLevel(String className, String levelname) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
+    public void goToLevel(String className, String levelname) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		LevelTransitionScreen transitionScreen = new LevelTransitionScreen(stage, levelname, () -> {
 			try {
@@ -86,8 +86,9 @@ public class GameController {
 	private void startLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Class<?> myClass = Class.forName(className);
-		Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
-		LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
+		Constructor<?> constructor = myClass.getConstructor();
+		// Use fixed dimensions instead of stage dimensions
+		LevelParent myLevel = (LevelParent) constructor.newInstance();
 		myLevel.nextLevelProperty().addListener((observable, oldValue, newValue) -> {
 			try {
 				String[] levelInfo = newValue.split(",");

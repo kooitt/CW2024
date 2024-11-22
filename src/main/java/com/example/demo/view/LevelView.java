@@ -9,7 +9,7 @@ public class LevelView {
 
 	private static final double HEART_DISPLAY_X_POSITION = 550; // X-coordinate position of the heart display
 	private static final double HEART_DISPLAY_Y_POSITION = 25;  // Y-coordinate position of the heart display
-	private static final double KILL_COUNT_X_POSITION = 1200;   // X-coordinate position of the kill count display
+	private static final double KILL_COUNT_X_POSITION = 1100;   // X-coordinate position of the kill count display
 	private static final double KILL_COUNT_Y_POSITION = 25;     // Y-coordinate position of the kill count display
 	private static final int GAME_IMAGE_X_POSITION = 370;       // X-coordinate position of the game image
 	private static final int GAME_IMAGE_Y_POSITION = 175;       // Y-coordinate position of the game image

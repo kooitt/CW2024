@@ -22,12 +22,9 @@ public class LevelTwo extends LevelParent {
 
     /**
      * Constructs a LevelTwo with the specified screen dimensions.
-     *
-     * @param screenHeight the height of the screen.
-     * @param screenWidth the width of the screen.
      */
-    public LevelTwo(double screenHeight, double screenWidth) {
-        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+    public LevelTwo() {
+        super(BACKGROUND_IMAGE_NAME, PLAYER_INITIAL_HEALTH);
         this.enemyFactory = new EnemyFactory(EnemyFactory.EnemyType.ENEMYPLANETWO);
     }
 
