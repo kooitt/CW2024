@@ -4,13 +4,13 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class MainMenu extends Application {
 
@@ -27,12 +27,12 @@ public class MainMenu extends Application {
         titleText.setFont(new Font("Arial", 50));
         titleText.setStyle("-fx-fill: white;");
 
-        // Buttons
+        // Start button
         Button startButton = new Button("START");
         startButton.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-font-size: 20px;");
         startButton.setOnAction(e -> {
             try {
-                // Launch the game using the Controller
+                // Launch the game
                 Controller controller = new Controller(primaryStage);
                 controller.launchGame();
             } catch (Exception ex) {
@@ -40,25 +40,33 @@ public class MainMenu extends Application {
             }
         });
 
+        // "How To Play" button
+        Button howToPlayButton = new Button("HOW TO PLAY");
+        howToPlayButton.setStyle("-fx-background-color: blue; -fx-text-fill: white; -fx-font-size: 20px;");
+        howToPlayButton.setOnAction(e -> {
+            // Open the How To Play window
+            new HowToPlayWindow().display();
+        });
+
+        // Quit button
         Button quitButton = new Button("QUIT");
         quitButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 20px;");
-        quitButton.setOnAction(e -> primaryStage.close()); // Exit the game
+        quitButton.setOnAction(e -> primaryStage.close()); // Close the application
 
-        // VBox to arrange the title and buttons
-        VBox vbox = new VBox(20); // Spacing of 20 pixels between elements
-        vbox.getChildren().addAll(titleText, startButton, quitButton);
-        vbox.setAlignment(Pos.TOP_CENTER); // Align elements horizontally centered
-        vbox.setTranslateY(350); // Move everything downward
+        // Layout (VBox for buttons)
+        VBox vbox = new VBox(20, titleText, startButton, howToPlayButton, quitButton);
+        vbox.setAlignment(Pos.CENTER); // Center align the VBox
 
         // StackPane to layer the background and VBox
-        StackPane root = new StackPane();
-        root.getChildren().addAll(backgroundView, vbox);
+        StackPane root = new StackPane(backgroundView, vbox);
 
-        // Create the scene
+        // Scene setup
         Scene scene = new Scene(root, 1300, 750);
 
-        // Set the stage
+        // Stage setup
+        primaryStage.setTitle("Space Battle");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false); // Prevent resizing
         primaryStage.show();
     }
 
