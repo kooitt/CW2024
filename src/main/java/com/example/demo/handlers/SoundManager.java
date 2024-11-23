@@ -12,7 +12,7 @@ public class SoundManager {
     private final static String LEVEL_BACKGROUND_MUSIC_FILE_PATH = "/music/fightmusic.mp3";
     private final static String MENU_BACKGROUND_MUSIC_FILE_PATH = "/music/backgroundmusic.mp3";
     private final static String USER_SHOOT_SOUND_FILE_PATH = "/music/userprojectile.wav";
-    private final static String BOSS_SHOOT_SOUND_FILE_PATH = "/music/bossprojectile1.wav";
+    private final static String ENEMY_SHOOT_SOUND_FILE_PATH = "/music/enemyprojectile.wav";
 
     public SoundManager() {
         musicPlayers = new HashMap<>();
@@ -22,7 +22,7 @@ public class SoundManager {
         loadBackgroundMusic("menu", MENU_BACKGROUND_MUSIC_FILE_PATH);
         loadBackgroundMusic("level", LEVEL_BACKGROUND_MUSIC_FILE_PATH);
         loadShootSound("user", USER_SHOOT_SOUND_FILE_PATH);
-        loadShootSound("boss", BOSS_SHOOT_SOUND_FILE_PATH);
+        loadShootSound("enemy", ENEMY_SHOOT_SOUND_FILE_PATH);
     }
 
     private void loadBackgroundMusic(String key, String musicFilePath) {

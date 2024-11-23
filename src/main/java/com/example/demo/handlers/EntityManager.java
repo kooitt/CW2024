@@ -42,11 +42,6 @@ public class EntityManager {
         enemyDestroyedListeners.add(listener);
     }
 
-    public void addUserProjectile(ActiveActorDestructible projectile) {
-        userProjectiles.add(projectile);
-        root.getChildren().add(projectile);
-    }
-
     public void addEnemyProjectile(ActiveActorDestructible projectile) {
         if (projectile != null) {
             enemyProjectiles.add(projectile);

@@ -106,7 +106,7 @@ public abstract class LevelParent {
     }
 
     protected void goToNextLevel(String nextLevelClassName, String nextLevelName) {
-        soundManager.stopAllBackgroundMusic();
+        stopTimelineAndMusic();
         nextLevelProperty.set(nextLevelClassName + "," + nextLevelName);
     }
 
@@ -157,6 +157,7 @@ public abstract class LevelParent {
 
     private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
         if (projectile != null) {
+			soundManager.playShootSound("enemy");
             entityManager.addEnemyProjectile(projectile);
         }
     }

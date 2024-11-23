@@ -2,6 +2,7 @@ package com.example.demo.levels;
 
 import com.example.demo.actors.planes.Boss;
 import com.example.demo.factory.EnemyFactory;
+import com.example.demo.view.BossHealthBar;
 import com.example.demo.view.LevelBossView;
 import com.example.demo.view.LevelView;
 import com.example.demo.view.ShieldImage;
@@ -17,9 +18,12 @@ public class LevelBoss extends LevelParent {
 	private final Boss boss;
 	private LevelBossView levelView;
 	private final ShieldImage shieldImage;
-	private static final int SHIELD_X_POSITION = 1190; // X-coordinate position of the shield
+	private static final int SHIELD_X_POSITION = 850; // X-coordinate position of the shield
 	private static final int SHIELD_Y_POSITION = 0; // Y-coordinate position of the shield
+	private static final int HEALTH_BAR_X_POSITION = SHIELD_X_POSITION + 100;
+	private static  final int HEALTH_BAR_Y_POSITION = 30;
 	private final EnemyFactory enemyFactory;
+	private BossHealthBar bossHealthBar;
 
 	/**
 	 * Constructs a LevelBoss with the specified screen dimensions.
@@ -29,6 +33,7 @@ public class LevelBoss extends LevelParent {
 		this.enemyFactory = new EnemyFactory(EnemyFactory.EnemyType.BOSS);
 		this.boss = (Boss) enemyFactory.createActor(0,0);
 		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
+		this.bossHealthBar = new BossHealthBar(HEALTH_BAR_X_POSITION, HEALTH_BAR_Y_POSITION, boss.getHealth());
 	}
 
 
@@ -52,6 +57,7 @@ public class LevelBoss extends LevelParent {
 		if (getCurrentNumberOfEnemies() == 0) {
 			addEnemyUnit(boss);
 			addShieldImage();
+			addHealthBar();
 		}
 	}
 
@@ -61,6 +67,10 @@ public class LevelBoss extends LevelParent {
 	private void addShieldImage() {
 		shieldImage.setVisible(false);
 		getRoot().getChildren().add(shieldImage);
+	}
+
+	private void addHealthBar() {
+		getRoot().getChildren().add(bossHealthBar);
 	}
 
 	/**
@@ -80,6 +90,11 @@ public class LevelBoss extends LevelParent {
 	@Override
 	protected void updateLevelView() {
 		super.updateLevelView();
+		// Update the boss health bar
+		if (bossHealthBar != null && boss != null) {
+			bossHealthBar.updateHealth(boss.getHealth());
+		}
+
 		if (boss.isShielded()) {
 			shieldImage.showShield();
 		} else {

@@ -43,7 +43,6 @@ public class GameInitializer {
     public void initializeGame() {
         initializeBackground();
         pauseHandler.initializePauseHandler();
-//        initializeFriendlyUnits();
         levelView.showHeartDisplay();
         levelView.showKillCountDisplay();
     }
