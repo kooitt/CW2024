@@ -57,4 +57,9 @@ public class SoundManager {
             clip.play();
         }
     }
+
+    public void playDamagedSound() {
+        AudioClip clip = new AudioClip(getClass().getResource("/music/damaged.mp3").toString());
+        clip.play();
+    }
 }

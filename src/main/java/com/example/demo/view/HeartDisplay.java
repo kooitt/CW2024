@@ -1,5 +1,6 @@
 package com.example.demo.view;
 
+import com.example.demo.handlers.SoundManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -18,6 +19,7 @@ public class HeartDisplay {
 	private double containerXPosition;
 	private double containerYPosition;
 	private int numberOfHeartsToDisplay;
+	private final SoundManager soundManager = new SoundManager();
 
 	/**
 	 * Constructs a HeartDisplay with the specified position and number of hearts.
@@ -59,8 +61,10 @@ public class HeartDisplay {
 	 * Removes a heart from the display.
 	 */
 	public void removeHeart() {
-		if (!container.getChildren().isEmpty())
+		if (!container.getChildren().isEmpty()) {
+			soundManager.playDamagedSound();
 			container.getChildren().remove(INDEX_OF_FIRST_ITEM);
+		}
 	}
 
 	/**
