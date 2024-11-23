@@ -1,4 +1,4 @@
-package com.example.demo.handlers;
+package com.example.demo.managers;
 
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;

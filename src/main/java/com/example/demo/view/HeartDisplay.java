@@ -1,6 +1,6 @@
 package com.example.demo.view;
 
-import com.example.demo.handlers.SoundManager;
+import com.example.demo.managers.SoundManager;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;

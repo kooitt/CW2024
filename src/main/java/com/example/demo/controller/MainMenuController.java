@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.handlers.SoundManager;
+import com.example.demo.managers.SoundManager;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

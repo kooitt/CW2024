@@ -1,4 +1,4 @@
-package com.example.demo.handlers;
+package com.example.demo.managers;
 
 import com.example.demo.controller.GameController;
 import com.example.demo.controller.MainMenuController;

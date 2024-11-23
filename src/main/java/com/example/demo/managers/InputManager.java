@@ -1,4 +1,4 @@
-package com.example.demo.handlers;
+package com.example.demo.managers;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.planes.UserPlane;
@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 import java.util.List;
 import java.util.Set;
 
-public class InputHandler {
+public class InputManager {
     private final Set<KeyCode> pressedKeys;
     private final UserPlane user;
     private final ImageView background;
@@ -18,7 +18,7 @@ public class InputHandler {
     private final List<ActiveActorDestructible> userProjectiles;
     private GameState gameState = GameState.ACTIVE;
 
-    public InputHandler(Set<KeyCode> pressedKeys, UserPlane user, ImageView background, Group root, List<ActiveActorDestructible> userProjectiles) {
+    public InputManager(Set<KeyCode> pressedKeys, UserPlane user, ImageView background, Group root, List<ActiveActorDestructible> userProjectiles) {
         this.pressedKeys = pressedKeys;
         this.user = user;
         this.background = background;

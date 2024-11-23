@@ -6,7 +6,7 @@ import com.example.demo.actors.planes.FighterPlane;
 import com.example.demo.actors.planes.UserPlane;
 import com.example.demo.config.GameConfig;
 import com.example.demo.config.GameState;
-import com.example.demo.handlers.*;
+import com.example.demo.managers.*;
 import com.example.demo.view.LevelView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -42,9 +42,9 @@ public abstract class LevelParent {
     private final Set<KeyCode> pressedKeys = new HashSet<>();
     private Map<ActiveActorDestructible, Rectangle> actorHitboxes = new HashMap<>();
 
-    private final CollisionHandler collisionHandler;
-    private final InputHandler inputHandler;
-    private final PauseHandler pauseHandler;
+    private final CollisionManager collisionManager;
+    private final InputManager inputManager;
+    private final PauseManager pauseHandler;
     private final GameInitializer gameInitializer;
     private final NavigationManager navigationManager;
     private final SoundManager soundManager;
@@ -62,9 +62,9 @@ public abstract class LevelParent {
         this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
         this.levelView = instantiateLevelView();
 
-        this.collisionHandler = new CollisionHandler();
-        this.inputHandler = new InputHandler(pressedKeys, user, background, root, entityManager.getUserProjectiles());
-        this.pauseHandler = new PauseHandler(
+        this.collisionManager = new CollisionManager();
+        this.inputManager = new InputManager(pressedKeys, user, background, root, entityManager.getUserProjectiles());
+        this.pauseHandler = new PauseManager(
                 scene,
                 root,
                 this::pauseGame,
@@ -96,7 +96,7 @@ public abstract class LevelParent {
 
     public Scene initializeScene() {
         gameInitializer.initializeGame();
-        inputHandler.initializeFireProjectileHandler();
+        inputManager.initializeFireProjectileHandler();
         return scene;
     }
 
@@ -120,22 +120,22 @@ public abstract class LevelParent {
         entityManager.updateActors();
         generateEnemyFire();
         handleEnemyPenetration();
-        collisionHandler.handleUserProjectileCollisions(
+        collisionManager.handleUserProjectileCollisions(
                 entityManager.getUserProjectiles(),
                 entityManager.getEnemyUnits()
         );
-        collisionHandler.handleEnemyProjectileCollisions(
+        collisionManager.handleEnemyProjectileCollisions(
                 entityManager.getEnemyProjectiles(),
                 entityManager.getFriendlyUnits()
         );
-        collisionHandler.handlePlaneCollisions(
+        collisionManager.handlePlaneCollisions(
                 entityManager.getFriendlyUnits(),
                 entityManager.getEnemyUnits()
         );
         entityManager.removeDestroyedActors();
         updateLevelView();
         checkIfGameOver();
-        inputHandler.updateUserPlaneMovement();
+        inputManager.updateUserPlaneMovement();
     }
 
     private void initializeTimelineAndMusic() {
@@ -225,26 +225,26 @@ public abstract class LevelParent {
     public void pauseGame() {
         if (!pauseHandler.isPaused()) {
             timeline.pause();
-            inputHandler.setGameState(GameState.PAUSED);
+            inputManager.setGameState(GameState.PAUSED);
         }
     }
 
     public void resumeGame() {
         if (pauseHandler.isPaused()) {
             timeline.play();
-            inputHandler.setGameState(GameState.ACTIVE);
+            inputManager.setGameState(GameState.ACTIVE);
         }
     }
 
     protected void winGame() {
         stopTimelineAndMusic();
-        inputHandler.setGameState(GameState.WIN);
+        inputManager.setGameState(GameState.WIN);
         levelView.showWinImage();
     }
 
     protected void loseGame() {
         stopTimelineAndMusic();
-        inputHandler.setGameState(GameState.LOSE);
+        inputManager.setGameState(GameState.LOSE);
         levelView.showGameOverImage();
     }
 }

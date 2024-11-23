@@ -2,7 +2,7 @@ package com.example.demo.actors.planes;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.factory.ProjectileFactory;
-import com.example.demo.handlers.SoundManager;
+import com.example.demo.managers.SoundManager;
 import javafx.animation.AnimationTimer;
 
 /**

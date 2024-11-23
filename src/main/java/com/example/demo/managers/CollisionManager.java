@@ -1,4 +1,4 @@
-package com.example.demo.handlers;
+package com.example.demo.managers;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.DestructionType;
@@ -6,7 +6,7 @@ import com.example.demo.actors.planes.FighterPlane;
 
 import java.util.List;
 
-public class CollisionHandler {
+public class CollisionManager {
 
     public void handlePlaneCollisions(List<ActiveActorDestructible> friendlyUnits,
                                       List<ActiveActorDestructible> enemyUnits) {

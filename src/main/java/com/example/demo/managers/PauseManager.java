@@ -1,4 +1,4 @@
-package com.example.demo.handlers;
+package com.example.demo.managers;
 
 import com.example.demo.controller.PauseMenuController;
 import javafx.fxml.FXMLLoader;
@@ -9,7 +9,7 @@ import javafx.scene.input.KeyCode;
 import java.io.IOException;
 import java.net.URL;
 
-public class PauseHandler {
+public class PauseManager {
     private final Scene scene;
     private boolean isPaused = false;
     private final Runnable pauseAction;
@@ -17,7 +17,7 @@ public class PauseHandler {
     private final Group root;
     private PauseMenuController pauseMenuController;
 
-    public PauseHandler(Scene scene, Group root, Runnable pauseAction, Runnable resumeAction,
+    public PauseManager(Scene scene, Group root, Runnable pauseAction, Runnable resumeAction,
                         Runnable mainMenuAction, Runnable restartAction) {
         this.scene = scene;
         this.root = root;
@@ -30,7 +30,7 @@ public class PauseHandler {
 
     private void initializePauseMenu(Runnable resumeAction, Runnable restartAction, Runnable mainMenuAction) {
         try {
-             URL resource = PauseHandler.class.getResource("/PauseMenu.fxml");
+             URL resource = PauseManager.class.getResource("/PauseMenu.fxml");
              System.out.println("Resource: " + resource);
              FXMLLoader loader = new FXMLLoader(resource);
             loader.load();

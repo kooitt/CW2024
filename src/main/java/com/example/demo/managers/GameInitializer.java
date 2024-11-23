@@ -1,4 +1,4 @@
-package com.example.demo.handlers;
+package com.example.demo.managers;
 
 import com.example.demo.actors.planes.UserPlane;
 import com.example.demo.view.LevelView;
@@ -16,7 +16,7 @@ public class GameInitializer {
     private final ImageView background;
     private final UserPlane user;
     private final LevelView levelView;
-    private final PauseHandler pauseHandler;
+    private final PauseManager pauseHandler;
 
     /**
      * Constructs a GameInitializer with the specified parameters.
@@ -28,7 +28,7 @@ public class GameInitializer {
      * @param levelView the view for the level.
      * @param pauseHandler the handler for pausing the game.
      */
-    public GameInitializer(Group root, Scene scene, ImageView background, UserPlane user, LevelView levelView, PauseHandler pauseHandler) {
+    public GameInitializer(Group root, Scene scene, ImageView background, UserPlane user, LevelView levelView, PauseManager pauseHandler) {
         this.root = root;
         this.scene = scene;
         this.background = background;

@@ -12,7 +12,7 @@ public class KillCountDisplay {
 
     private static final int LABEL_FONT_SIZE = 24;
     private static final String LABEL_FONT_FAMILY = "Arcade";
-    private static final String LABEL_TEXT_COLOR = "-fx-text-fill: white;";
+    private static final String LABEL_TEXT_COLOR = "-fx-text-fill: black;";
     private HBox container;
     private final double containerXPosition;
     private final double containerYPosition;
