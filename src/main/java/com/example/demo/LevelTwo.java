@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import javafx.stage.Stage;
+
+
 public class LevelTwo extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/space2.jpg";
@@ -7,8 +10,8 @@ public class LevelTwo extends LevelParent {
     private final Boss boss;
     private LevelViewLevelTwo levelView;
 
-    public LevelTwo(double screenHeight, double screenWidth) {
-        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+    public LevelTwo(double screenHeight, double screenWidth, Stage stage) {
+        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, stage);
         // Initialize the boss enemy
         boss = new Boss();
     }
@@ -61,5 +64,4 @@ public class LevelTwo extends LevelParent {
         super.updateScene(); // Call the parent class method
         updateShieldState(); // Add specific functionality for LevelTwo
     }
-
 }

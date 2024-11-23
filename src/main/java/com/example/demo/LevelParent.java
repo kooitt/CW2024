@@ -1,19 +1,21 @@
 package com.example.demo;
 
+import com.example.demo.controller.MainMenu;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.util.Duration;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public abstract class LevelParent extends Observable {
 
@@ -37,12 +39,16 @@ public abstract class LevelParent extends Observable {
 
     private int currentNumberOfEnemies;
     private LevelView levelView;
-    
+
     private int score; // Field to track the score
     private Text scoreDisplay; // UI element to show the score
 
+    // Pause menu variables
+    private PauseMenu pauseMenu;
+    private boolean isPaused;
+    private final Stage stage;
 
-    public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
+    public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage stage) {
         this.root = new Group();
         this.scene = new Scene(root, screenWidth, screenHeight);
         this.timeline = new Timeline();
@@ -58,14 +64,13 @@ public abstract class LevelParent extends Observable {
         this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
         this.levelView = instantiateLevelView();
         this.currentNumberOfEnemies = 0;
-        
+        this.stage = stage;
+
         this.score = 0; // Initialize score
-        this.scoreDisplay = new Text(screenWidth -150, 50, "Score: 0"); // Create the score display
+        this.scoreDisplay = new Text(screenWidth - 150, 50, "Score: 0"); // Create the score display
         scoreDisplay.setStyle("-fx-font-size: 24px; -fx-fill: white;"); // Style the text
         getRoot().getChildren().add(scoreDisplay); // Add to the game root
         scoreDisplay.toFront(); // Bring to the front
-        System.out.println("Root children: " + getRoot().getChildren());
-
 
         initializeTimeline();
         friendlyUnits.add(user);
@@ -85,6 +90,13 @@ public abstract class LevelParent extends Observable {
         initializeBackground();
         initializeFriendlyUnits();
         levelView.showHeartDisplay();
+
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.P) { // Toggle pause with 'P'
+                togglePause();
+            }
+        });
+
         return scene;
     }
 
@@ -101,9 +113,9 @@ public abstract class LevelParent extends Observable {
         notifyObservers(levelName);
     }
 
-
-
     protected void updateScene() {
+        if (isPaused) return; // Skip updates if the game is paused
+
         spawnEnemyUnits();
         updateActors();
         generateEnemyFire();
@@ -118,7 +130,6 @@ public abstract class LevelParent extends Observable {
         checkIfGameOver();
     }
 
-
     // Timeline setup
     private void initializeTimeline() {
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -132,22 +143,16 @@ public abstract class LevelParent extends Observable {
         background.setFitHeight(screenHeight);
         background.setFitWidth(screenWidth);
 
-        background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e) {
-                KeyCode kc = e.getCode();
-                if (kc == KeyCode.UP) user.moveUp();
-                if (kc == KeyCode.DOWN) user.moveDown();
-                if (kc == KeyCode.SPACE) fireProjectile();
-            }
+        background.setOnKeyPressed(e -> {
+            KeyCode kc = e.getCode();
+            if (kc == KeyCode.UP) user.moveUp();
+            if (kc == KeyCode.DOWN) user.moveDown();
+            if (kc == KeyCode.SPACE) fireProjectile();
         });
 
-        background.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e) {
-                KeyCode kc = e.getCode();
-                if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
-            }
+        background.setOnKeyReleased(e -> {
+            KeyCode kc = e.getCode();
+            if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
         });
 
         root.getChildren().add(background);
@@ -236,13 +241,11 @@ public abstract class LevelParent extends Observable {
     private void updateLevelView() {
         levelView.removeHearts(user.getHealth());
     }
-    
+
     private void updateScoreDisplay() {
         scoreDisplay.setText("Score: " + score); // Update the score text
         updateScoreDisplayPosition();
         scoreDisplay.toFront(); // Ensure it's on top
-        System.out.println("Score Updated to: " + score); // Debugging
-
     }
 
     // Update kill count
@@ -254,15 +257,10 @@ public abstract class LevelParent extends Observable {
                 getUser().incrementKillCount();
             }
             currentNumberOfEnemies = enemyUnits.size(); // Update enemy count
-            updateScoreDisplay();// Refresh score on UI
-            System.out.println("Kill Count: " + getUser().getNumberOfKills());
-            System.out.println("Score: " + score);
-
+            updateScoreDisplay(); // Refresh score on UI
         }
     }
 
-    
-    
     private void updateScoreDisplayPosition() {
         scoreDisplay.setX(screenWidth - 150); // Dynamically adjust x-coordinate for top-right
     }
@@ -270,7 +268,6 @@ public abstract class LevelParent extends Observable {
     public int getScore() {
         return score; // Getter for score
     }
-
 
     private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
         return Math.abs(enemy.getTranslateX()) > screenWidth;
@@ -319,5 +316,45 @@ public abstract class LevelParent extends Observable {
 
     private void updateNumberOfEnemies() {
         currentNumberOfEnemies = enemyUnits.size();
+    }
+
+    // Pause functionality
+    private void togglePause() {
+        if (isPaused) {
+            resumeGame();
+        } else {
+            pauseGame();
+        }
+    }
+
+    private void pauseGame() {
+        isPaused = true;
+        timeline.stop();
+
+        pauseMenu = new PauseMenu(stage, this::resumeGame, this::goToMainMenu, this::quitGame);
+        getRoot().getChildren().add(pauseMenu.getRoot());
+    }
+
+    private void resumeGame() {
+        isPaused = false;
+        timeline.play();
+
+        if (pauseMenu != null) {
+            getRoot().getChildren().remove(pauseMenu.getRoot());
+        }
+    }
+
+    private void goToMainMenu() {
+        timeline.stop();
+        MainMenu mainMenu = new MainMenu();
+        try {
+            mainMenu.start(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void quitGame() {
+        System.exit(0); // Close the game
     }
 }

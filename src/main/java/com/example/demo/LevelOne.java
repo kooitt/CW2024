@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import javafx.stage.Stage;
+
 public class LevelOne extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/space.jpg";
@@ -9,8 +11,8 @@ public class LevelOne extends LevelParent {
     private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
     private static final int PLAYER_INITIAL_HEALTH = 5;
 
-    public LevelOne(double screenHeight, double screenWidth) {
-        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+    public LevelOne(double screenHeight, double screenWidth, Stage stage) {
+        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, stage);
     }
 
     @Override
@@ -24,7 +26,6 @@ public class LevelOne extends LevelParent {
             goToNextLevel(NEXT_LEVEL);
         }
         System.out.println("Kill Target Reached: " + getUser().getNumberOfKills());
-
     }
 
     @Override

@@ -27,40 +27,50 @@ public class Controller implements Observer {
     }
 
     private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-    InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-try {
-    Class<?> levelClass = Class.forName(className);
-    Constructor<?> constructor = levelClass.getConstructor(double.class, double.class);
-    LevelParent level = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
+            InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        try {
+            // Use reflection to instantiate the level class
+            Class<?> levelClass = Class.forName(className);
+            Constructor<?> constructor = levelClass.getConstructor(double.class, double.class, Stage.class);
+            LevelParent level = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth(), stage);
 
-    level.addObserver(this);
+            // Set up observer for level transitions
+            level.addObserver(this);
 
-    Scene scene = level.initializeScene();
-    stage.setScene(scene);
-    level.startGame();
-} catch (InvocationTargetException e) {
-    Throwable cause = e.getCause();
-    System.err.println("Error during level transition: " + cause);
-    cause.printStackTrace();
+            // Initialize the level scene and start the game
+            Scene scene = level.initializeScene();
+            stage.setScene(scene);
+            level.startGame();
+        } catch (InvocationTargetException e) {
+            // Handle errors caused by level transition
+            handleLevelTransitionError(e.getCause());
+        } catch (Exception e) {
+            // Handle unexpected errors
+            handleUnexpectedError(e);
+        }
+    }
 
-    Alert alert = new Alert(AlertType.ERROR);
-    alert.setTitle("Error");
-    alert.setHeaderText("An error occurred during level transition.");
-    alert.setContentText("Error: " + cause.getMessage());
-    alert.show(); // Use show() instead of showAndWait()
-} catch (Exception e) {
-    System.err.println("Unexpected error during level transition: " + e);
-    e.printStackTrace();
+    private void handleLevelTransitionError(Throwable cause) {
+        System.err.println("Error during level transition: " + cause);
+        cause.printStackTrace();
 
-    Alert alert = new Alert(AlertType.ERROR);
-    alert.setTitle("Unexpected Error");
-    alert.setHeaderText("An unexpected error occurred.");
-    alert.setContentText("Error: " + e.getMessage());
-    alert.show(); // Use show() instead of showAndWait()
-}
-}
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occurred during level transition.");
+        alert.setContentText("Error: " + cause.getMessage());
+        alert.show(); // Display error alert
+    }
 
+    private void handleUnexpectedError(Exception e) {
+        System.err.println("Unexpected error during level transition: " + e);
+        e.printStackTrace();
 
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Unexpected Error");
+        alert.setHeaderText("An unexpected error occurred.");
+        alert.setContentText("Error: " + e.getMessage());
+        alert.show(); // Display error alert
+    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -73,15 +83,8 @@ try {
             }
         } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
                 | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            // Log and display any error during the transition
-            System.err.println("Error while transitioning to the next level: " + e);
-            e.printStackTrace();
-
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Level Transition Error");
-            alert.setHeaderText("An error occurred while transitioning to the next level.");
-            alert.setContentText("Error: " + e.getMessage());
-            alert.showAndWait();
+            // Handle any errors during the level transition
+            handleUnexpectedError(e);
         }
     }
 }
