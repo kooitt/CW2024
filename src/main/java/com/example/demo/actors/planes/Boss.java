@@ -3,6 +3,7 @@ package com.example.demo.actors.planes;
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.projectiles.BossProjectile;
 import com.example.demo.factory.ProjectileFactory;
+import com.example.demo.handlers.SoundManager;
 
 import java.util.*;
 
@@ -32,6 +33,7 @@ public class Boss extends FighterPlane {
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
 	private final ProjectileFactory projectileFactory;
+	private final SoundManager soundManager = new SoundManager();
 
 	/**
 	 * Constructs a Boss instance with predefined attributes.
@@ -77,7 +79,11 @@ public class Boss extends FighterPlane {
 	 */
 	@Override
 	public ActiveActorDestructible fireProjectile() {
-		return bossFiresInCurrentFrame() ? projectileFactory.createActor(getLayoutX(), getProjectileInitialPosition()) : null;
+		if (bossFiresInCurrentFrame()) {
+			soundManager.playShootSound("boss");
+			return projectileFactory.createActor(getLayoutX(), getProjectileInitialPosition());
+		}
+		return null;
 	}
 
 	/**

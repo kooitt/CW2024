@@ -2,6 +2,7 @@ package com.example.demo.actors.planes;
 
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.factory.ProjectileFactory;
+import com.example.demo.handlers.SoundManager;
 import javafx.animation.AnimationTimer;
 
 /**
@@ -23,6 +24,7 @@ public class UserPlane extends FighterPlane {
 	private int horizontalVelocityMultiplier; // Separate multiplier for horizontal movement
 	private int numberOfKills;
 	private final ProjectileFactory projectileFactory;
+	private final SoundManager soundManager = new SoundManager();
 
 
 	/**
@@ -95,6 +97,7 @@ public class UserPlane extends FighterPlane {
 	public ActiveActorDestructible fireProjectile() {
 		double projectileX = getLayoutX() + getTranslateX() + PROJECTILE_X_POSITION;
 		double projectileY = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
+		soundManager.playShootSound("user");
 		return projectileFactory.createActor(projectileX, projectileY);
 	}
 
@@ -163,9 +166,5 @@ public class UserPlane extends FighterPlane {
 	 */
 	public void incrementKillCount() {
 		numberOfKills++;
-	}
-
-	public void decrementKillCount() {
-		numberOfKills--;
 	}
 }

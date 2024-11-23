@@ -19,223 +19,231 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+
 import java.util.*;
 
 public abstract class LevelParent {
 
-	private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
-	private static final int MILLISECOND_DELAY = 50;
-	private final double screenHeight;
-	private final double screenWidth;
-	private final double enemyMaximumYPosition;
+    private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
+    private static final int MILLISECOND_DELAY = 50;
+    private final double screenHeight;
+    private final double screenWidth;
+    private final double enemyMaximumYPosition;
 
-	private final Group root;
-	private final Timeline timeline;
-	private final UserPlane user;
-	private final Scene scene;
-	private final ImageView background;
-	private final EntityManager entityManager;
+    private final Group root;
+    private final Timeline timeline;
+    private final UserPlane user;
+    private final Scene scene;
+    private final ImageView background;
+    private final EntityManager entityManager;
 
-	private LevelView levelView;
-	private final StringProperty nextLevelProperty = new SimpleStringProperty();
-	private final Set<KeyCode> pressedKeys = new HashSet<>();
-	private Map<ActiveActorDestructible, Rectangle> actorHitboxes = new HashMap<>();
+    private LevelView levelView;
+    private final StringProperty nextLevelProperty = new SimpleStringProperty();
+    private final Set<KeyCode> pressedKeys = new HashSet<>();
+    private Map<ActiveActorDestructible, Rectangle> actorHitboxes = new HashMap<>();
 
-	private final CollisionHandler collisionHandler;
-	private final InputHandler inputHandler;
-	private final PauseHandler pauseHandler;
-	private final GameInitializer gameInitializer;
-	private final NavigationManager navigationManager;
+    private final CollisionHandler collisionHandler;
+    private final InputHandler inputHandler;
+    private final PauseHandler pauseHandler;
+    private final GameInitializer gameInitializer;
+    private final NavigationManager navigationManager;
+    private final SoundManager soundManager;
 
-	public LevelParent(String backgroundImageName, int playerInitialHealth) {
-		this.screenHeight = GameConfig.SCREEN_HEIGHT;
-		this.screenWidth = GameConfig.SCREEN_WIDTH;
-		this.root = new Group();
-		this.scene = new Scene(root, this.screenWidth, this.screenHeight);
-		this.timeline = new Timeline();
-		this.user = new UserPlane(playerInitialHealth);
-		this.entityManager = new EntityManager(root);
+    public LevelParent(String backgroundImageName, int playerInitialHealth) {
+        this.screenHeight = GameConfig.SCREEN_HEIGHT;
+        this.screenWidth = GameConfig.SCREEN_WIDTH;
+        this.root = new Group();
+        this.scene = new Scene(root, this.screenWidth, this.screenHeight);
+        this.timeline = new Timeline();
+        this.user = new UserPlane(playerInitialHealth);
+        this.entityManager = new EntityManager(root);
 
-		this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
-		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
-		this.levelView = instantiateLevelView();
+        this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
+        this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
+        this.levelView = instantiateLevelView();
 
-		this.collisionHandler = new CollisionHandler();
-		this.inputHandler = new InputHandler(pressedKeys, user, background, root, entityManager.getUserProjectiles());
-		this.pauseHandler = new PauseHandler(
-				scene,
-				root,
-				this::pauseGame,
-				this::resumeGame,
-				this::goToMainMenu,    // Add main menu action
-				this::restartLevel     // Add restart action
-		);
-		this.gameInitializer = new GameInitializer(root, scene, background, user, levelView, pauseHandler);
-		this.navigationManager = new NavigationManager(scene, screenWidth, screenHeight);
-		initializeTimeline();
-		entityManager.addFriendlyUnit(user);
-		entityManager.addEnemyDestroyedListener(enemy -> user.incrementKillCount());
-	}
+        this.collisionHandler = new CollisionHandler();
+        this.inputHandler = new InputHandler(pressedKeys, user, background, root, entityManager.getUserProjectiles());
+        this.pauseHandler = new PauseHandler(
+                scene,
+                root,
+                this::pauseGame,
+                this::resumeGame,
+                this::goToMainMenu,    // Add main menu action
+                this::restartLevel     // Add restart action
+        );
+        this.gameInitializer = new GameInitializer(root, scene, background, user, levelView, pauseHandler);
+        this.navigationManager = new NavigationManager(scene, screenWidth, screenHeight);
+        this.soundManager = new SoundManager();
+        initializeTimelineAndMusic();
+        entityManager.addFriendlyUnit(user);
+        entityManager.addEnemyDestroyedListener(enemy -> user.incrementKillCount());
+    }
 
-	private void initializeFriendlyUnits(){
-		if (!root.getChildren().contains(user)) {
-			root.getChildren().add(user);
-		}
-	};
+    private void initializeFriendlyUnits() {
+        if (!root.getChildren().contains(user)) {
+            root.getChildren().add(user);
+        }
+    }
 
-	protected abstract void checkIfGameOver();
+    ;
 
-	protected abstract void spawnEnemyUnits();
+    protected abstract void checkIfGameOver();
 
-	protected abstract LevelView instantiateLevelView();
+    protected abstract void spawnEnemyUnits();
 
-	public Scene initializeScene() {
-		gameInitializer.initializeGame();
-		inputHandler.initializeFireProjectileHandler();
-		return scene;
-	}
+    protected abstract LevelView instantiateLevelView();
 
-	public void startGame() {
-		background.requestFocus();
-		timeline.play();
-	}
+    public Scene initializeScene() {
+        gameInitializer.initializeGame();
+        inputHandler.initializeFireProjectileHandler();
+        return scene;
+    }
 
-	protected void goToNextLevel(String nextLevelClassName, String nextLevelName) {
-		nextLevelProperty.set(nextLevelClassName + "," + nextLevelName);
-	}
+    public void startGame() {
+        background.requestFocus();
+        timeline.play();
+    }
 
-	public StringProperty nextLevelProperty() {
-		return nextLevelProperty;
-	}
+    protected void goToNextLevel(String nextLevelClassName, String nextLevelName) {
+        soundManager.stopAllBackgroundMusic();
+        nextLevelProperty.set(nextLevelClassName + "," + nextLevelName);
+    }
 
-	private void updateScene() {
-		initializeFriendlyUnits();
-		spawnEnemyUnits();
-		entityManager.updateActors();
-		generateEnemyFire();
-		handleEnemyPenetration();
-//		entityManager.removeDestroyedActors();
+    public StringProperty nextLevelProperty() {
+        return nextLevelProperty;
+    }
 
-		collisionHandler.handleUserProjectileCollisions(
-				entityManager.getUserProjectiles(),
-				entityManager.getEnemyUnits()
-		);
-		collisionHandler.handleEnemyProjectileCollisions(
-				entityManager.getEnemyProjectiles(),
-				entityManager.getFriendlyUnits()
-		);
-		collisionHandler.handlePlaneCollisions(
-				entityManager.getFriendlyUnits(),
-				entityManager.getEnemyUnits()
-		);
+    private void updateScene() {
+        initializeFriendlyUnits();
+        spawnEnemyUnits();
+        entityManager.updateActors();
+        generateEnemyFire();
+        handleEnemyPenetration();
+        collisionHandler.handleUserProjectileCollisions(
+                entityManager.getUserProjectiles(),
+                entityManager.getEnemyUnits()
+        );
+        collisionHandler.handleEnemyProjectileCollisions(
+                entityManager.getEnemyProjectiles(),
+                entityManager.getFriendlyUnits()
+        );
+        collisionHandler.handlePlaneCollisions(
+                entityManager.getFriendlyUnits(),
+                entityManager.getEnemyUnits()
+        );
+        entityManager.removeDestroyedActors();
+        updateLevelView();
+        checkIfGameOver();
+        inputHandler.updateUserPlaneMovement();
+    }
 
-		entityManager.removeDestroyedActors();
-		updateLevelView();
-		checkIfGameOver();
-		inputHandler.updateUserPlaneMovement();
-	}
+    private void initializeTimelineAndMusic() {
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        KeyFrame gameLoop = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> updateScene());
+        timeline.getKeyFrames().add(gameLoop);
+		soundManager.playBackgroundMusic("level");
+    }
 
-	private void initializeTimeline() {
-		timeline.setCycleCount(Timeline.INDEFINITE);
-		KeyFrame gameLoop = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> updateScene());
-		timeline.getKeyFrames().add(gameLoop);
-	}
-
-	private void generateEnemyFire() {
-		entityManager.getEnemyUnits().forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
-	}
-
-
-	private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
-		if (projectile != null) {
-			entityManager.addEnemyProjectile(projectile);
-		}
-	}
-
-	private void handleEnemyPenetration() {
-		for (ActiveActorDestructible enemy : entityManager.getEnemyUnits()) {
-			if (enemyHasPenetratedDefenses(enemy)) {
-//				user.decrementKillCount();
-				user.takeDamage();
-				enemy.destroy(DestructionType.PENETRATED_DEFENSE);
-			}
-		}
-	}
-
-	protected void updateLevelView() {
-		levelView.removeHearts(user.getHealth());
-		levelView.updateKillCount(user.getKillCount());
-	}
-
-
-	private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
-		return Math.abs(enemy.getTranslateX()) > screenWidth;
-	}
-
-	protected UserPlane getUser() {
-		return user;
-	}
-
-	protected Group getRoot() {
-		return root;
-	}
-
-	protected int getCurrentNumberOfEnemies() {
-		return entityManager.getCurrentNumberOfEnemies();
-	}
-
-	protected void addEnemyUnit(ActiveActorDestructible enemy) {
-		entityManager.addEnemyUnit(enemy);
-	}
-
-	protected double getEnemyMaximumYPosition() {
-		return enemyMaximumYPosition;
-	}
-
-
-	protected double getScreenWidth() {
-		return screenWidth;
-	}
-
-
-	protected boolean userIsDestroyed() {
-		return user.isDestroyed();
-	}
-
-	protected void goToMainMenu() {
+	private void stopTimelineAndMusic() {
 		timeline.stop();
-		navigationManager.goToMainMenu();
+		soundManager.stopAllBackgroundMusic();
 	}
 
-	protected void restartLevel() {
-		timeline.stop();
-		navigationManager.restartLevel(this.getClass());
-	}
+    private void generateEnemyFire() {
+        entityManager.getEnemyUnits().forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
+    }
 
-	// Update existing pause/resume methods
-	public void pauseGame() {
-		if (!pauseHandler.isPaused()) {
-			timeline.pause();
-			inputHandler.setGameState(GameState.PAUSED);
-		}
-	}
 
-	public void resumeGame() {
-		if (pauseHandler.isPaused()) {
-			timeline.play();
-			inputHandler.setGameState(GameState.ACTIVE);
-		}
-	}
+    private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
+        if (projectile != null) {
+            entityManager.addEnemyProjectile(projectile);
+        }
+    }
 
-	protected void winGame() {
-		timeline.stop();
-		inputHandler.setGameState(GameState.WIN);
-		levelView.showWinImage();
-	}
+    private void handleEnemyPenetration() {
+        for (ActiveActorDestructible enemy : entityManager.getEnemyUnits()) {
+            if (enemyHasPenetratedDefenses(enemy)) {
+                user.takeDamage();
+                enemy.destroy(DestructionType.PENETRATED_DEFENSE);
+            }
+        }
+    }
 
-	protected void loseGame() {
-		timeline.stop();
-		inputHandler.setGameState(GameState.LOSE);
-		levelView.showGameOverImage();
-	}
+    protected void updateLevelView() {
+        levelView.removeHearts(user.getHealth());
+        levelView.updateKillCount(user.getKillCount());
+    }
+
+
+    private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
+        return Math.abs(enemy.getTranslateX()) > screenWidth;
+    }
+
+    protected UserPlane getUser() {
+        return user;
+    }
+
+    protected Group getRoot() {
+        return root;
+    }
+
+    protected int getCurrentNumberOfEnemies() {
+        return entityManager.getCurrentNumberOfEnemies();
+    }
+
+    protected void addEnemyUnit(ActiveActorDestructible enemy) {
+        entityManager.addEnemyUnit(enemy);
+    }
+
+    protected double getEnemyMaximumYPosition() {
+        return enemyMaximumYPosition;
+    }
+
+
+    protected double getScreenWidth() {
+        return screenWidth;
+    }
+
+
+    protected boolean userIsDestroyed() {
+        return user.isDestroyed();
+    }
+
+    protected void goToMainMenu() {
+        stopTimelineAndMusic();
+        navigationManager.goToMainMenu();
+    }
+
+    protected void restartLevel() {
+        stopTimelineAndMusic();
+        navigationManager.restartLevel(this.getClass());
+    }
+
+    // Update existing pause/resume methods
+    public void pauseGame() {
+        if (!pauseHandler.isPaused()) {
+            timeline.pause();
+            inputHandler.setGameState(GameState.PAUSED);
+        }
+    }
+
+    public void resumeGame() {
+        if (pauseHandler.isPaused()) {
+            timeline.play();
+            inputHandler.setGameState(GameState.ACTIVE);
+        }
+    }
+
+    protected void winGame() {
+        stopTimelineAndMusic();
+        inputHandler.setGameState(GameState.WIN);
+        levelView.showWinImage();
+    }
+
+    protected void loseGame() {
+        stopTimelineAndMusic();
+        inputHandler.setGameState(GameState.LOSE);
+        levelView.showGameOverImage();
+    }
 }

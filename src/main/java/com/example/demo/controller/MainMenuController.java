@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.handlers.SoundManager;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -12,6 +13,7 @@ import javafx.stage.Stage;
 public class MainMenuController {
 
     private Stage stage;
+    private SoundManager soundManager;
 
     /**
      * Sets the stage for this controller.
@@ -34,6 +36,8 @@ public class MainMenuController {
      */
     @FXML
     private void initialize() {
+        soundManager = new SoundManager();
+        soundManager.playBackgroundMusic("menu");
         // Bind the ImageView size to the Pane size
         backgroundImage.fitHeightProperty().bind(((Pane) backgroundImage.getParent()).heightProperty());
         backgroundImage.fitWidthProperty().bind(((Pane) backgroundImage.getParent()).widthProperty());
@@ -49,6 +53,7 @@ public class MainMenuController {
     @FXML
     private void startGame() {
         try {
+            soundManager.stopAllBackgroundMusic();
             GameController gameController = new GameController(stage);
             gameController.launchGame();
         } catch (Exception e) {
