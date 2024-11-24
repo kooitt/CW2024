@@ -11,7 +11,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.9.2</junit.version>  </properties>
+    <junit.version>5.9.2</junit.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -40,7 +41,8 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>  </dependencies>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
