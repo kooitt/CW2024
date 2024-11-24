@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.levels.LevelParent;
+
 public class LevelTwo extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";

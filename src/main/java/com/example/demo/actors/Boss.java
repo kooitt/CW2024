@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.actors.FighterPlane;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
