@@ -1,9 +1,7 @@
-package com.example.demo;
-
-import com.example.demo.projectiles.Projectile;
+package com.example.demo.projectiles;
 
 public class EnemyProjectile extends Projectile {
-	
+
 	private static final String IMAGE_NAME = "enemyFire.png";
 	private static final int IMAGE_HEIGHT = 50;
 	private static final int HORIZONTAL_VELOCITY = -10;
@@ -21,6 +19,4 @@ public class EnemyProjectile extends Projectile {
 	public void updateActor() {
 		updatePosition();
 	}
-
-
 }

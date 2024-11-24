@@ -2,19 +2,17 @@ package com.example.demo.controller;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Observable;
 import java.util.Observer;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import com.example.demo.LevelParent;
-import javafx.animation.AnimationTimer;
+import com.example.demo.levels.LevelParent;
 
 public class Controller implements Observer {
 
-	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
+	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
 	private final Stage stage;
 	private LevelParent currentLevel;
 
@@ -43,15 +41,13 @@ public class Controller implements Observer {
 			Scene scene = currentLevel.initializeScene();
 			stage.setScene(scene);
 			currentLevel.startGame();
-
-
 		} catch (Exception e) {
 			handleException(e);
 		}
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(java.util.Observable o, Object arg) {
 		try {
 			goToLevel((String) arg);
 		} catch (Exception e) {

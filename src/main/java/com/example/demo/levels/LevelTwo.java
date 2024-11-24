@@ -1,6 +1,8 @@
-package com.example.demo;
+package com.example.demo.levels;
 
-import com.example.demo.levels.LevelParent;
+import com.example.demo.actors.*;
+import com.example.demo.views.LevelView;
+import com.example.demo.views.LevelViewLevelTwo;
 
 public class LevelTwo extends LevelParent {
 
@@ -11,8 +13,7 @@ public class LevelTwo extends LevelParent {
 
 	public LevelTwo(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
-		System.out.println("LevelTwo constructor called with screenHeight=" + screenHeight + ", screenWidth=" + screenWidth);
-		boss = new Boss(getRoot()); // 传递根容器，确保盾牌可以添加到场景中
+		boss = new Boss(getRoot());
 	}
 
 	@Override
@@ -24,8 +25,7 @@ public class LevelTwo extends LevelParent {
 	protected void checkIfGameOver() {
 		if (userIsDestroyed()) {
 			loseGame();
-		}
-		else if (boss.isDestroyed()) {
+		} else if (boss.isDestroyed()) {
 			winGame();
 		}
 	}
@@ -42,5 +42,4 @@ public class LevelTwo extends LevelParent {
 		levelView = new LevelViewLevelTwo(getRoot(), PLAYER_INITIAL_HEALTH);
 		return levelView;
 	}
-
 }

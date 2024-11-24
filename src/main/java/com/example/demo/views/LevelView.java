@@ -1,6 +1,7 @@
-package com.example.demo;
+package com.example.demo.views;
 
 import javafx.scene.Group;
+import com.example.demo.ui.*;
 
 public class LevelView {
 
@@ -22,7 +23,6 @@ public class LevelView {
 		this.gameOverImage = new GameOverImage(LOSS_SCREEN_X_POSITION, LOSS_SCREEN_Y_POSISITION);
 	}
 
-	// 新增的 getter 方法
 	protected Group getRoot() {
 		return root;
 	}
@@ -46,5 +46,4 @@ public class LevelView {
 			heartDisplay.removeHeart();
 		}
 	}
-
 }
