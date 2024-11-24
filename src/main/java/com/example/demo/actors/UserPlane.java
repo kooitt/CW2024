@@ -19,6 +19,9 @@ public class UserPlane extends FighterPlane {
 	public UserPlane(int initialHealth) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
 		velocityMultiplier = 0;
+
+		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.3);
+		updateHitBoxPosition();
 	}
 
 	@Override
@@ -36,6 +39,7 @@ public class UserPlane extends FighterPlane {
 	@Override
 	public void updateActor() {
 		updatePosition();
+		updateHitBoxPosition();
 	}
 
 	@Override

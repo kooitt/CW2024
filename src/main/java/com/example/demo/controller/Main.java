@@ -17,7 +17,7 @@ public class Main extends Application {
 		stage.setHeight(SCREEN_HEIGHT);
 		stage.setWidth(SCREEN_WIDTH);
 		myController = new Controller(stage);
-		myController.launchGame();
+		myController.showMainMenu();
 	}
 
 	public static void main(String[] args) {

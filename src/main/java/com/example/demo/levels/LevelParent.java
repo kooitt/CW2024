@@ -1,9 +1,14 @@
 package com.example.demo.levels;
 
+import com.example.demo.actors.*;
+import com.example.demo.physics.*;
+import com.example.demo.levels.*;
+import com.example.demo.ui.*;
+import com.example.demo.utils.*;
+import com.example.demo.views.*;
+
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.example.demo.views.LevelView;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -12,8 +17,6 @@ import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
 
-import com.example.demo.actors.*;
-import com.example.demo.projectiles.*;
 
 public abstract class LevelParent extends Observable {
 
@@ -112,15 +115,17 @@ public abstract class LevelParent extends Observable {
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP) user.moveUp();
-				if (kc == KeyCode.DOWN) user.moveDown();
-				if (kc == KeyCode.SPACE) fireProjectile();
+				KeyBindings keyBindings = KeyBindings.getInstance();
+				if (kc == keyBindings.getUpKey()) user.moveUp();
+				if (kc == keyBindings.getDownKey()) user.moveDown();
+				if (kc == keyBindings.getFireKey()) fireProjectile();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
+				KeyBindings keyBindings = KeyBindings.getInstance();
+				if (kc == keyBindings.getUpKey() || kc == keyBindings.getDownKey()) user.stop();
 			}
 		});
 		root.getChildren().add(background);
@@ -154,10 +159,22 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateActors() {
-		friendlyUnits.forEach(plane -> plane.updateActor());
-		enemyUnits.forEach(enemy -> enemy.updateActor());
-		userProjectiles.forEach(projectile -> projectile.updateActor());
-		enemyProjectiles.forEach(projectile -> projectile.updateActor());
+		friendlyUnits.forEach(plane -> {
+			plane.updateActor();
+			plane.updateHitBoxPosition();
+		});
+		enemyUnits.forEach(enemy -> {
+			enemy.updateActor();
+			enemy.updateHitBoxPosition();
+		});
+		userProjectiles.forEach(projectile -> {
+			projectile.updateActor();
+			projectile.updateHitBoxPosition();
+		});
+		enemyProjectiles.forEach(projectile -> {
+			projectile.updateActor();
+			projectile.updateHitBoxPosition();
+		});
 	}
 
 	private void removeAllDestroyedActors() {
@@ -176,7 +193,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void handlePlaneCollisions() {
-		handleCollisions(friendlyUnits, enemyUnits);
+		handleCollisions(Collections.singletonList(getUser()), enemyUnits);
 	}
 
 	private void handleUserProjectileCollisions() {
@@ -188,14 +205,21 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void handleCollisions(List<ActiveActorDestructible> actors1, List<ActiveActorDestructible> actors2) {
-		for (ActiveActorDestructible actor : actors2) {
-			for (ActiveActorDestructible otherActor : actors1) {
-				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					actor.takeDamage();
-					otherActor.takeDamage();
+		for (ActiveActorDestructible actor1 : actors1) {
+			for (ActiveActorDestructible actor2 : actors2) {
+				if (checkHitboxCollision(actor1, actor2)) {
+					actor1.takeDamage();
+					actor2.takeDamage();
 				}
 			}
 		}
+	}
+
+	private boolean checkHitboxCollision(Hitbox a, Hitbox b) {
+		return a.getHitboxX() < b.getHitboxX() + b.getHitboxWidth() &&
+				a.getHitboxX() + a.getHitboxWidth() > b.getHitboxX() &&
+				a.getHitboxY() < b.getHitboxY() + b.getHitboxHeight() &&
+				a.getHitboxY() + a.getHitboxHeight() > b.getHitboxY();
 	}
 
 	private void handleEnemyPenetration() {
@@ -284,8 +308,10 @@ public abstract class LevelParent extends Observable {
 		Iterator<ActiveActorDestructible> userProjIterator = userProjectiles.iterator();
 		while (userProjIterator.hasNext()) {
 			ActiveActorDestructible projectile = userProjIterator.next();
-			if (projectile.getLayoutX() > screenWidth || projectile.getLayoutX() < 0 ||
-					projectile.getLayoutY() > screenHeight || projectile.getLayoutY() < 0) {
+			double x = projectile.getHitboxX();
+			double y = projectile.getHitboxY();
+			if (x > screenWidth || x + projectile.getHitboxWidth() < 0 ||
+					y > screenHeight || y + projectile.getHitboxHeight() < 0) {
 				projectile.destroy();
 			}
 		}
@@ -293,8 +319,10 @@ public abstract class LevelParent extends Observable {
 		Iterator<ActiveActorDestructible> enemyProjIterator = enemyProjectiles.iterator();
 		while (enemyProjIterator.hasNext()) {
 			ActiveActorDestructible projectile = enemyProjIterator.next();
-			if (projectile.getLayoutX() > screenWidth || projectile.getLayoutX() < 0 ||
-					projectile.getLayoutY() > screenHeight || projectile.getLayoutY() < 0) {
+			double x = projectile.getHitboxX();
+			double y = projectile.getHitboxY();
+			if (x > screenWidth || x + projectile.getHitboxWidth() < 0 ||
+					y > screenHeight || y + projectile.getHitboxHeight() < 0) {
 				projectile.destroy();
 			}
 		}

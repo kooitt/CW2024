@@ -9,11 +9,14 @@ public class BossProjectile extends Projectile {
 
 	public BossProjectile(double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, initialYPos);
+
+		setHitboxSize(IMAGE_HEIGHT*2.5, IMAGE_HEIGHT*0.9); // 设置 Boss 子弹的 hitbox 尺寸
 	}
 
 	@Override
 	public void updatePosition() {
 		moveHorizontally(HORIZONTAL_VELOCITY);
+		updateHitBoxPosition();
 	}
 
 	@Override

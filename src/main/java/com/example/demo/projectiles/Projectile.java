@@ -15,4 +15,14 @@ public abstract class Projectile extends ActiveActorDestructible {
 
 	@Override
 	public abstract void updatePosition();
+
+	@Override
+	public void updateActor() {
+		updatePosition();
+	}
+
+	@Override
+	public void updateHitBoxPosition() {
+		super.updateHitBoxPosition();
+	}
 }

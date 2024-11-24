@@ -14,6 +14,9 @@ public class EnemyPlane extends FighterPlane {
 
 	public EnemyPlane(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
+
+		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.35);
+		updateHitBoxPosition();
 	}
 
 	@Override
@@ -25,8 +28,8 @@ public class EnemyPlane extends FighterPlane {
 	public ActiveActorDestructible fireProjectile() {
 		if (Math.random() < FIRE_RATE) {
 			double projectileXPosition = getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET);
-			double projectileYPostion = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
-			return new EnemyProjectile(projectileXPosition, projectileYPostion);
+			double projectileYPosition = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
+			return new EnemyProjectile(projectileXPosition, projectileYPosition);
 		}
 		return null;
 	}
@@ -34,5 +37,6 @@ public class EnemyPlane extends FighterPlane {
 	@Override
 	public void updateActor() {
 		updatePosition();
+		updateHitBoxPosition();
 	}
 }

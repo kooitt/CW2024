@@ -8,4 +8,7 @@ module com.example.demo {
     exports com.example.demo.levels;
     exports com.example.demo.views;
     exports com.example.demo.ui;
+    exports com.example.demo.utils;
+    exports com.example.demo.interfaces;
+    exports com.example.demo.physics;
 }

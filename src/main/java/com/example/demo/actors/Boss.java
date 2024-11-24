@@ -15,7 +15,6 @@ public class Boss extends FighterPlane {
 	private static final double INITIAL_Y_POSITION = 400.0;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
 	private static final double BOSS_FIRE_RATE = 0.04;
-	private static final double BOSS_SHIELD_PROBABILITY = 0.02;
 	private static final int IMAGE_HEIGHT = 300;
 	private static final int VERTICAL_VELOCITY = 8;
 	private static final int HEALTH = 100;
@@ -24,13 +23,10 @@ public class Boss extends FighterPlane {
 	private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
 	private static final int Y_POSITION_UPPER_BOUND = -100;
 	private static final int Y_POSITION_LOWER_BOUND = 475;
-	private static final int MAX_FRAMES_WITH_SHIELD = 100;
 
 	private final List<Integer> movePattern;
-	private boolean isShielded;
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
-	private int framesWithShieldActivated;
 
 	private ProgressBar healthBar;
 	private static final int HEALTH_BAR_WIDTH = 300;
@@ -41,9 +37,9 @@ public class Boss extends FighterPlane {
 		movePattern = new ArrayList<>();
 		consecutiveMovesInSameDirection = 0;
 		indexOfCurrentMove = 0;
-		framesWithShieldActivated = 0;
-		isShielded = false;
 		initializeMovePattern();
+
+		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.2); // 设置 Boss 的 hitbox 尺寸
 
 		Platform.runLater(() -> {
 			initializeHealthBar(root);
@@ -101,12 +97,12 @@ public class Boss extends FighterPlane {
 		if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
 			setTranslateY(initialTranslateY);
 		}
+		updateHitBoxPosition();
 	}
 
 	@Override
 	public void updateActor() {
 		updatePosition();
-		updateShield();
 	}
 
 	@Override
@@ -116,13 +112,11 @@ public class Boss extends FighterPlane {
 
 	@Override
 	public void takeDamage() {
-		if (!isShielded) {
-			super.takeDamage();
-			if (getHealth() < 0) {
-				setHealth(0);
-			}
-			updateHealthBar();
+		super.takeDamage();
+		if (getHealth() < 0) {
+			setHealth(0);
 		}
+		updateHealthBar();
 	}
 
 	private void initializeMovePattern() {
@@ -132,17 +126,6 @@ public class Boss extends FighterPlane {
 			movePattern.add(ZERO);
 		}
 		Collections.shuffle(movePattern);
-	}
-
-	private void updateShield() {
-		if (isShielded) {
-			framesWithShieldActivated++;
-			if (shieldExhausted()) {
-				deactivateShield();
-			}
-		} else if (shieldShouldBeActivated()) {
-			activateShield();
-		}
 	}
 
 	private int getNextMove() {
@@ -165,23 +148,6 @@ public class Boss extends FighterPlane {
 
 	private double getProjectileInitialPosition() {
 		return getLayoutY() + getTranslateY() + PROJECTILE_Y_POSITION_OFFSET;
-	}
-
-	private boolean shieldShouldBeActivated() {
-		return Math.random() < BOSS_SHIELD_PROBABILITY;
-	}
-
-	private boolean shieldExhausted() {
-		return framesWithShieldActivated >= MAX_FRAMES_WITH_SHIELD;
-	}
-
-	private void activateShield() {
-		isShielded = true;
-	}
-
-	private void deactivateShield() {
-		isShielded = false;
-		framesWithShieldActivated = 0;
 	}
 
 	private void updateHealthBar() {
