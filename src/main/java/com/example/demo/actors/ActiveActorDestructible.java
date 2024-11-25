@@ -9,7 +9,7 @@ import javafx.scene.shape.Rectangle;
 public abstract class ActiveActorDestructible extends ActiveActor implements Destructible, Hitbox {
 
 	private boolean isDestroyed;
-	private Rectangle hitboxVisualization;
+	public Rectangle hitboxVisualization;
 	private double hitboxWidth;
 	private double hitboxHeight;
 
@@ -53,10 +53,11 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 	public void destroy() {
 		setDestroyed(true);
 		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
-			this.getChildren().remove(hitboxVisualization);
+			hitboxVisualization.setVisible(false);
 		}
 		setVisible(false);
 	}
+
 
 	public boolean isDestroyed() {
 		return isDestroyed;

@@ -208,21 +208,24 @@ public abstract class LevelParent extends Observable {
 		removeDestroyedActors(enemyProjectiles, enemyProjectilePool, bossProjectilePool);
 	}
 
+
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors, ObjectPool<Projectile>... pools) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream()
-				.filter(ActiveActorDestructible::isDestroyed)
-				.collect(Collectors.toList());
-		root.getChildren().removeAll(destroyedActors);
-		actors.removeAll(destroyedActors);
-		for (ActiveActorDestructible actor : destroyedActors) {
-			if (actor instanceof Projectile) {
-				Projectile projectile = (Projectile) actor;
-				for (ObjectPool<Projectile> pool : pools) {
-					pool.release(projectile);
+		Iterator<ActiveActorDestructible> iterator = actors.iterator();
+		while (iterator.hasNext()) {
+			ActiveActorDestructible actor = iterator.next();
+			if (actor.isDestroyed()) {
+				root.getChildren().remove(actor);
+				iterator.remove();
+				if (actor instanceof Projectile) {
+					Projectile projectile = (Projectile) actor;
+					for (ObjectPool<Projectile> pool : pools) {
+						pool.release(projectile);
+					}
 				}
 			}
 		}
 	}
+
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
 		List<ActiveActorDestructible> destroyedActors = actors.stream()
@@ -254,6 +257,7 @@ public abstract class LevelParent extends Observable {
 			}
 		}
 	}
+
 
 	private boolean checkHitboxCollision(Hitbox a, Hitbox b) {
 		return a.getHitboxX() < b.getHitboxX() + b.getHitboxWidth() &&

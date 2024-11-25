@@ -1,6 +1,7 @@
 package com.example.demo.projectiles;
 
 import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.utils.GameSettings;
 
 public abstract class Projectile extends ActiveActorDestructible {
 
@@ -19,16 +20,32 @@ public abstract class Projectile extends ActiveActorDestructible {
 		setDestroyed(false);
 		setVisible(true);
 
-		// 在子类中重新设置速度
+		// If hitboxVisualization exists, set it to visible
+		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
+			hitboxVisualization.setVisible(true);
+		}
+
+		// In subclasses, reset the speed
 	}
+
 
 	public void reset() {
 		setVisible(false);
 		setDestroyed(true);
 
-		// 停止移动
+		// Stop movement
 		getMovementComponent().setVelocity(0, 0);
+
+		// Hide the hitboxVisualization
+		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
+			hitboxVisualization.setVisible(false);
+		}
 	}
+	@Override
+	public void destroy() {
+		super.destroy(); // 这已经调用了 setDestroyed(true);
+	}
+
 
 	@Override
 	public void takeDamage() {
