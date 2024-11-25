@@ -1,54 +1,77 @@
 package com.example.demo.controller;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Observable;
-import java.util.Observer;
-
+import com.example.demo.LevelParent;
+import com.example.demo.LevelOne; // 显式引用 LevelOne
+import com.example.demo.LevelTwo; // 显式引用 LevelTwo
+import com.example.demo.StartMenu; // 引入 StartMenu 类
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import com.example.demo.LevelParent;
 
-public class Controller implements Observer {
+import java.util.logging.Logger;
 
-	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
+public class Controller {
+
+	private static final Logger logger = Logger.getLogger(Controller.class.getName());
 	private final Stage stage;
 
 	public Controller(Stage stage) {
 		this.stage = stage;
 	}
 
-	public void launchGame() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
-
-			stage.show();
-			goToLevel(LEVEL_ONE_CLASS_NAME);
+	// 显示初始菜单界面
+	public void showStartMenu() {
+		StartMenu startMenu = new StartMenu(stage);
+		startMenu.showMenu(this);
 	}
 
-	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-			Class<?> myClass = Class.forName(className);
-			Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
-			LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
-			myLevel.addObserver(this);
-			Scene scene = myLevel.initializeScene();
-			stage.setScene(scene);
-			myLevel.startGame();
-
-	}
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
+	// 启动游戏
+	public void launchGame() {
 		try {
-			goToLevel((String) arg1);
-		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setContentText(e.getClass().toString());
-			alert.show();
+			stage.show(); // 显示主窗口
+			goToLevelOne(); // 启动第一关
+		} catch (Exception e) {
+			showError("Failed to launch game", e);
 		}
 	}
 
+	// 加载第一关
+	private void goToLevelOne() {
+		try {
+			LevelOne levelOne = new LevelOne(stage.getHeight(), stage.getWidth());
+			loadLevel(levelOne);
+		} catch (Exception e) {
+			showError("Failed to load Level One", e);
+		}
+	}
+
+	// 加载第二关
+	private void goToLevelTwo() {
+		try {
+			LevelTwo levelTwo = new LevelTwo(stage.getHeight(), stage.getWidth());
+			loadLevel(levelTwo);
+		} catch (Exception e) {
+			showError("Failed to load Level Two", e);
+		}
+	}
+
+	// 通用加载关卡逻辑
+	private void loadLevel(LevelParent level) {
+		try {
+			Scene scene = level.initializeScene();
+			stage.setScene(scene);
+			level.startGame();
+		} catch (Exception e) {
+			showError("Failed to load level: " + level.getClass().getSimpleName(), e);
+		}
+	}
+
+	// 显示错误信息
+	private void showError(String message, Exception e) {
+		logger.severe(message + ": " + e.getMessage());
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setContentText(message + "\n" + e.getClass().getSimpleName() + ": " + e.getMessage());
+		alert.showAndWait();
+	}
 }
