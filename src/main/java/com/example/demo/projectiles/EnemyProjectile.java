@@ -9,17 +9,12 @@ public class EnemyProjectile extends Projectile {
 	public EnemyProjectile(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
 
-		setHitboxSize(80, 25); // 设置敌方子弹的 hitbox 尺寸
+		setHitboxSize(80, 25);
 	}
 
 	@Override
 	public void updatePosition() {
 		moveHorizontally(HORIZONTAL_VELOCITY);
 		updateHitBoxPosition();
-	}
-
-	@Override
-	public void updateActor() {
-		updatePosition();
 	}
 }

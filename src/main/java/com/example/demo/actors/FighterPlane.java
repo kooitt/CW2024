@@ -14,7 +14,7 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 	@Override
 	public void takeDamage() {
 		health--;
-		if (healthAtZero()) {
+		if (health <= 0) {
 			this.destroy();
 		}
 	}
@@ -23,19 +23,15 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 		this.health = Math.max(health, 0);
 	}
 
+	public int getHealth() {
+		return health;
+	}
+
 	public double getProjectileXPosition(double xPositionOffset) {
 		return getLayoutX() + getTranslateX() + xPositionOffset;
 	}
 
 	public double getProjectileYPosition(double yPositionOffset) {
 		return getLayoutY() + getTranslateY() + yPositionOffset;
-	}
-
-	private boolean healthAtZero() {
-		return health == 0;
-	}
-
-	public int getHealth() {
-		return health;
 	}
 }

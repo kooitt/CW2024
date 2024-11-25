@@ -39,7 +39,7 @@ public class Boss extends FighterPlane {
 		indexOfCurrentMove = 0;
 		initializeMovePattern();
 
-		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.2); // 设置 Boss 的 hitbox 尺寸
+		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.2);
 
 		Platform.runLater(() -> {
 			initializeHealthBar(root);
@@ -107,7 +107,11 @@ public class Boss extends FighterPlane {
 
 	@Override
 	public ActiveActorDestructible fireProjectile() {
-		return bossFiresInCurrentFrame() ? new BossProjectile(getProjectileInitialPosition()) : null;
+		if (bossFiresInCurrentFrame()) {
+			double projectileYPosition = getProjectileInitialPosition();
+			return new BossProjectile(projectileYPosition);
+		}
+		return null;
 	}
 
 	@Override

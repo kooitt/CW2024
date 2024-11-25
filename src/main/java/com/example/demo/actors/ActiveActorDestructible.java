@@ -44,6 +44,7 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 	@Override
 	public abstract void updatePosition();
 
+	@Override
 	public abstract void updateActor();
 
 	@Override
@@ -56,10 +57,6 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 			this.getChildren().remove(hitboxVisualization);
 		}
 		setVisible(false);
-	}
-
-	protected void setDestroyed() {
-		this.isDestroyed = true;
 	}
 
 	public boolean isDestroyed() {

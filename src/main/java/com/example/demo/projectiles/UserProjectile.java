@@ -9,17 +9,12 @@ public class UserProjectile extends Projectile {
 	public UserProjectile(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
 
-		setHitboxSize(30, 30); // 设置用户子弹的 hitbox 尺寸
+		setHitboxSize(30, 30);
 	}
 
 	@Override
 	public void updatePosition() {
 		moveHorizontally(HORIZONTAL_VELOCITY);
 		updateHitBoxPosition();
-	}
-
-	@Override
-	public void updateActor() {
-		updatePosition();
 	}
 }
