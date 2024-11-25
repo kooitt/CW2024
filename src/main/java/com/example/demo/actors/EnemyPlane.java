@@ -4,7 +4,6 @@ package com.example.demo.actors;
 
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
-import com.example.demo.projectiles.Projectile;
 
 public class EnemyPlane extends FighterPlane {
 
@@ -13,7 +12,7 @@ public class EnemyPlane extends FighterPlane {
 	private static final double PROJECTILE_X_POSITION_OFFSET = -100.0;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 50.0;
 	private static final int INITIAL_HEALTH = 1;
-	private static final double FIRE_RATE = 0.5; //
+	private static final double FIRE_RATE = 0.5; // 每秒发射0.5次
 
 	private ShootingComponent shootingComponent;
 
@@ -26,10 +25,10 @@ public class EnemyPlane extends FighterPlane {
 		// 初始化 MovementComponent，设置水平速度
 		getMovementComponent().setVelocity(-6, 0);
 
-		// Initialize ShootingComponent, passing 'this' as owner
+		// 初始化 ShootingComponent
 		shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_POSITION_OFFSET, PROJECTILE_Y_POSITION_OFFSET);
 
-		// Start firing
+		// 开始射击
 		shootingComponent.startFiring();
 	}
 
@@ -38,11 +37,11 @@ public class EnemyPlane extends FighterPlane {
 		updatePosition();
 		updateHitBoxPosition();
 
-		if (shootingComponent != null && shootingComponent.projectilePool == null) {
-			shootingComponent.projectilePool = level.getEnemyProjectilePool();
+		if (shootingComponent != null && shootingComponent.getProjectilePool() == null) {
+			shootingComponent.setProjectilePool(level.getEnemyProjectilePool());
 		}
 
-		// Update shooting logic
+		// 更新射击逻辑
 		shootingComponent.update(deltaTime, level);
 	}
 }

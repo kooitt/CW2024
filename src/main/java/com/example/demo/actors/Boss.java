@@ -10,7 +10,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.beans.binding.Bindings;
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
-import com.example.demo.projectiles.Projectile;
 
 public class Boss extends FighterPlane {
 
@@ -18,10 +17,10 @@ public class Boss extends FighterPlane {
 	private static final double INITIAL_X_POSITION = 1000.0;
 	private static final double INITIAL_Y_POSITION = 400.0;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
-	private static final double FIRE_RATE = 1.0; // 每秒发射0.5次
+	private static final double FIRE_RATE = 1.0; // 每秒发射1次
 	private static final int IMAGE_HEIGHT = 300;
 	private static final int VERTICAL_VELOCITY = 8;
-	private static final int HEALTH = 100;
+	private static final int MAX_HEALTH = 100;
 	private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
 	private static final int ZERO = 0;
 	private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
@@ -39,7 +38,7 @@ public class Boss extends FighterPlane {
 	private ShootingComponent shootingComponent;
 
 	public Boss(Group root) {
-		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
+		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, MAX_HEALTH);
 		movePattern = new ArrayList<>();
 		consecutiveMovesInSameDirection = 0;
 		indexOfCurrentMove = 0;
@@ -54,10 +53,10 @@ public class Boss extends FighterPlane {
 		// 初始化 MovementComponent，初始速度为 (0, 0)
 		getMovementComponent().setVelocity(0, 0);
 
-		// Initialize ShootingComponent
+		// 初始化 ShootingComponent
 		shootingComponent = new ShootingComponent(this, FIRE_RATE, null, 0, PROJECTILE_Y_POSITION_OFFSET);
 
-		// Start firing
+		// 开始射击
 		shootingComponent.startFiring();
 	}
 
@@ -81,7 +80,7 @@ public class Boss extends FighterPlane {
 			});
 		}
 
-		if (getHealth() <= 0) {
+		if (getCurrentHealth() <= 0) {
 			healthBar.setVisible(false);
 		} else {
 			healthBar.setVisible(true);
@@ -109,20 +108,17 @@ public class Boss extends FighterPlane {
 		updatePosition();
 		updateHitBoxPosition();
 
-		if (shootingComponent != null && shootingComponent.projectilePool == null) {
-			shootingComponent.projectilePool = level.getBossProjectilePool();
+		if (shootingComponent != null && shootingComponent.getProjectilePool() == null) {
+			shootingComponent.setProjectilePool(level.getBossProjectilePool());
 		}
 
-		// Update shooting logic
+		// 更新射击逻辑
 		shootingComponent.update(deltaTime, level);
 	}
 
 	@Override
-	public void takeDamage() {
-		super.takeDamage();
-		if (getHealth() < 0) {
-			setHealth(0);
-		}
+	public void takeDamage(int damage) {
+		super.takeDamage(damage);
 		updateHealthBar();
 	}
 
@@ -149,18 +145,14 @@ public class Boss extends FighterPlane {
 		return currentMove;
 	}
 
-	private double getProjectileInitialPosition() {
-		return getLayoutY() + getTranslateY() + PROJECTILE_Y_POSITION_OFFSET;
-	}
-
 	private void updateHealthBar() {
 		Platform.runLater(() -> {
-			double progress = (double) getHealth() / HEALTH;
+			double progress = (double) getCurrentHealth() / MAX_HEALTH;
 			if (progress < 0) {
 				progress = 0;
 			}
 			healthBar.setProgress(progress);
-			if (getHealth() <= 0) {
+			if (getCurrentHealth() <= 0) {
 				healthBar.setVisible(false);
 			} else {
 				healthBar.setVisible(true);

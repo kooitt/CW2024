@@ -10,7 +10,7 @@ import com.example.demo.utils.ObjectPool;
 public class ShootingComponent {
     private double fireRate; // 每秒发射次数
     private double timeSinceLastShot; // 距离上次射击的时间
-    public ObjectPool<Projectile> projectilePool;
+    private ObjectPool<Projectile> projectilePool;
     private FighterPlane owner; // 将类型修改为 FighterPlane
     private double projectileXOffset;
     private double projectileYOffset;
@@ -41,6 +41,11 @@ public class ShootingComponent {
     }
 
     private void fire(LevelParent level) {
+        if (projectilePool == null) {
+            // 如果 projectilePool 为空，则无法发射子弹
+            return;
+        }
+
         Projectile projectile = projectilePool.acquire();
         if (projectile != null) {
             double x = owner.getProjectileXPosition(projectileXOffset);
@@ -62,5 +67,14 @@ public class ShootingComponent {
 
     public void setFireRate(double fireRate) {
         this.fireRate = fireRate;
+    }
+
+    // 添加以下 getter 和 setter 方法
+    public ObjectPool<Projectile> getProjectilePool() {
+        return projectilePool;
+    }
+
+    public void setProjectilePool(ObjectPool<Projectile> projectilePool) {
+        this.projectilePool = projectilePool;
     }
 }

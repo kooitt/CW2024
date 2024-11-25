@@ -1,14 +1,13 @@
-// Projectile.java
-
 package com.example.demo.projectiles;
 
 import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.levels.LevelParent;
 import com.example.demo.utils.GameSettings;
 
 public abstract class Projectile extends ActiveActorDestructible {
 
 	public Projectile(String imageName, int imageHeight, double initialXPos, double initialYPos) {
-		super(imageName, imageHeight, initialXPos, initialYPos);
+		super(imageName, imageHeight, initialXPos, initialYPos, 1); // 子弹的生命值为1
 
 		// 初始化 MovementComponent，初始速度为 (0, 0)
 		getMovementComponent().setVelocity(0, 0);
@@ -22,22 +21,17 @@ public abstract class Projectile extends ActiveActorDestructible {
 		setDestroyed(false);
 		setVisible(true);
 
-		// If hitboxVisualization exists, set it to visible
 		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
 			hitboxVisualization.setVisible(true);
 		}
-
-		// In subclasses, reset the speed
 	}
 
 	public void reset() {
 		setVisible(false);
 		setDestroyed(true);
 
-		// Stop movement
 		getMovementComponent().setVelocity(0, 0);
 
-		// Hide the hitboxVisualization
 		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
 			hitboxVisualization.setVisible(false);
 		}
@@ -49,13 +43,13 @@ public abstract class Projectile extends ActiveActorDestructible {
 	}
 
 	@Override
-	public void takeDamage() {
+	public void takeDamage(int damage) {
 		this.destroy();
 	}
 
 	@Override
-	public void updateActor() {
-		super.updateActor(); // 确保调用父类的 updateActor()
+	public void updateActor(double deltaTime, LevelParent level) {
+		super.updateActor(); // 更新位置等
 		updateHitBoxPosition();
 	}
 }

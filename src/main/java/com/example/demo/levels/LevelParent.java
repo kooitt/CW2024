@@ -51,11 +51,11 @@ public abstract class LevelParent extends Observable {
 
 	private long lastUpdateTime;
 
-	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
+	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
-		this.user = new UserPlane(playerInitialHealth);
+		this.user = new UserPlane();
 		this.friendlyUnits = new ArrayList<>();
 		this.enemyUnits = new ArrayList<>();
 		this.userProjectiles = new ArrayList<>();
@@ -112,7 +112,6 @@ public abstract class LevelParent extends Observable {
 		processInput();
 		spawnEnemyUnits();
 		updateActors(deltaTime);
-		generateEnemyFire();
 		updateNumberOfEnemies();
 		handleEnemyPenetration();
 		handleUserProjectileCollisions();
@@ -150,8 +149,6 @@ public abstract class LevelParent extends Observable {
 		root.getChildren().add(background);
 	}
 
-// LevelParent.java
-
 	private void processInput() {
 		KeyBindings keyBindings = KeyBindings.getInstance();
 		boolean movingUp = activeKeys.contains(keyBindings.getUpKey());
@@ -176,12 +173,7 @@ public abstract class LevelParent extends Observable {
 		} else {
 			user.stopHorizontalMovement();
 		}
-
-		// 不再需要处理射击按键，移除相关代码（如果已自动射击）
 	}
-
-
-
 
 	private void updateActors(double deltaTime) {
 		friendlyUnits.forEach(plane -> {
@@ -196,10 +188,6 @@ public abstract class LevelParent extends Observable {
 		enemyProjectiles.forEach(projectile -> {
 			projectile.updateActor();
 		});
-	}
-
-	private void generateEnemyFire() {
-		// 不再需要这个方法，因为敌人和 Boss 的射击逻辑在它们的 updateActor 中处理
 	}
 
 	private void removeAllDestroyedActors() {
@@ -253,8 +241,9 @@ public abstract class LevelParent extends Observable {
 		for (ActiveActorDestructible actor1 : actors1) {
 			for (ActiveActorDestructible actor2 : actors2) {
 				if (checkHitboxCollision(actor1, actor2)) {
-					actor1.takeDamage();
-					actor2.takeDamage();
+					// 假设子弹造成1点伤害，可以根据实际情况调整
+					actor1.takeDamage(1);
+					actor2.takeDamage(1);
 				}
 			}
 		}
@@ -270,14 +259,14 @@ public abstract class LevelParent extends Observable {
 	private void handleEnemyPenetration() {
 		for (ActiveActorDestructible enemy : enemyUnits) {
 			if (enemyHasPenetratedDefenses(enemy)) {
-				user.takeDamage();
+				user.takeDamage(1); // 假设敌机穿过玩家造成1点伤害
 				enemy.destroy();
 			}
 		}
 	}
 
 	private void updateLevelView() {
-		levelView.removeHearts(user.getHealth());
+		levelView.removeHearts(user.getCurrentHealth());
 	}
 
 	private void updateKillCount() {

@@ -1,10 +1,9 @@
-// ActiveActorDestructible.java
-
 package com.example.demo.actors;
 
+import com.example.demo.components.HealthComponent;
 import com.example.demo.interfaces.Destructible;
-import com.example.demo.interfaces.Hitbox;
 import com.example.demo.levels.LevelParent;
+import com.example.demo.interfaces.Hitbox;
 import com.example.demo.utils.GameSettings;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -16,9 +15,14 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 	private double hitboxWidth;
 	private double hitboxHeight;
 
-	public ActiveActorDestructible(String imageName, int imageHeight, double initialXPos, double initialYPos) {
+	protected HealthComponent healthComponent;
+
+	public ActiveActorDestructible(String imageName, int imageHeight, double initialXPos, double initialYPos, int maxHealth) {
 		super(imageName, imageHeight, initialXPos, initialYPos);
 		isDestroyed = false;
+
+		// 初始化 HealthComponent
+		healthComponent = new HealthComponent(this, maxHealth);
 
 		this.hitboxWidth = imageView.getFitWidth();
 		this.hitboxHeight = imageView.getFitHeight();
@@ -46,16 +50,11 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 
 	@Override
 	public void updateActor() {
-		super.updateActor(); // 调用父类的 updateActor()，确保位置更新
+		super.updateActor(); // 确保位置更新
 	}
 
-	// 添加新的 updateActor 方法
-	public void updateActor(double deltaTime, LevelParent level) {
-		updateActor(); // 默认调用无参数的 updateActor()
-	}
-
-	@Override
-	public abstract void takeDamage();
+	// 添加抽象方法
+	public abstract void updateActor(double deltaTime, LevelParent level);
 
 	@Override
 	public void destroy() {
@@ -68,6 +67,26 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 
 	public boolean isDestroyed() {
 		return isDestroyed;
+	}
+
+	public void takeDamage(int damage) {
+		healthComponent.takeDamage(damage);
+	}
+
+	public int getCurrentHealth() {
+		return healthComponent.getCurrentHealth();
+	}
+
+	public int getMaxHealth() {
+		return healthComponent.getMaxHealth();
+	}
+
+	public void setCurrentHealth(int health) {
+		healthComponent.setCurrentHealth(health);
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		healthComponent.setMaxHealth(maxHealth);
 	}
 
 	@Override

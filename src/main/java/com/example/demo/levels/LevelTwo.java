@@ -12,7 +12,7 @@ public class LevelTwo extends LevelParent {
 	private LevelViewLevelTwo levelView;
 
 	public LevelTwo(double screenHeight, double screenWidth) {
-		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
 		boss = new Boss(getRoot());
 	}
 

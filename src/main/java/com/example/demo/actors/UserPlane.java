@@ -20,6 +20,7 @@ public class UserPlane extends FighterPlane {
 	private static final double PROJECTILE_X_OFFSET = 110;
 	private static final double PROJECTILE_Y_OFFSET = 20;
 	private static final double FIRE_RATE = 10.0; // 每秒发射5次
+	private static final int INITIAL_HEALTH = 5;
 
 	private int verticalVelocityMultiplier;
 	private int horizontalVelocityMultiplier;
@@ -27,8 +28,8 @@ public class UserPlane extends FighterPlane {
 
 	private ShootingComponent shootingComponent;
 
-	public UserPlane(int initialHealth) {
-		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
+	public UserPlane() {
+		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, INITIAL_HEALTH);
 		verticalVelocityMultiplier = 0;
 		horizontalVelocityMultiplier = 0;
 
@@ -50,8 +51,8 @@ public class UserPlane extends FighterPlane {
 		updatePosition();
 		updateHitBoxPosition();
 
-		if (shootingComponent != null && shootingComponent.projectilePool == null) {
-			shootingComponent.projectilePool = level.getUserProjectilePool();
+		if (shootingComponent != null && shootingComponent.getProjectilePool() == null) {
+			shootingComponent.setProjectilePool(level.getUserProjectilePool());
 		}
 
 		// 更新射击逻辑
