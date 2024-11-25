@@ -6,9 +6,11 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 
-<StackPane fx:id="pauseRoot" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.example.demo.controller.PauseMenuController">
+<StackPane fx:id="winRoot" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.demo.controller.WinScreenController">
 
     <Rectangle fx:id="overlay"
                width="${controller.screenWidth}"
@@ -21,22 +23,21 @@
             <Insets top="20" right="40" bottom="20" left="40"/>
         </padding>
 
-        <Text fx:id="pauseTitle"
-              text="PAUSED"
-              style="-fx-fill: white; -fx-font-size: 30; -fx-font-family: 'Arial'"/>
+        <ImageView fx:id="winImage" fitWidth="400" fitHeight="200" preserveRatio="true">
+            <Image url="@com/example/demo/images/youwin.png"/>
+        </ImageView>
 
-        <Button fx:id="resumeButton"
-                text="Resume"
-                onAction="#handleResume"
-                style="-fx-pref-width: 200; -fx-pref-height: 40"/>
+        <Text fx:id="winText"
+              text="VICTORY!"
+              style="-fx-fill: gold; -fx-font-size: 40; -fx-font-family: 'Arial'"/>
 
         <Button fx:id="restartButton"
-                text="Restart"
+                text="Play Again"
                 onAction="#handleRestart"
                 style="-fx-pref-width: 200; -fx-pref-height: 40"/>
 
         <Button fx:id="mainMenuButton"
-                text="Main Menu"
+                text="Return to Main Menu"
                 onAction="#handleMainMenu"
                 style="-fx-pref-width: 200; -fx-pref-height: 40"/>
     </VBox>

@@ -239,12 +239,14 @@ public abstract class LevelParent {
     protected void winGame() {
         stopTimelineAndMusic();
         inputManager.setGameState(GameState.WIN);
-        levelView.showWinImage();
+//        levelView.showWinImage();
+        navigationManager.showWinScreen();
     }
 
     protected void loseGame() {
         stopTimelineAndMusic();
         inputManager.setGameState(GameState.LOSE);
-        levelView.showGameOverImage();
+//        levelView.showGameOverImage();
+        navigationManager.showGameOverScreen(this.getClass());
     }
 }
