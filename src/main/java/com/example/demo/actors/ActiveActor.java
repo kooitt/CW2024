@@ -1,5 +1,6 @@
 package com.example.demo.actors;
 
+import com.example.demo.components.MovementComponent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -8,6 +9,7 @@ public abstract class ActiveActor extends Actor {
 	private static final String IMAGE_LOCATION = "/com/example/demo/images/";
 
 	protected ImageView imageView;
+	protected MovementComponent movementComponent;
 
 	public ActiveActor(String imageName, int imageHeight, double initialXPos, double initialYPos) {
 		super();
@@ -17,15 +19,26 @@ public abstract class ActiveActor extends Actor {
 		this.setLayoutX(initialXPos);
 		this.setLayoutY(initialYPos);
 		this.getChildren().add(imageView);
+
+		// 初始化 MovementComponent，初始速度为 0
+		movementComponent = new MovementComponent(0, 0);
 	}
 
-	public abstract void updatePosition();
-
-	protected void moveHorizontally(double horizontalMove) {
-		this.setTranslateX(getTranslateX() + horizontalMove);
+	public void updatePosition() {
+		// 使用 MovementComponent 更新位置
+		movementComponent.update(this);
 	}
 
-	protected void moveVertically(double verticalMove) {
-		this.setTranslateY(getTranslateY() + verticalMove);
+	public void updateActor() {
+		updatePosition();
+	}
+
+	// 提供对 MovementComponent 的访问方法
+	public MovementComponent getMovementComponent() {
+		return movementComponent;
+	}
+
+	public void setMovementComponent(MovementComponent movementComponent) {
+		this.movementComponent = movementComponent;
 	}
 }

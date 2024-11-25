@@ -1,5 +1,8 @@
 package com.example.demo.actors;
 
+import com.example.demo.levels.LevelParent;
+import com.example.demo.projectiles.Projectile;
+
 public abstract class FighterPlane extends ActiveActorDestructible {
 
 	private int health;
@@ -9,7 +12,7 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 		this.health = health;
 	}
 
-	public abstract ActiveActorDestructible fireProjectile();
+	public abstract Projectile fireProjectile(LevelParent level);
 
 	@Override
 	public void takeDamage() {

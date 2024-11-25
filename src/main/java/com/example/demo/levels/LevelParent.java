@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public abstract class LevelParent extends Observable {
 
 	private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
-	private static final int MILLISECOND_DELAY = 50;
+	private static final int MILLISECOND_DELAY = 40;
 	private final double screenHeight;
 	private final double screenWidth;
 	private final double enemyMaximumYPosition;
@@ -35,10 +35,10 @@ public abstract class LevelParent extends Observable {
 	private final Scene scene;
 	private final ImageView background;
 
-	private final List<ActiveActorDestructible> friendlyUnits;
-	private final List<ActiveActorDestructible> enemyUnits;
-	private final List<ActiveActorDestructible> userProjectiles;
-	private final List<ActiveActorDestructible> enemyProjectiles;
+	protected final List<ActiveActorDestructible> friendlyUnits;
+	protected final List<ActiveActorDestructible> enemyUnits;
+	protected final List<ActiveActorDestructible> userProjectiles;
+	protected final List<ActiveActorDestructible> enemyProjectiles;
 
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
@@ -47,6 +47,7 @@ public abstract class LevelParent extends Observable {
 
 	private ObjectPool<Projectile> userProjectilePool;
 	private ObjectPool<Projectile> enemyProjectilePool;
+	private ObjectPool<Projectile> bossProjectilePool;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -70,6 +71,7 @@ public abstract class LevelParent extends Observable {
 
 		userProjectilePool = new ObjectPool<>(new BulletFactory("user"));
 		enemyProjectilePool = new ObjectPool<>(new BulletFactory("enemy"));
+		bossProjectilePool = new ObjectPool<>(new BulletFactory("boss"));
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -160,9 +162,8 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void fireProjectile() {
-		Projectile projectile = userProjectilePool.acquire();
+		Projectile projectile = user.fireProjectile(this);
 		if (projectile != null) {
-			projectile.resetPosition(getUser().getProjectileXPosition(110), getUser().getProjectileYPosition(20));
 			root.getChildren().add(projectile);
 			userProjectiles.add(projectile);
 		}
@@ -172,20 +173,13 @@ public abstract class LevelParent extends Observable {
 		enemyUnits.forEach(enemy -> {
 			if (enemy instanceof FighterPlane) {
 				FighterPlane fighter = (FighterPlane) enemy;
-				ActiveActorDestructible projectile = fighter.fireProjectile();
+				Projectile projectile = fighter.fireProjectile(this);
 				if (projectile != null) {
 					root.getChildren().add(projectile);
 					enemyProjectiles.add(projectile);
 				}
 			}
 		});
-	}
-
-	private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
-		if (projectile != null) {
-			root.getChildren().add(projectile);
-			enemyProjectiles.add(projectile);
-		}
 	}
 
 	private void updateActors() {
@@ -211,17 +205,22 @@ public abstract class LevelParent extends Observable {
 		removeDestroyedActors(friendlyUnits);
 		removeDestroyedActors(enemyUnits);
 		removeDestroyedActors(userProjectiles, userProjectilePool);
-		removeDestroyedActors(enemyProjectiles, enemyProjectilePool);
+		removeDestroyedActors(enemyProjectiles, enemyProjectilePool, bossProjectilePool);
 	}
 
-	private void removeDestroyedActors(List<ActiveActorDestructible> actors, ObjectPool<Projectile> pool) {
+	private void removeDestroyedActors(List<ActiveActorDestructible> actors, ObjectPool<Projectile>... pools) {
 		List<ActiveActorDestructible> destroyedActors = actors.stream()
 				.filter(ActiveActorDestructible::isDestroyed)
 				.collect(Collectors.toList());
 		root.getChildren().removeAll(destroyedActors);
 		actors.removeAll(destroyedActors);
 		for (ActiveActorDestructible actor : destroyedActors) {
-			pool.release((Projectile) actor);
+			if (actor instanceof Projectile) {
+				Projectile projectile = (Projectile) actor;
+				for (ObjectPool<Projectile> pool : pools) {
+					pool.release(projectile);
+				}
+			}
 		}
 	}
 
@@ -234,7 +233,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void handlePlaneCollisions() {
-		handleCollisions(Collections.singletonList(getUser()), enemyUnits);
+		handleCollisions(Collections.singletonList(user), enemyUnits);
 	}
 
 	private void handleUserProjectileCollisions() {
@@ -367,5 +366,18 @@ public abstract class LevelParent extends Observable {
 				projectile.destroy();
 			}
 		}
+	}
+
+	// 添加以下方法，供 UserPlane 获取对象池
+	public ObjectPool<Projectile> getUserProjectilePool() {
+		return userProjectilePool;
+	}
+
+	public ObjectPool<Projectile> getEnemyProjectilePool() {
+		return enemyProjectilePool;
+	}
+
+	public ObjectPool<Projectile> getBossProjectilePool() {
+		return bossProjectilePool;
 	}
 }

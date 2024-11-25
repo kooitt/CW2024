@@ -1,3 +1,5 @@
+// Boss.java
+
 package com.example.demo.actors;
 
 import java.util.*;
@@ -7,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.beans.binding.Bindings;
 import com.example.demo.projectiles.BossProjectile;
+import com.example.demo.projectiles.Projectile;
+import com.example.demo.levels.LevelParent;
 
 public class Boss extends FighterPlane {
 
@@ -44,6 +48,9 @@ public class Boss extends FighterPlane {
 		Platform.runLater(() -> {
 			initializeHealthBar(root);
 		});
+
+		// 初始化 MovementComponent，初始速度为 (0, 0)
+		getMovementComponent().setVelocity(0, 0);
 	}
 
 	private void initializeHealthBar(Group root) {
@@ -90,26 +97,19 @@ public class Boss extends FighterPlane {
 	}
 
 	@Override
-	public void updatePosition() {
-		double initialTranslateY = getTranslateY();
-		moveVertically(getNextMove());
-		double currentPosition = getLayoutY() + getTranslateY();
-		if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
-			setTranslateY(initialTranslateY);
-		}
-		updateHitBoxPosition();
-	}
-
-	@Override
 	public void updateActor() {
 		updatePosition();
 	}
 
 	@Override
-	public ActiveActorDestructible fireProjectile() {
+	public Projectile fireProjectile(LevelParent level) {
 		if (bossFiresInCurrentFrame()) {
-			double projectileYPosition = getProjectileInitialPosition();
-			return new BossProjectile(projectileYPosition);
+			Projectile projectile = level.getBossProjectilePool().acquire();
+			if (projectile != null) {
+				double projectileYPosition = getProjectileInitialPosition();
+				projectile.resetPosition(950, projectileYPosition);
+				return projectile;
+			}
 		}
 		return null;
 	}
@@ -167,5 +167,23 @@ public class Boss extends FighterPlane {
 				healthBar.setVisible(true);
 			}
 		});
+	}
+
+	@Override
+	public void updatePosition() {
+		double initialTranslateY = getTranslateY();
+
+		// 更新 MovementComponent 的速度
+		int nextMove = getNextMove();
+		getMovementComponent().setVelocity(0, nextMove);
+
+		super.updatePosition();
+
+		double currentPosition = getLayoutY() + getTranslateY();
+		if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
+			setTranslateY(initialTranslateY);
+			getMovementComponent().setVelocity(0, 0);
+		}
+		updateHitBoxPosition();
 	}
 }

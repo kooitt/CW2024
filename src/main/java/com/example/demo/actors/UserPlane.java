@@ -1,6 +1,8 @@
 package com.example.demo.actors;
 
 import com.example.demo.projectiles.UserProjectile;
+import com.example.demo.projectiles.Projectile;
+import com.example.demo.levels.LevelParent;
 
 public class UserPlane extends FighterPlane {
 
@@ -22,18 +24,9 @@ public class UserPlane extends FighterPlane {
 
 		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.3);
 		updateHitBoxPosition();
-	}
 
-	@Override
-	public void updatePosition() {
-		if (isMoving()) {
-			double initialTranslateY = getTranslateY();
-			moveVertically(VERTICAL_VELOCITY * velocityMultiplier);
-			double newPosition = getLayoutY() + getTranslateY();
-			if (newPosition < Y_UPPER_BOUND || newPosition > Y_LOWER_BOUND) {
-				setTranslateY(initialTranslateY);
-			}
-		}
+		// 初始化 MovementComponent，初始速度为 (0, 0)
+		getMovementComponent().setVelocity(0, 0);
 	}
 
 	@Override
@@ -43,8 +36,13 @@ public class UserPlane extends FighterPlane {
 	}
 
 	@Override
-	public ActiveActorDestructible fireProjectile() {
-		return new UserProjectile(PROJECTILE_X_POSITION, getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
+	public Projectile fireProjectile(LevelParent level) {
+		Projectile projectile = level.getUserProjectilePool().acquire();
+		if (projectile != null) {
+			projectile.resetPosition(getProjectileXPosition(PROJECTILE_X_POSITION), getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
+			return projectile;
+		}
+		return null;
 	}
 
 	private boolean isMoving() {
@@ -53,14 +51,17 @@ public class UserPlane extends FighterPlane {
 
 	public void moveUp() {
 		velocityMultiplier = -1;
+		getMovementComponent().setVelocity(0, VERTICAL_VELOCITY * velocityMultiplier);
 	}
 
 	public void moveDown() {
 		velocityMultiplier = 1;
+		getMovementComponent().setVelocity(0, VERTICAL_VELOCITY * velocityMultiplier);
 	}
 
 	public void stop() {
 		velocityMultiplier = 0;
+		getMovementComponent().setVelocity(0, 0);
 	}
 
 	public int getNumberOfKills() {
@@ -69,5 +70,15 @@ public class UserPlane extends FighterPlane {
 
 	public void incrementKillCount() {
 		numberOfKills++;
+	}
+
+	@Override
+	public void updatePosition() {
+		double initialTranslateY = getTranslateY();
+		super.updatePosition();
+		double newPosition = getLayoutY() + getTranslateY();
+		if (newPosition < Y_UPPER_BOUND || newPosition > Y_LOWER_BOUND) {
+			setTranslateY(initialTranslateY);
+		}
 	}
 }

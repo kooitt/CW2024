@@ -6,6 +6,9 @@ public abstract class Projectile extends ActiveActorDestructible {
 
 	public Projectile(String imageName, int imageHeight, double initialXPos, double initialYPos) {
 		super(imageName, imageHeight, initialXPos, initialYPos);
+
+		// 初始化 MovementComponent，初始速度为 (0, 0)
+		getMovementComponent().setVelocity(0, 0);
 	}
 
 	public void resetPosition(double x, double y) {
@@ -15,11 +18,16 @@ public abstract class Projectile extends ActiveActorDestructible {
 		setTranslateY(0);
 		setDestroyed(false);
 		setVisible(true);
+
+		// 在子类中重新设置速度
 	}
 
 	public void reset() {
 		setVisible(false);
 		setDestroyed(true);
+
+		// 停止移动
+		getMovementComponent().setVelocity(0, 0);
 	}
 
 	@Override
@@ -28,10 +36,8 @@ public abstract class Projectile extends ActiveActorDestructible {
 	}
 
 	@Override
-	public abstract void updatePosition();
-
-	@Override
 	public void updateActor() {
-		updatePosition();
+		super.updateActor(); // 确保调用父类的 updateActor()
+		updateHitBoxPosition();
 	}
 }

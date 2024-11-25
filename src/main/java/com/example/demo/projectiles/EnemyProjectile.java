@@ -1,3 +1,5 @@
+// EnemyProjectile.java
+
 package com.example.demo.projectiles;
 
 public class EnemyProjectile extends Projectile {
@@ -13,8 +15,10 @@ public class EnemyProjectile extends Projectile {
 	}
 
 	@Override
-	public void updatePosition() {
-		moveHorizontally(HORIZONTAL_VELOCITY);
-		updateHitBoxPosition();
+	public void resetPosition(double x, double y) {
+		super.resetPosition(x, y);
+
+		// 设置水平速度
+		getMovementComponent().setVelocity(HORIZONTAL_VELOCITY, 0);
 	}
 }

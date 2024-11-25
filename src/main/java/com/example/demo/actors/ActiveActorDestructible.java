@@ -42,10 +42,9 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 	}
 
 	@Override
-	public abstract void updatePosition();
-
-	@Override
-	public abstract void updateActor();
+	public void updateActor() {
+		super.updateActor(); // 调用父类的 updateActor()，确保位置更新
+	}
 
 	@Override
 	public abstract void takeDamage();
@@ -92,8 +91,8 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 
 			hitboxVisualization.setWidth(hitboxWidth);
 			hitboxVisualization.setHeight(hitboxHeight);
-			hitboxVisualization.setTranslateX(imageView.getTranslateX() + offsetX);
-			hitboxVisualization.setTranslateY(imageView.getTranslateY() + offsetY);
+			hitboxVisualization.setTranslateX(offsetX);
+			hitboxVisualization.setTranslateY(offsetY);
 		}
 	}
 }
