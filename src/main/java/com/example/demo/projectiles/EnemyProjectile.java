@@ -1,6 +1,6 @@
-// EnemyProjectile.java
-
 package com.example.demo.projectiles;
+
+import com.example.demo.actors.ActiveActor;
 
 public class EnemyProjectile extends Projectile {
 
@@ -11,7 +11,8 @@ public class EnemyProjectile extends Projectile {
 	public EnemyProjectile(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
 
-		setHitboxSize(80, 25);
+		// 使用 CollisionComponent 来设置碰撞盒大小
+		getCollisionComponent().setHitboxSize(80.0, 25.0);
 	}
 
 	@Override

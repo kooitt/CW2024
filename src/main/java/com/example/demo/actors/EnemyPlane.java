@@ -19,8 +19,9 @@ public class EnemyPlane extends FighterPlane {
 	public EnemyPlane(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
 
-		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.35);
-		updateHitBoxPosition();
+		// 设置碰撞盒大小
+		getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.35);
+		getCollisionComponent().updateHitBoxPosition();
 
 		// 初始化 MovementComponent，设置水平速度
 		getMovementComponent().setVelocity(-6, 0);
@@ -35,7 +36,7 @@ public class EnemyPlane extends FighterPlane {
 	@Override
 	public void updateActor(double deltaTime, LevelParent level) {
 		updatePosition();
-		updateHitBoxPosition();
+		getCollisionComponent().updateHitBoxPosition();
 
 		if (shootingComponent != null && shootingComponent.getProjectilePool() == null) {
 			shootingComponent.setProjectilePool(level.getEnemyProjectilePool());
@@ -44,4 +45,5 @@ public class EnemyPlane extends FighterPlane {
 		// 更新射击逻辑
 		shootingComponent.update(deltaTime, level);
 	}
+
 }

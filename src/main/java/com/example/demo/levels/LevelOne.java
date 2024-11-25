@@ -1,6 +1,7 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.*;
+import com.example.demo.actors.ActiveActor;
+import com.example.demo.actors.EnemyPlane;
 import com.example.demo.views.LevelView;
 
 public class LevelOne extends LevelParent {
@@ -9,7 +10,7 @@ public class LevelOne extends LevelParent {
 	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
 	private static final int TOTAL_ENEMIES = 5;
 	private static final int KILLS_TO_ADVANCE = 10;
-	private static final double ENEMY_SPAWN_PROBABILITY = .20;
+	private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 
 	public LevelOne(double screenHeight, double screenWidth) {
@@ -36,7 +37,7 @@ public class LevelOne extends LevelParent {
 		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
 			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
 				double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-				ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+				ActiveActor newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
 				addEnemyUnit(newEnemy);
 			}
 		}

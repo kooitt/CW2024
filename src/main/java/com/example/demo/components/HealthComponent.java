@@ -2,14 +2,14 @@
 
 package com.example.demo.components;
 
-import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.ActiveActor;
 
 public class HealthComponent {
     private int maxHealth;
     private int currentHealth;
-    private ActiveActorDestructible owner;
+    private ActiveActor owner;
 
-    public HealthComponent(ActiveActorDestructible owner, int maxHealth) {
+    public HealthComponent(ActiveActor owner, int maxHealth) {
         this.owner = owner;
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;

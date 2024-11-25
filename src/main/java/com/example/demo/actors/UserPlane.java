@@ -19,7 +19,7 @@ public class UserPlane extends FighterPlane {
 	private static final int HORIZONTAL_VELOCITY = 8;
 	private static final double PROJECTILE_X_OFFSET = 110;
 	private static final double PROJECTILE_Y_OFFSET = 20;
-	private static final double FIRE_RATE = 10.0; // 每秒发射5次
+	private static final double FIRE_RATE = 10.0; // 每秒发射10次
 	private static final int INITIAL_HEALTH = 5;
 
 	private int verticalVelocityMultiplier;
@@ -33,8 +33,9 @@ public class UserPlane extends FighterPlane {
 		verticalVelocityMultiplier = 0;
 		horizontalVelocityMultiplier = 0;
 
-		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.3);
-		updateHitBoxPosition();
+		// 设置碰撞盒大小
+		getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.3);
+		getCollisionComponent().updateHitBoxPosition();
 
 		// 初始化 MovementComponent，初始速度为 (0, 0)
 		getMovementComponent().setVelocity(0, 0);
@@ -49,7 +50,7 @@ public class UserPlane extends FighterPlane {
 	@Override
 	public void updateActor(double deltaTime, LevelParent level) {
 		updatePosition();
-		updateHitBoxPosition();
+		getCollisionComponent().updateHitBoxPosition();
 
 		if (shootingComponent != null && shootingComponent.getProjectilePool() == null) {
 			shootingComponent.setProjectilePool(level.getUserProjectilePool());
@@ -58,6 +59,7 @@ public class UserPlane extends FighterPlane {
 		// 更新射击逻辑
 		shootingComponent.update(deltaTime, level);
 	}
+
 
 	public void moveUp() {
 		verticalVelocityMultiplier = -1;

@@ -2,10 +2,11 @@ package com.example.demo.utils;
 
 import com.example.demo.interfaces.ObjectFactory;
 
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class ObjectPool<T> {
-    private Stack<T> availableObjects = new Stack<>();
+    private Deque<T> availableObjects = new ArrayDeque<>();
     private ObjectFactory<T> factory;
 
     public ObjectPool(ObjectFactory<T> factory) {

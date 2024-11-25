@@ -1,16 +1,23 @@
 package com.example.demo.projectiles;
 
-import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.ActiveActor;
+import com.example.demo.components.CollisionComponent;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.utils.GameSettings;
 
-public abstract class Projectile extends ActiveActorDestructible {
+public abstract class Projectile extends ActiveActor {
 
 	public Projectile(String imageName, int imageHeight, double initialXPos, double initialYPos) {
-		super(imageName, imageHeight, initialXPos, initialYPos, 1); // 子弹的生命值为1
+		super(imageName, imageHeight, initialXPos, initialYPos);
 
 		// 初始化 MovementComponent，初始速度为 (0, 0)
 		getMovementComponent().setVelocity(0, 0);
+
+		// 初始化 CollisionComponent
+		double hitboxWidth = imageView.getFitWidth();
+		double hitboxHeight = imageView.getFitHeight();
+		CollisionComponent collisionComponent = new CollisionComponent(this, hitboxWidth, hitboxHeight);
+		setCollisionComponent(collisionComponent);
 	}
 
 	public void resetPosition(double x, double y) {
@@ -18,22 +25,22 @@ public abstract class Projectile extends ActiveActorDestructible {
 		setLayoutY(y);
 		setTranslateX(0);
 		setTranslateY(0);
-		setDestroyed(false);
+		isDestroyed = false;
 		setVisible(true);
 
-		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
-			hitboxVisualization.setVisible(true);
+		if (GameSettings.SHOW_HITBOXES && getCollisionComponent() != null) {
+			// 显示碰撞盒
 		}
 	}
 
 	public void reset() {
 		setVisible(false);
-		setDestroyed(true);
+		isDestroyed = true;
 
 		getMovementComponent().setVelocity(0, 0);
 
-		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
-			hitboxVisualization.setVisible(false);
+		if (GameSettings.SHOW_HITBOXES && getCollisionComponent() != null) {
+			// 隐藏碰撞盒
 		}
 	}
 
@@ -47,9 +54,11 @@ public abstract class Projectile extends ActiveActorDestructible {
 		this.destroy();
 	}
 
+
 	@Override
 	public void updateActor(double deltaTime, LevelParent level) {
-		super.updateActor(); // 更新位置等
-		updateHitBoxPosition();
+		updatePosition();
+		getCollisionComponent().updateHitBoxPosition();
 	}
+
 }

@@ -1,5 +1,3 @@
-// BossProjectile.java
-
 package com.example.demo.projectiles;
 
 public class BossProjectile extends Projectile {
@@ -11,7 +9,8 @@ public class BossProjectile extends Projectile {
 	public BossProjectile(double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, 950, initialYPos);
 
-		setHitboxSize(IMAGE_HEIGHT * 2.5, IMAGE_HEIGHT * 0.9);
+		// 使用 CollisionComponent 来设置碰撞盒大小
+		getCollisionComponent().setHitboxSize(IMAGE_HEIGHT * 2.5, IMAGE_HEIGHT * 0.9);
 	}
 
 	@Override

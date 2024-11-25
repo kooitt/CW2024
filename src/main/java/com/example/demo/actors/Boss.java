@@ -1,5 +1,3 @@
-// Boss.java
-
 package com.example.demo.actors;
 
 import java.util.*;
@@ -44,7 +42,8 @@ public class Boss extends FighterPlane {
 		indexOfCurrentMove = 0;
 		initializeMovePattern();
 
-		setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.2);
+		// 设置碰撞盒大小
+		getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.2);
 
 		Platform.runLater(() -> {
 			initializeHealthBar(root);
@@ -106,7 +105,7 @@ public class Boss extends FighterPlane {
 	@Override
 	public void updateActor(double deltaTime, LevelParent level) {
 		updatePosition();
-		updateHitBoxPosition();
+		getCollisionComponent().updateHitBoxPosition();
 
 		if (shootingComponent != null && shootingComponent.getProjectilePool() == null) {
 			shootingComponent.setProjectilePool(level.getBossProjectilePool());
@@ -115,6 +114,7 @@ public class Boss extends FighterPlane {
 		// 更新射击逻辑
 		shootingComponent.update(deltaTime, level);
 	}
+
 
 	@Override
 	public void takeDamage(int damage) {
@@ -175,6 +175,7 @@ public class Boss extends FighterPlane {
 			setTranslateY(initialTranslateY);
 			getMovementComponent().setVelocity(0, 0);
 		}
-		updateHitBoxPosition();
 	}
+
+
 }

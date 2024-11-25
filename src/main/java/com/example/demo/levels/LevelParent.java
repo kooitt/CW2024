@@ -1,8 +1,8 @@
-// LevelParent.java
-
 package com.example.demo.levels;
 
-import com.example.demo.actors.*;
+import com.example.demo.actors.ActiveActor;
+import com.example.demo.actors.EnemyPlane;
+import com.example.demo.actors.UserPlane;
 import com.example.demo.interfaces.Hitbox;
 import com.example.demo.projectiles.Projectile;
 import com.example.demo.utils.ObjectPool;
@@ -19,7 +19,6 @@ import javafx.scene.input.*;
 import javafx.util.Duration;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class LevelParent extends Observable {
 
@@ -35,10 +34,10 @@ public abstract class LevelParent extends Observable {
 	private final Scene scene;
 	private final ImageView background;
 
-	protected final List<ActiveActorDestructible> friendlyUnits;
-	protected final List<ActiveActorDestructible> enemyUnits;
-	protected final List<ActiveActorDestructible> userProjectiles;
-	protected final List<ActiveActorDestructible> enemyProjectiles;
+	protected final List<ActiveActor> friendlyUnits;
+	protected final List<ActiveActor> enemyUnits;
+	protected final List<ActiveActor> userProjectiles;
+	protected final List<ActiveActor> enemyProjectiles;
 
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
@@ -176,17 +175,17 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateActors(double deltaTime) {
-		friendlyUnits.forEach(plane -> {
-			plane.updateActor(deltaTime, this);
+		friendlyUnits.forEach(actor -> {
+			actor.updateActor(deltaTime, this);
 		});
-		enemyUnits.forEach(enemy -> {
-			enemy.updateActor(deltaTime, this);
+		enemyUnits.forEach(actor -> {
+			actor.updateActor(deltaTime, this);
 		});
 		userProjectiles.forEach(projectile -> {
-			projectile.updateActor();
+			projectile.updateActor(deltaTime, this);
 		});
 		enemyProjectiles.forEach(projectile -> {
-			projectile.updateActor();
+			projectile.updateActor(deltaTime, this);
 		});
 	}
 
@@ -197,10 +196,10 @@ public abstract class LevelParent extends Observable {
 		removeDestroyedActors(enemyProjectiles, enemyProjectilePool, bossProjectilePool);
 	}
 
-	private void removeDestroyedActors(List<ActiveActorDestructible> actors, ObjectPool<Projectile>... pools) {
-		Iterator<ActiveActorDestructible> iterator = actors.iterator();
+	private void removeDestroyedActors(List<ActiveActor> actors, ObjectPool<Projectile>... pools) {
+		Iterator<ActiveActor> iterator = actors.iterator();
 		while (iterator.hasNext()) {
-			ActiveActorDestructible actor = iterator.next();
+			ActiveActor actor = iterator.next();
 			if (actor.isDestroyed()) {
 				root.getChildren().remove(actor);
 				iterator.remove();
@@ -214,10 +213,10 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
-	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		Iterator<ActiveActorDestructible> iterator = actors.iterator();
+	private void removeDestroyedActors(List<ActiveActor> actors) {
+		Iterator<ActiveActor> iterator = actors.iterator();
 		while (iterator.hasNext()) {
-			ActiveActorDestructible actor = iterator.next();
+			ActiveActor actor = iterator.next();
 			if (actor.isDestroyed()) {
 				root.getChildren().remove(actor);
 				iterator.remove();
@@ -237,10 +236,10 @@ public abstract class LevelParent extends Observable {
 		handleCollisions(enemyProjectiles, friendlyUnits);
 	}
 
-	private void handleCollisions(List<ActiveActorDestructible> actors1, List<ActiveActorDestructible> actors2) {
-		for (ActiveActorDestructible actor1 : actors1) {
-			for (ActiveActorDestructible actor2 : actors2) {
-				if (checkHitboxCollision(actor1, actor2)) {
+	private void handleCollisions(List<ActiveActor> actors1, List<ActiveActor> actors2) {
+		for (ActiveActor actor1 : actors1) {
+			for (ActiveActor actor2 : actors2) {
+				if (actor1.getCollisionComponent().checkCollision(actor2.getCollisionComponent())) {
 					// 假设子弹造成1点伤害，可以根据实际情况调整
 					actor1.takeDamage(1);
 					actor2.takeDamage(1);
@@ -249,15 +248,8 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
-	private boolean checkHitboxCollision(Hitbox a, Hitbox b) {
-		return a.getHitboxX() < b.getHitboxX() + b.getHitboxWidth() &&
-				a.getHitboxX() + a.getHitboxWidth() > b.getHitboxX() &&
-				a.getHitboxY() < b.getHitboxY() + b.getHitboxHeight() &&
-				a.getHitboxY() + a.getHitboxHeight() > b.getHitboxY();
-	}
-
 	private void handleEnemyPenetration() {
-		for (ActiveActorDestructible enemy : enemyUnits) {
+		for (ActiveActor enemy : enemyUnits) {
 			if (enemyHasPenetratedDefenses(enemy)) {
 				user.takeDamage(1); // 假设敌机穿过玩家造成1点伤害
 				enemy.destroy();
@@ -275,7 +267,7 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
-	private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
+	private boolean enemyHasPenetratedDefenses(ActiveActor enemy) {
 		return Math.abs(enemy.getTranslateX()) > screenWidth;
 	}
 
@@ -310,7 +302,7 @@ public abstract class LevelParent extends Observable {
 		return enemyUnits.size();
 	}
 
-	protected void addEnemyUnit(ActiveActorDestructible enemy) {
+	protected void addEnemyUnit(ActiveActor enemy) {
 		enemyUnits.add(enemy);
 		root.getChildren().add(enemy);
 	}
@@ -339,31 +331,31 @@ public abstract class LevelParent extends Observable {
 		double screenWidth = getScreenWidth();
 		double screenHeight = getScreenHeight();
 
-		Iterator<ActiveActorDestructible> userProjIterator = userProjectiles.iterator();
+		Iterator<ActiveActor> userProjIterator = userProjectiles.iterator();
 		while (userProjIterator.hasNext()) {
-			ActiveActorDestructible projectile = userProjIterator.next();
-			double x = projectile.getHitboxX();
-			double y = projectile.getHitboxY();
-			if (x > screenWidth || x + projectile.getHitboxWidth() < 0 ||
-					y > screenHeight || y + projectile.getHitboxHeight() < 0) {
+			ActiveActor projectile = userProjIterator.next();
+			double x = projectile.getCollisionComponent().getHitboxX();
+			double y = projectile.getCollisionComponent().getHitboxY();
+			if (x > screenWidth || x + projectile.getCollisionComponent().getHitboxWidth() < 0 ||
+					y > screenHeight || y + projectile.getCollisionComponent().getHitboxHeight() < 0) {
 				projectile.destroy();
 			}
 		}
 
-		Iterator<ActiveActorDestructible> enemyProjIterator = enemyProjectiles.iterator();
+		Iterator<ActiveActor> enemyProjIterator = enemyProjectiles.iterator();
 		while (enemyProjIterator.hasNext()) {
-			ActiveActorDestructible projectile = enemyProjIterator.next();
-			double x = projectile.getHitboxX();
-			double y = projectile.getHitboxY();
-			if (x > screenWidth || x + projectile.getHitboxWidth() < 0 ||
-					y > screenHeight || y + projectile.getHitboxHeight() < 0) {
+			ActiveActor projectile = enemyProjIterator.next();
+			double x = projectile.getCollisionComponent().getHitboxX();
+			double y = projectile.getCollisionComponent().getHitboxY();
+			if (x > screenWidth || x + projectile.getCollisionComponent().getHitboxWidth() < 0 ||
+					y > screenHeight || y + projectile.getCollisionComponent().getHitboxHeight() < 0) {
 				projectile.destroy();
 			}
 		}
 	}
 
 	// 添加以下方法，供 UserPlane 和敌人添加子弹
-	public void addProjectile(Projectile projectile, ActiveActorDestructible owner) {
+	public void addProjectile(Projectile projectile, ActiveActor owner) {
 		if (owner instanceof UserPlane) {
 			userProjectiles.add(projectile);
 		} else {

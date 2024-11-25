@@ -9,9 +9,8 @@ public class UserProjectile extends Projectile {
 	public UserProjectile(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
 
-		setHitboxSize(30, 30);
-
-		// 初始时不设置速度，在 resetPosition 中设置
+		// 使用 CollisionComponent 来设置碰撞盒大小
+		getCollisionComponent().setHitboxSize(30.0, 30.0);
 	}
 
 	@Override
