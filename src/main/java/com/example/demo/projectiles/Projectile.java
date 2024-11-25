@@ -1,3 +1,5 @@
+// Projectile.java
+
 package com.example.demo.projectiles;
 
 import com.example.demo.actors.ActiveActorDestructible;
@@ -28,7 +30,6 @@ public abstract class Projectile extends ActiveActorDestructible {
 		// In subclasses, reset the speed
 	}
 
-
 	public void reset() {
 		setVisible(false);
 		setDestroyed(true);
@@ -41,11 +42,11 @@ public abstract class Projectile extends ActiveActorDestructible {
 			hitboxVisualization.setVisible(false);
 		}
 	}
+
 	@Override
 	public void destroy() {
-		super.destroy(); // 这已经调用了 setDestroyed(true);
+		super.destroy();
 	}
-
 
 	@Override
 	public void takeDamage() {

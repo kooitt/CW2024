@@ -8,9 +8,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.beans.binding.Bindings;
-import com.example.demo.projectiles.BossProjectile;
-import com.example.demo.projectiles.Projectile;
+import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
+import com.example.demo.projectiles.Projectile;
 
 public class Boss extends FighterPlane {
 
@@ -18,7 +18,7 @@ public class Boss extends FighterPlane {
 	private static final double INITIAL_X_POSITION = 1000.0;
 	private static final double INITIAL_Y_POSITION = 400.0;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
-	private static final double BOSS_FIRE_RATE = 0.04;
+	private static final double FIRE_RATE = 1.0; // 每秒发射0.5次
 	private static final int IMAGE_HEIGHT = 300;
 	private static final int VERTICAL_VELOCITY = 8;
 	private static final int HEALTH = 100;
@@ -36,6 +36,8 @@ public class Boss extends FighterPlane {
 	private static final int HEALTH_BAR_WIDTH = 300;
 	private static final int HEALTH_BAR_HEIGHT = 20;
 
+	private ShootingComponent shootingComponent;
+
 	public Boss(Group root) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
 		movePattern = new ArrayList<>();
@@ -51,6 +53,12 @@ public class Boss extends FighterPlane {
 
 		// 初始化 MovementComponent，初始速度为 (0, 0)
 		getMovementComponent().setVelocity(0, 0);
+
+		// Initialize ShootingComponent
+		shootingComponent = new ShootingComponent(this, FIRE_RATE, null, 0, PROJECTILE_Y_POSITION_OFFSET);
+
+		// Start firing
+		shootingComponent.startFiring();
 	}
 
 	private void initializeHealthBar(Group root) {
@@ -97,21 +105,16 @@ public class Boss extends FighterPlane {
 	}
 
 	@Override
-	public void updateActor() {
+	public void updateActor(double deltaTime, LevelParent level) {
 		updatePosition();
-	}
+		updateHitBoxPosition();
 
-	@Override
-	public Projectile fireProjectile(LevelParent level) {
-		if (bossFiresInCurrentFrame()) {
-			Projectile projectile = level.getBossProjectilePool().acquire();
-			if (projectile != null) {
-				double projectileYPosition = getProjectileInitialPosition();
-				projectile.resetPosition(950, projectileYPosition);
-				return projectile;
-			}
+		if (shootingComponent != null && shootingComponent.projectilePool == null) {
+			shootingComponent.projectilePool = level.getBossProjectilePool();
 		}
-		return null;
+
+		// Update shooting logic
+		shootingComponent.update(deltaTime, level);
 	}
 
 	@Override
@@ -144,10 +147,6 @@ public class Boss extends FighterPlane {
 			indexOfCurrentMove = 0;
 		}
 		return currentMove;
-	}
-
-	private boolean bossFiresInCurrentFrame() {
-		return Math.random() < BOSS_FIRE_RATE;
 	}
 
 	private double getProjectileInitialPosition() {

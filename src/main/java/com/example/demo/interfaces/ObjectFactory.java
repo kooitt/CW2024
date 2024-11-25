@@ -1,4 +1,4 @@
-package com.example.demo.utils;
+package com.example.demo.interfaces;
 
 public interface ObjectFactory<T> {
     T create();

@@ -47,7 +47,7 @@ public class Controller implements Observer {
 
 	public void showSettings() {
 		if (settingsPage == null) {
-			settingsPage = new SettingsPage(this);
+			settingsPage = new SettingsPage(stage, this);
 		}
 		Scene scene = settingsPage.getScene();
 		stage.setScene(scene);

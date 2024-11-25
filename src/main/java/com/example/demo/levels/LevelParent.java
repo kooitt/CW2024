@@ -1,9 +1,9 @@
+// LevelParent.java
+
 package com.example.demo.levels;
 
-import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.FighterPlane;
-import com.example.demo.actors.UserPlane;
-import com.example.demo.physics.Hitbox;
+import com.example.demo.actors.*;
+import com.example.demo.interfaces.Hitbox;
 import com.example.demo.projectiles.Projectile;
 import com.example.demo.utils.ObjectPool;
 import com.example.demo.projectiles.BulletFactory;
@@ -49,6 +49,8 @@ public abstract class LevelParent extends Observable {
 	private ObjectPool<Projectile> enemyProjectilePool;
 	private ObjectPool<Projectile> bossProjectilePool;
 
+	private long lastUpdateTime;
+
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
@@ -72,6 +74,8 @@ public abstract class LevelParent extends Observable {
 		userProjectilePool = new ObjectPool<>(new BulletFactory("user"));
 		enemyProjectilePool = new ObjectPool<>(new BulletFactory("enemy"));
 		bossProjectilePool = new ObjectPool<>(new BulletFactory("boss"));
+
+		lastUpdateTime = System.nanoTime();
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -101,9 +105,13 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateScene() {
+		long currentTime = System.nanoTime();
+		double deltaTime = (currentTime - lastUpdateTime) / 1e9; // 将纳秒转换为秒
+		lastUpdateTime = currentTime;
+
 		processInput();
 		spawnEnemyUnits();
-		updateActors();
+		updateActors(deltaTime);
 		generateEnemyFire();
 		updateNumberOfEnemies();
 		handleEnemyPenetration();
@@ -142,63 +150,56 @@ public abstract class LevelParent extends Observable {
 		root.getChildren().add(background);
 	}
 
+// LevelParent.java
+
 	private void processInput() {
 		KeyBindings keyBindings = KeyBindings.getInstance();
 		boolean movingUp = activeKeys.contains(keyBindings.getUpKey());
 		boolean movingDown = activeKeys.contains(keyBindings.getDownKey());
-		boolean firing = activeKeys.contains(keyBindings.getFireKey());
+		boolean movingLeft = activeKeys.contains(keyBindings.getLeftKey());
+		boolean movingRight = activeKeys.contains(keyBindings.getRightKey());
 
+		// 处理垂直移动
 		if (movingUp && !movingDown) {
 			user.moveUp();
 		} else if (movingDown && !movingUp) {
 			user.moveDown();
 		} else {
-			user.stop();
+			user.stopVerticalMovement();
 		}
 
-		if (firing) {
-			fireProjectile();
+		// 处理水平移动
+		if (movingLeft && !movingRight) {
+			user.moveLeft();
+		} else if (movingRight && !movingLeft) {
+			user.moveRight();
+		} else {
+			user.stopHorizontalMovement();
 		}
+
+		// 不再需要处理射击按键，移除相关代码（如果已自动射击）
 	}
 
-	private void fireProjectile() {
-		Projectile projectile = user.fireProjectile(this);
-		if (projectile != null) {
-			root.getChildren().add(projectile);
-			userProjectiles.add(projectile);
-		}
-	}
 
-	private void generateEnemyFire() {
-		enemyUnits.forEach(enemy -> {
-			if (enemy instanceof FighterPlane) {
-				FighterPlane fighter = (FighterPlane) enemy;
-				Projectile projectile = fighter.fireProjectile(this);
-				if (projectile != null) {
-					root.getChildren().add(projectile);
-					enemyProjectiles.add(projectile);
-				}
-			}
-		});
-	}
 
-	private void updateActors() {
+
+	private void updateActors(double deltaTime) {
 		friendlyUnits.forEach(plane -> {
-			plane.updateActor();
-			plane.updateHitBoxPosition();
+			plane.updateActor(deltaTime, this);
 		});
 		enemyUnits.forEach(enemy -> {
-			enemy.updateActor();
-			enemy.updateHitBoxPosition();
+			enemy.updateActor(deltaTime, this);
 		});
 		userProjectiles.forEach(projectile -> {
 			projectile.updateActor();
-			projectile.updateHitBoxPosition();
 		});
 		enemyProjectiles.forEach(projectile -> {
 			projectile.updateActor();
-			projectile.updateHitBoxPosition();
 		});
+	}
+
+	private void generateEnemyFire() {
+		// 不再需要这个方法，因为敌人和 Boss 的射击逻辑在它们的 updateActor 中处理
 	}
 
 	private void removeAllDestroyedActors() {
@@ -207,7 +208,6 @@ public abstract class LevelParent extends Observable {
 		removeDestroyedActors(userProjectiles, userProjectilePool);
 		removeDestroyedActors(enemyProjectiles, enemyProjectilePool, bossProjectilePool);
 	}
-
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors, ObjectPool<Projectile>... pools) {
 		Iterator<ActiveActorDestructible> iterator = actors.iterator();
@@ -226,13 +226,15 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
-
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream()
-				.filter(ActiveActorDestructible::isDestroyed)
-				.collect(Collectors.toList());
-		root.getChildren().removeAll(destroyedActors);
-		actors.removeAll(destroyedActors);
+		Iterator<ActiveActorDestructible> iterator = actors.iterator();
+		while (iterator.hasNext()) {
+			ActiveActorDestructible actor = iterator.next();
+			if (actor.isDestroyed()) {
+				root.getChildren().remove(actor);
+				iterator.remove();
+			}
+		}
 	}
 
 	private void handlePlaneCollisions() {
@@ -257,7 +259,6 @@ public abstract class LevelParent extends Observable {
 			}
 		}
 	}
-
 
 	private boolean checkHitboxCollision(Hitbox a, Hitbox b) {
 		return a.getHitboxX() < b.getHitboxX() + b.getHitboxWidth() &&
@@ -372,7 +373,15 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
-	// 添加以下方法，供 UserPlane 获取对象池
+	// 添加以下方法，供 UserPlane 和敌人添加子弹
+	public void addProjectile(Projectile projectile, ActiveActorDestructible owner) {
+		if (owner instanceof UserPlane) {
+			userProjectiles.add(projectile);
+		} else {
+			enemyProjectiles.add(projectile);
+		}
+	}
+
 	public ObjectPool<Projectile> getUserProjectilePool() {
 		return userProjectilePool;
 	}

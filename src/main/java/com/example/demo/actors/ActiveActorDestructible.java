@@ -1,7 +1,10 @@
+// ActiveActorDestructible.java
+
 package com.example.demo.actors;
 
 import com.example.demo.interfaces.Destructible;
-import com.example.demo.physics.Hitbox;
+import com.example.demo.interfaces.Hitbox;
+import com.example.demo.levels.LevelParent;
 import com.example.demo.utils.GameSettings;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -9,7 +12,7 @@ import javafx.scene.shape.Rectangle;
 public abstract class ActiveActorDestructible extends ActiveActor implements Destructible, Hitbox {
 
 	private boolean isDestroyed;
-	public Rectangle hitboxVisualization;
+	protected Rectangle hitboxVisualization;
 	private double hitboxWidth;
 	private double hitboxHeight;
 
@@ -46,6 +49,11 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 		super.updateActor(); // 调用父类的 updateActor()，确保位置更新
 	}
 
+	// 添加新的 updateActor 方法
+	public void updateActor(double deltaTime, LevelParent level) {
+		updateActor(); // 默认调用无参数的 updateActor()
+	}
+
 	@Override
 	public abstract void takeDamage();
 
@@ -57,7 +65,6 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 		}
 		setVisible(false);
 	}
-
 
 	public boolean isDestroyed() {
 		return isDestroyed;

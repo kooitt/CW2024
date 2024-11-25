@@ -1,7 +1,8 @@
+// FighterPlane.java
+
 package com.example.demo.actors;
 
 import com.example.demo.levels.LevelParent;
-import com.example.demo.projectiles.Projectile;
 
 public abstract class FighterPlane extends ActiveActorDestructible {
 
@@ -12,7 +13,10 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 		this.health = health;
 	}
 
-	public abstract Projectile fireProjectile(LevelParent level);
+	// 修改 updateActor 方法签名
+	public void updateActor(double deltaTime, LevelParent level) {
+		// 具体实现由子类完成
+	}
 
 	@Override
 	public void takeDamage() {

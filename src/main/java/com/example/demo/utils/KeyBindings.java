@@ -1,19 +1,25 @@
+// KeyBindings.java
+
 package com.example.demo.utils;
 
 import javafx.scene.input.KeyCode;
 
 public class KeyBindings {
-
     private static KeyBindings instance;
 
     private KeyCode upKey;
     private KeyCode downKey;
-    private KeyCode fireKey;
+    private KeyCode leftKey;
+    private KeyCode rightKey;
+    // 移除 fireKey，因为不再需要
 
     private KeyBindings() {
+        // 默认按键绑定
         upKey = KeyCode.UP;
         downKey = KeyCode.DOWN;
-        fireKey = KeyCode.SPACE;
+        leftKey = KeyCode.LEFT;
+        rightKey = KeyCode.RIGHT;
+        // fireKey = KeyCode.SPACE; // 移除
     }
 
     public static KeyBindings getInstance() {
@@ -28,9 +34,7 @@ public class KeyBindings {
     }
 
     public void setUpKey(KeyCode upKey) {
-        if (upKey != null) {
-            this.upKey = upKey;
-        }
+        this.upKey = upKey;
     }
 
     public KeyCode getDownKey() {
@@ -38,18 +42,24 @@ public class KeyBindings {
     }
 
     public void setDownKey(KeyCode downKey) {
-        if (downKey != null) {
-            this.downKey = downKey;
-        }
+        this.downKey = downKey;
     }
 
-    public KeyCode getFireKey() {
-        return fireKey;
+    public KeyCode getLeftKey() {
+        return leftKey;
     }
 
-    public void setFireKey(KeyCode fireKey) {
-        if (fireKey != null) {
-            this.fireKey = fireKey;
-        }
+    public void setLeftKey(KeyCode leftKey) {
+        this.leftKey = leftKey;
     }
+
+    public KeyCode getRightKey() {
+        return rightKey;
+    }
+
+    public void setRightKey(KeyCode rightKey) {
+        this.rightKey = rightKey;
+    }
+
+    // 移除 getFireKey() 和 setFireKey() 方法
 }

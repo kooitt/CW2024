@@ -1,5 +1,7 @@
 package com.example.demo.utils;
 
+import com.example.demo.interfaces.ObjectFactory;
+
 import java.util.Stack;
 
 public class ObjectPool<T> {

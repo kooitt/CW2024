@@ -2,7 +2,7 @@
 
 package com.example.demo.projectiles;
 
-import com.example.demo.utils.ObjectFactory;
+import com.example.demo.interfaces.ObjectFactory;
 
 public class BulletFactory implements ObjectFactory<Projectile> {
 
