@@ -4,6 +4,9 @@ import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.FighterPlane;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.physics.Hitbox;
+import com.example.demo.projectiles.Projectile;
+import com.example.demo.utils.ObjectPool;
+import com.example.demo.projectiles.BulletFactory;
 import com.example.demo.utils.KeyBindings;
 import com.example.demo.views.LevelView;
 import javafx.animation.KeyFrame;
@@ -42,6 +45,9 @@ public abstract class LevelParent extends Observable {
 
 	private Set<KeyCode> activeKeys;
 
+	private ObjectPool<Projectile> userProjectilePool;
+	private ObjectPool<Projectile> enemyProjectilePool;
+
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
@@ -61,6 +67,9 @@ public abstract class LevelParent extends Observable {
 		this.activeKeys = new HashSet<>();
 		initializeTimeline();
 		friendlyUnits.add(user);
+
+		userProjectilePool = new ObjectPool<>(new BulletFactory("user"));
+		enemyProjectilePool = new ObjectPool<>(new BulletFactory("enemy"));
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -151,8 +160,9 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void fireProjectile() {
-		ActiveActorDestructible projectile = user.fireProjectile();
+		Projectile projectile = userProjectilePool.acquire();
 		if (projectile != null) {
+			projectile.resetPosition(getUser().getProjectileXPosition(110), getUser().getProjectileYPosition(20));
 			root.getChildren().add(projectile);
 			userProjectiles.add(projectile);
 		}
@@ -164,7 +174,8 @@ public abstract class LevelParent extends Observable {
 				FighterPlane fighter = (FighterPlane) enemy;
 				ActiveActorDestructible projectile = fighter.fireProjectile();
 				if (projectile != null) {
-					spawnEnemyProjectile(projectile);
+					root.getChildren().add(projectile);
+					enemyProjectiles.add(projectile);
 				}
 			}
 		});
@@ -199,8 +210,19 @@ public abstract class LevelParent extends Observable {
 	private void removeAllDestroyedActors() {
 		removeDestroyedActors(friendlyUnits);
 		removeDestroyedActors(enemyUnits);
-		removeDestroyedActors(userProjectiles);
-		removeDestroyedActors(enemyProjectiles);
+		removeDestroyedActors(userProjectiles, userProjectilePool);
+		removeDestroyedActors(enemyProjectiles, enemyProjectilePool);
+	}
+
+	private void removeDestroyedActors(List<ActiveActorDestructible> actors, ObjectPool<Projectile> pool) {
+		List<ActiveActorDestructible> destroyedActors = actors.stream()
+				.filter(ActiveActorDestructible::isDestroyed)
+				.collect(Collectors.toList());
+		root.getChildren().removeAll(destroyedActors);
+		actors.removeAll(destroyedActors);
+		for (ActiveActorDestructible actor : destroyedActors) {
+			pool.release((Projectile) actor);
+		}
 	}
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {

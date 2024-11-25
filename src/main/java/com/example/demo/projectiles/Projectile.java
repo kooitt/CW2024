@@ -8,6 +8,20 @@ public abstract class Projectile extends ActiveActorDestructible {
 		super(imageName, imageHeight, initialXPos, initialYPos);
 	}
 
+	public void resetPosition(double x, double y) {
+		setLayoutX(x);
+		setLayoutY(y);
+		setTranslateX(0);
+		setTranslateY(0);
+		setDestroyed(false);
+		setVisible(true);
+	}
+
+	public void reset() {
+		setVisible(false);
+		setDestroyed(true);
+	}
+
 	@Override
 	public void takeDamage() {
 		this.destroy();
@@ -19,10 +33,5 @@ public abstract class Projectile extends ActiveActorDestructible {
 	@Override
 	public void updateActor() {
 		updatePosition();
-	}
-
-	@Override
-	public void updateHitBoxPosition() {
-		super.updateHitBoxPosition();
 	}
 }

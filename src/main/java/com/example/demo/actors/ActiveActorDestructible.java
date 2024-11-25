@@ -28,6 +28,10 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 		}
 	}
 
+	public void setDestroyed(boolean value) {
+		this.isDestroyed = value;
+	}
+
 	public void setHitboxSize(double width, double height) {
 		this.hitboxWidth = width;
 		this.hitboxHeight = height;
@@ -47,10 +51,11 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 
 	@Override
 	public void destroy() {
-		setDestroyed();
+		setDestroyed(true);
 		if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
 			this.getChildren().remove(hitboxVisualization);
 		}
+		setVisible(false);
 	}
 
 	protected void setDestroyed() {
