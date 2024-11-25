@@ -28,7 +28,9 @@ public class KeyBindings {
     }
 
     public void setUpKey(KeyCode upKey) {
-        this.upKey = upKey;
+        if (upKey != null) {
+            this.upKey = upKey;
+        }
     }
 
     public KeyCode getDownKey() {
@@ -36,7 +38,9 @@ public class KeyBindings {
     }
 
     public void setDownKey(KeyCode downKey) {
-        this.downKey = downKey;
+        if (downKey != null) {
+            this.downKey = downKey;
+        }
     }
 
     public KeyCode getFireKey() {
@@ -44,6 +48,8 @@ public class KeyBindings {
     }
 
     public void setFireKey(KeyCode fireKey) {
-        this.fireKey = fireKey;
+        if (fireKey != null) {
+            this.fireKey = fireKey;
+        }
     }
 }

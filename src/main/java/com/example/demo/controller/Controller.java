@@ -29,7 +29,9 @@ public class Controller implements Observer {
 	}
 
 	public void showMainMenu() {
-		mainMenu = new MainMenu(this);
+		if (mainMenu == null) {
+			mainMenu = new MainMenu(this);
+		}
 		Scene scene = mainMenu.getScene();
 		stage.setScene(scene);
 		stage.show();
@@ -44,7 +46,9 @@ public class Controller implements Observer {
 	}
 
 	public void showSettings() {
-		settingsPage = new SettingsPage(this);
+		if (settingsPage == null) {
+			settingsPage = new SettingsPage(this);
+		}
 		Scene scene = settingsPage.getScene();
 		stage.setScene(scene);
 	}

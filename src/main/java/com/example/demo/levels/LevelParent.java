@@ -1,15 +1,13 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.*;
-import com.example.demo.physics.*;
-import com.example.demo.levels.*;
-import com.example.demo.ui.*;
-import com.example.demo.utils.*;
-import com.example.demo.views.*;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import javafx.animation.*;
+import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.FighterPlane;
+import com.example.demo.actors.UserPlane;
+import com.example.demo.physics.Hitbox;
+import com.example.demo.utils.KeyBindings;
+import com.example.demo.views.LevelView;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -17,6 +15,8 @@ import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
 
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class LevelParent extends Observable {
 
@@ -40,6 +40,8 @@ public abstract class LevelParent extends Observable {
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
 
+	private Set<KeyCode> activeKeys;
+
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
@@ -56,6 +58,7 @@ public abstract class LevelParent extends Observable {
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
+		this.activeKeys = new HashSet<>();
 		initializeTimeline();
 		friendlyUnits.add(user);
 	}
@@ -87,6 +90,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateScene() {
+		processInput();
 		spawnEnemyUnits();
 		updateActors();
 		generateEnemyFire();
@@ -115,20 +119,35 @@ public abstract class LevelParent extends Observable {
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				KeyBindings keyBindings = KeyBindings.getInstance();
-				if (kc == keyBindings.getUpKey()) user.moveUp();
-				if (kc == keyBindings.getDownKey()) user.moveDown();
-				if (kc == keyBindings.getFireKey()) fireProjectile();
+				activeKeys.add(kc);
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				KeyBindings keyBindings = KeyBindings.getInstance();
-				if (kc == keyBindings.getUpKey() || kc == keyBindings.getDownKey()) user.stop();
+				activeKeys.remove(kc);
 			}
 		});
 		root.getChildren().add(background);
+	}
+
+	private void processInput() {
+		KeyBindings keyBindings = KeyBindings.getInstance();
+		boolean movingUp = activeKeys.contains(keyBindings.getUpKey());
+		boolean movingDown = activeKeys.contains(keyBindings.getDownKey());
+		boolean firing = activeKeys.contains(keyBindings.getFireKey());
+
+		if (movingUp && !movingDown) {
+			user.moveUp();
+		} else if (movingDown && !movingUp) {
+			user.moveDown();
+		} else {
+			user.stop();
+		}
+
+		if (firing) {
+			fireProjectile();
+		}
 	}
 
 	private void fireProjectile() {
