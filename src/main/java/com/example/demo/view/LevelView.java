@@ -11,11 +11,7 @@ public class LevelView {
 	private static final double HEART_DISPLAY_Y_POSITION = 25;  // Y-coordinate position of the heart display
 	private static final double KILL_COUNT_X_POSITION = 1100;   // X-coordinate position of the kill count display
 	private static final double KILL_COUNT_Y_POSITION = 25;     // Y-coordinate position of the kill count display
-	private static final int GAME_IMAGE_X_POSITION = 370;       // X-coordinate position of the game image
-	private static final int GAME_IMAGE_Y_POSITION = 175;       // Y-coordinate position of the game image
 	private final Group root;
-	private final WinImage winImage;
-	private final GameOverImage gameOverImage;
 	private final HeartDisplay heartDisplay;
 	private final KillCountDisplay killCountDisplay;
 
@@ -30,8 +26,6 @@ public class LevelView {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
 		this.killCountDisplay = new KillCountDisplay(KILL_COUNT_X_POSITION, KILL_COUNT_Y_POSITION, maxKills);
-		this.winImage = new WinImage(GAME_IMAGE_X_POSITION, GAME_IMAGE_Y_POSITION);
-		this.gameOverImage = new GameOverImage(GAME_IMAGE_X_POSITION, GAME_IMAGE_Y_POSITION);
 	}
 
 	/**
@@ -46,21 +40,6 @@ public class LevelView {
 	 */
 	public void showKillCountDisplay() {
 		root.getChildren().add(killCountDisplay.getContainer());
-	}
-
-	/**
-	 * Shows the win image by adding it to the root group and making it visible.
-	 */
-	public void showWinImage() {
-		root.getChildren().add(winImage);
-		winImage.showWinImage();
-	}
-
-	/**
-	 * Shows the game over image by adding it to the root group.
-	 */
-	public void showGameOverImage() {
-		root.getChildren().add(gameOverImage);
 	}
 
 	/**

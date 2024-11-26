@@ -13,7 +13,7 @@
     <Rectangle fx:id="overlay"
                width="${controller.screenWidth}"
                height="${controller.screenHeight}"
-               fill="#000000" opacity="0.7"/>
+               fill="#000000" opacity="0.9"/>
 
     <VBox alignment="CENTER" spacing="20"
           style="-fx-background-color: rgba(0, 0, 0, 0.8); -fx-padding: 20; -fx-background-radius: 10;">
