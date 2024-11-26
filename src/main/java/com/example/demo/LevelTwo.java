@@ -2,16 +2,16 @@ package com.example.demo;
 
 import javafx.stage.Stage;
 
-public class LevelOne extends LevelParent {
+public class LevelTwo extends LevelParent {
 
-    private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/space.jpg";
-    private static final String NEXT_LEVEL = "com.example.demo.LevelTwo";
-    private static final int TOTAL_ENEMIES = 5;
-    private static final int KILLS_TO_ADVANCE = 10;
-    private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
-    private static final int PLAYER_INITIAL_HEALTH = 5;
+    private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/space2.jpg"; // Use a different background if desired.
+    private static final String NEXT_LEVEL = "com.example.demo.LevelBoss"; // Transition to LevelBoss after this level.
+    private static final int TOTAL_ENEMIES = 5; // Same as LevelOne.
+    private static final int KILLS_TO_ADVANCE = 15; // Increased kill count.
+    private static final double ENEMY_SPAWN_PROBABILITY = 0.25; // Slightly higher spawn rate.
+    private static final int PLAYER_INITIAL_HEALTH = 5; // Player health remains the same.
 
-    public LevelOne(double screenHeight, double screenWidth, Stage stage) {
+    public LevelTwo(double screenHeight, double screenWidth, Stage stage) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, stage);
     }
 
