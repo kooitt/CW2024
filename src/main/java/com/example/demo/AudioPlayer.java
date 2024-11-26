@@ -60,4 +60,9 @@ public class AudioPlayer {
             mediaPlayer.dispose();
         }
     }
+
+    // Check if media player is ready
+    private boolean isReady() {
+        return mediaPlayer != null && mediaPlayer.getStatus() != MediaPlayer.Status.UNKNOWN;
+    }
 }
