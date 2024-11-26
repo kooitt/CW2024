@@ -74,6 +74,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	public void goToNextLevel(String levelName) {
+		user.destroy();
 		setChanged();
 		notifyObservers(levelName);
 	}
@@ -109,12 +110,15 @@ public abstract class LevelParent extends Observable {
 				if (kc == KeyCode.UP) user.moveUp();
 				if (kc == KeyCode.DOWN) user.moveDown();
 				if (kc == KeyCode.SPACE) fireProjectile();
+				if (kc == KeyCode.RIGHT) user.moveRight();
+				if (kc == KeyCode.LEFT) user.moveLeft();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
+				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.verticalStop();
+				if (kc == KeyCode.RIGHT || kc == KeyCode.LEFT) user.horizontalStop();
 			}
 		});
 		root.getChildren().add(background);

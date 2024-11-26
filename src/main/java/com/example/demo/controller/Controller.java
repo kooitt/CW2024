@@ -1,30 +1,35 @@
 package com.example.demo.controller;
 
+// imports necessary classes for reflection, observer pattern, JavaFX componentsand a custom Levelparent clas
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Observable;
 import java.util.Observer;
-
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import com.example.demo.LevelParent;
+import com.example.demo.Menu;
 
+//The Controller class implements the Observer interface, meaning it can observe changes in observable objects.
 public class Controller implements Observer {
 
-	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
+	// LEVEL_ONE_CLASS_NAME is a constant that holds the fully qualified name of the LevelOne class. stage is a final field that holds a reference to the JavaFX Stage object.
+
+	private static final String MENU = "com.example.demo.Menu";
 	private final Stage stage;
 
 	public Controller(Stage stage) {
 		this.stage = stage;
 	}
 
+	// The launchGame method is called when the game is launched. It shows the stage and calls the goToLevel method with the LEVEL_ONE_CLASS_NAME constant as an argument.
 	public void launchGame() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
 
 			stage.show();
-			goToLevel(LEVEL_ONE_CLASS_NAME);
+			goToLevel(MENU);
 	}
 
 	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
@@ -52,3 +57,4 @@ public class Controller implements Observer {
 	}
 
 }
+
