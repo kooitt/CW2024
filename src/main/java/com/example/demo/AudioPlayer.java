@@ -20,28 +20,28 @@ public class AudioPlayer {
 
     // Play audio
     public void play() {
-        if (mediaPlayer != null) {
+        if (isReady()) {
             mediaPlayer.play();
         }
     }
 
     // Pause audio
     public void pause() {
-        if (mediaPlayer != null) {
+        if (isReady()) {
             mediaPlayer.pause();
         }
     }
 
     // Stop audio
     public void stop() {
-        if (mediaPlayer != null) {
+        if (isReady()) {
             mediaPlayer.stop();
         }
     }
 
     // Loop audio
     public void loop() {
-        if (mediaPlayer != null) {
+        if (isReady()) {
             mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
             mediaPlayer.play();
         }
