@@ -50,7 +50,7 @@ public class AudioPlayer {
     // Set volume
     public void setVolume(double volume) {
         if (mediaPlayer != null) {
-            mediaPlayer.setVolume(volume);
+            mediaPlayer.setVolume(Math.max(0.0, Math.min(volume, 1.0)));
         }
     }
 
