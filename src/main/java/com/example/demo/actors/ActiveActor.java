@@ -1,10 +1,11 @@
+// ActiveActor.java
+
 package com.example.demo.actors;
 
 import com.example.demo.components.CollisionComponent;
 import com.example.demo.components.HealthComponent;
 import com.example.demo.components.MovementComponent;
 import com.example.demo.interfaces.Destructible;
-import com.example.demo.levels.LevelParent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -39,8 +40,9 @@ public abstract class ActiveActor extends Actor implements Destructible {
 		movementComponent.update(this);
 	}
 
-	// 添加抽象方法
-	public abstract void updateActor(double deltaTime, LevelParent level);
+	public void updateActor() {
+		updatePosition();
+	}
 
 	// 提供对 MovementComponent 的访问方法
 	public MovementComponent getMovementComponent() {

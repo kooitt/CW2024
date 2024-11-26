@@ -239,6 +239,9 @@ public abstract class LevelParent extends Observable {
 	private void handleCollisions(List<ActiveActor> actors1, List<ActiveActor> actors2) {
 		for (ActiveActor actor1 : actors1) {
 			for (ActiveActor actor2 : actors2) {
+				if (actor1.isDestroyed() || actor2.isDestroyed()) {
+					continue; // 忽略已销毁的演员
+				}
 				if (actor1.getCollisionComponent().checkCollision(actor2.getCollisionComponent())) {
 					// 假设子弹造成1点伤害，可以根据实际情况调整
 					actor1.takeDamage(1);
@@ -247,6 +250,7 @@ public abstract class LevelParent extends Observable {
 			}
 		}
 	}
+
 
 	private void handleEnemyPenetration() {
 		for (ActiveActor enemy : enemyUnits) {

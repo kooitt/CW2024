@@ -1,6 +1,10 @@
+// LevelTwo.java
+
 package com.example.demo.levels;
 
-import com.example.demo.actors.*;
+import com.example.demo.actors.ActiveActor;
+import com.example.demo.actors.Boss;
+import com.example.demo.actors.UserPlane;
 import com.example.demo.views.LevelView;
 import com.example.demo.views.LevelViewLevelTwo;
 
