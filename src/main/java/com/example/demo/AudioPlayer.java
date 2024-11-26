@@ -10,8 +10,12 @@ public class AudioPlayer {
 
     // Load audio file
     public void loadAudio(String filePath) {
-        Media media = new Media(new File(filePath).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
+        try {
+            Media media = new Media(new File(filePath).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+        } catch (Exception e) {
+            System.err.println("Error loading audio: " + e.getMessage());
+        }
     }
 
     // Play audio
