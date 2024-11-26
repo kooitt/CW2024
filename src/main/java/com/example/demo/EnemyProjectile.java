@@ -3,12 +3,12 @@ package com.example.demo;
 public class EnemyProjectile extends Projectile {
 
     private static final String IMAGE_NAME = "enemyFire.png";
-    private static final int IMAGE_HEIGHT = 50;
+    private static final int IMAGE_HEIGHT = 35;
     private int horizontalVelocity; // Make velocity configurable
 
     // Constructor with default speed for regular levels
     public EnemyProjectile(double initialXPos, double initialYPos) {
-        this(initialXPos, initialYPos, -10); // Default speed for regular levels
+        this(initialXPos, initialYPos, -20); // Default speed for regular levels
     }
 
     // Constructor with adjustable speed for levels like LevelTwo
