@@ -8,7 +8,7 @@ public class EnemyProjectile extends Projectile {
 
     // Constructor with default speed for regular levels
     public EnemyProjectile(double initialXPos, double initialYPos) {
-        this(initialXPos, initialYPos, -20); // Default speed for regular levels
+        this(initialXPos, initialYPos, -11); // Default speed for regular levels
     }
 
     // Constructor with adjustable speed for levels like LevelTwo
