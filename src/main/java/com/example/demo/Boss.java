@@ -27,16 +27,15 @@ public class Boss extends FighterPlane {
     private static final int MAX_FRAMES_WITH_SHIELD = 500;
 
     private final List<Integer> movePattern;
-    private boolean isShielded;
-    private int consecutiveMovesInSameDirection;
-    private int indexOfCurrentMove;
-    private int framesWithShieldActivated;
-
     private final LevelViewBoss levelView;
     private final AudioClip fireBallSound;
     private final AudioClip shieldActivateSound;
     private final AudioClip shieldDeactivateSound;
     private final AudioClip explosionSound;
+    private boolean isShielded;
+    private int consecutiveMovesInSameDirection;
+    private int indexOfCurrentMove;
+    private int framesWithShieldActivated;
 
     public Boss(LevelViewBoss levelView) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
