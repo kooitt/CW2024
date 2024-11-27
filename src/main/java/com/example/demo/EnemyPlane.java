@@ -46,8 +46,6 @@ public class EnemyPlane extends FighterPlane {
     @Override
     public void destroy() {
         super.destroy();
-        if (explosionSound != null) {
-            explosionSound.play();
-        }
+        explosionAudio.play();
     }
 }
