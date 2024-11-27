@@ -1,12 +1,10 @@
 package com.example.demo;
 
 import com.example.demo.LevelViews.LevelViewBoss;
-import javafx.scene.media.AudioClip;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class Boss extends FighterPlane {
 
