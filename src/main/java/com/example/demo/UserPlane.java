@@ -77,6 +77,12 @@ public class UserPlane extends FighterPlane {
         explosionAudio.play();
     }
 
+    @Override
+    public void takeDamage() {
+        takeDamageAudio.play();
+        super.takeDamage();
+    }
+
     private boolean isMoving() {
         return verticalVelocityMultiplier != 0 || horizontalVelocityMultiplier != 0;
     }
