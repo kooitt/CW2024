@@ -1,9 +1,5 @@
 package com.example.demo;
 
-import javafx.scene.media.AudioClip;
-
-import java.util.Objects;
-
 public class EnemyPlane extends FighterPlane {
 
     private static final String IMAGE_NAME = "enemyplane.png";
