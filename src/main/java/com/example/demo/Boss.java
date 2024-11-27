@@ -32,7 +32,7 @@ public class Boss extends FighterPlane {
     private int framesWithShieldActivated;
 
     private final LevelViewBoss levelView;
-    private final AudioClip pewSound;
+    private final AudioClip fireBallSound;
 
     public Boss(LevelViewBoss levelView) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
@@ -43,7 +43,7 @@ public class Boss extends FighterPlane {
         framesWithShieldActivated = 0;
         isShielded = false;
 
-        pewSound = new AudioClip(getClass()
+        fireBallSound = new AudioClip(getClass()
                 .getResource("/com/example/demo/audio/fireball.wav")
                 .toExternalForm());
 
@@ -70,8 +70,8 @@ public class Boss extends FighterPlane {
     @Override
     public ActiveActorDestructible fireProjectile() {
         if (bossFiresInCurrentFrame()) {
-            if (pewSound != null) {
-                pewSound.play();
+            if (fireBallSound != null) {
+                fireBallSound.play();
             }
 
             return new BossProjectile(getProjectileInitialPosition());
