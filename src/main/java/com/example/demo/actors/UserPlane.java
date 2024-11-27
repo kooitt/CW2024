@@ -5,7 +5,7 @@ package com.example.demo.actors;
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
 
-public class UserPlane extends FighterPlane {
+public class UserPlane extends ActiveActor {
 
 	private static final String IMAGE_NAME = "userplane.png";
 	private static final double Y_UPPER_BOUND = -40;

@@ -1,6 +1,6 @@
-// AnimationComponent.java
-
 package com.example.demo.components;
+
+// 移除与盾牌相关的import和变量
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,7 +19,6 @@ public class AnimationComponent {
     private static final String IMAGE_LOCATION = "/com/example/demo/images/";
     private static final int TOTAL_EXPLOSION_FRAMES = 13;
     private static final double EXPLOSION_FRAME_DURATION = 50; // 毫秒
-    public static final int SHIELD_SIZE = 100; // 公开以便Boss使用
 
     private static final List<Image> explosionFrames = new ArrayList<>();
 
@@ -36,32 +35,10 @@ public class AnimationComponent {
     }
 
     private Group parentGroup;
-    private ImageView shieldImageView;
-    private Timeline shieldTimeline;
-    private boolean isShieldActive;
 
     public AnimationComponent(Group parentGroup) {
         this.parentGroup = parentGroup;
-        initializeShield();
-    }
-
-    /**
-     * 初始化盾牌图像
-     */
-    private void initializeShield() {
-        shieldImageView = new ImageView();
-        URL shieldImageUrl = getClass().getResource(IMAGE_LOCATION + "shield.png");
-        if (shieldImageUrl == null) {
-            return;
-        }
-        Image shieldImage = new Image(shieldImageUrl.toExternalForm());
-        shieldImageView.setImage(shieldImage);
-        shieldImageView.setFitWidth(SHIELD_SIZE);
-        shieldImageView.setFitHeight(SHIELD_SIZE);
-        shieldImageView.setPreserveRatio(true);
-        shieldImageView.setVisible(false); // 初始隐藏
-        parentGroup.getChildren().add(shieldImageView);
-        isShieldActive = false;
+        // 初始化盾牌逻辑已移至 ShieldDisplay
     }
 
     /**
@@ -101,68 +78,5 @@ public class AnimationComponent {
         });
     }
 
-    /**
-     * 初始化盾牌激活逻辑
-     *
-     * @param intervalSeconds 盾牌激活的间隔时间（秒）
-     * @param durationSeconds 盾牌持续的时间（秒）
-     */
-    public void initializeShieldLogic(double intervalSeconds, double durationSeconds) {
-        shieldTimeline = new Timeline(
-                new KeyFrame(Duration.seconds(0), e -> activateShield()),
-                new KeyFrame(Duration.seconds(durationSeconds), e -> deactivateShield()),
-                new KeyFrame(Duration.seconds(intervalSeconds), e -> {}) // 空操作，用于设定周期长度
-        );
-        shieldTimeline.setCycleCount(Timeline.INDEFINITE);
-        shieldTimeline.play();
-    }
-
-    /**
-     * 激活盾牌
-     */
-    private void activateShield() {
-        isShieldActive = true;
-        shieldImageView.setVisible(true);
-        shieldImageView.toFront(); // 确保盾牌在最前端
-    }
-
-    /**
-     * 禁用盾牌
-     */
-    private void deactivateShield() {
-        isShieldActive = false;
-        shieldImageView.setVisible(false);
-    }
-
-    /**
-     * 设置盾牌的位置
-     *
-     * @param x 盾牌中心的X坐标
-     * @param y 盾牌中心的Y坐标
-     */
-    public void setShieldPosition(double x, double y) {
-        Platform.runLater(() -> {
-            shieldImageView.setLayoutX(x + SHIELD_SIZE * 1.5);
-            shieldImageView.setLayoutY(y - SHIELD_SIZE / 2.0);
-        });
-    }
-
-    /**
-     * 检查盾牌是否激活
-     *
-     * @return 是否激活
-     */
-    public boolean isShieldActive() {
-        return isShieldActive;
-    }
-
-    /**
-     * 停止盾牌逻辑
-     */
-    public void stopShieldLogic() {
-        if (shieldTimeline != null) {
-            shieldTimeline.stop();
-        }
-        deactivateShield();
-    }
+    // 移除盾牌相关的方法
 }

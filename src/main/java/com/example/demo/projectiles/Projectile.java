@@ -8,7 +8,7 @@ import com.example.demo.utils.GameSettings;
 public abstract class Projectile extends ActiveActor {
 
 	public Projectile(String imageName, int imageHeight, double initialXPos, double initialYPos) {
-		super(imageName, imageHeight, initialXPos, initialYPos);
+		super(imageName, imageHeight, initialXPos, initialYPos,1);
 
 		// 初始化 MovementComponent，初始速度为 (0, 0)
 		getMovementComponent().setVelocity(0, 0);

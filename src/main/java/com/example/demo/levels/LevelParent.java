@@ -2,6 +2,7 @@ package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActor;
 import com.example.demo.actors.EnemyPlane;
+import com.example.demo.actors.Shield;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.interfaces.Hitbox;
 import com.example.demo.projectiles.Projectile;
@@ -9,6 +10,7 @@ import com.example.demo.utils.ObjectPool;
 import com.example.demo.projectiles.BulletFactory;
 import com.example.demo.utils.KeyBindings;
 import com.example.demo.views.LevelView;
+import com.example.demo.views.LevelViewLevelTwo;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -38,6 +40,7 @@ public abstract class LevelParent extends Observable {
 	protected final List<ActiveActor> enemyUnits;
 	protected final List<ActiveActor> userProjectiles;
 	protected final List<ActiveActor> enemyProjectiles;
+	protected final List<ActiveActor> shields; // 新增 Shields 列表
 
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
@@ -57,6 +60,7 @@ public abstract class LevelParent extends Observable {
 		this.user = new UserPlane();
 		this.friendlyUnits = new ArrayList<>();
 		this.enemyUnits = new ArrayList<>();
+		this.shields = new ArrayList<>(); // 初始化 Shields 列表
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
 
@@ -113,9 +117,7 @@ public abstract class LevelParent extends Observable {
 		updateActors(deltaTime);
 		updateNumberOfEnemies();
 		handleEnemyPenetration();
-		handleUserProjectileCollisions();
-		handleEnemyProjectileCollisions();
-		handlePlaneCollisions();
+		handleCollisions(); // 使用优化后的碰撞检测
 		removeProjectilesOutOfBounds();
 		removeAllDestroyedActors();
 		updateKillCount();
@@ -181,6 +183,9 @@ public abstract class LevelParent extends Observable {
 		enemyUnits.forEach(actor -> {
 			actor.updateActor(deltaTime, this);
 		});
+		shields.forEach(shield -> { // 更新 Shields
+			shield.updateActor(deltaTime, this);
+		});
 		userProjectiles.forEach(projectile -> {
 			projectile.updateActor(deltaTime, this);
 		});
@@ -191,7 +196,8 @@ public abstract class LevelParent extends Observable {
 
 	private void removeAllDestroyedActors() {
 		removeDestroyedActors(friendlyUnits);
-		removeDestroyedActors(enemyUnits);
+		removeDestroyedActors(enemyUnits, enemyProjectilePool, bossProjectilePool);
+		removeDestroyedActors(shields);
 		removeDestroyedActors(userProjectiles, userProjectilePool);
 		removeDestroyedActors(enemyProjectiles, enemyProjectilePool, bossProjectilePool);
 	}
@@ -224,15 +230,13 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
-	private void handlePlaneCollisions() {
-		handleCollisions(Collections.singletonList(user), enemyUnits);
-	}
+	private void handleCollisions() {
+		// 先处理子弹与盾牌的碰撞
+		handleCollisions(userProjectiles, shields);
+		handleCollisions(enemyProjectiles, friendlyUnits);
 
-	private void handleUserProjectileCollisions() {
+		// 只有当Shield不存在或已销毁时，才处理子弹与敌方单位（包括Boss）的碰撞
 		handleCollisions(userProjectiles, enemyUnits);
-	}
-
-	private void handleEnemyProjectileCollisions() {
 		handleCollisions(enemyProjectiles, friendlyUnits);
 	}
 
@@ -243,14 +247,13 @@ public abstract class LevelParent extends Observable {
 					continue; // 忽略已销毁的演员
 				}
 				if (actor1.getCollisionComponent().checkCollision(actor2.getCollisionComponent())) {
-					// 假设子弹造成1点伤害，可以根据实际情况调整
+					System.out.println("Collision detected between " + actor1 + " and " + actor2);
 					actor1.takeDamage(1);
 					actor2.takeDamage(1);
 				}
 			}
 		}
 	}
-
 
 	private void handleEnemyPenetration() {
 		for (ActiveActor enemy : enemyUnits) {
@@ -290,6 +293,7 @@ public abstract class LevelParent extends Observable {
 		root.getChildren().clear();
 		friendlyUnits.clear();
 		enemyUnits.clear();
+		shields.clear();
 		userProjectiles.clear();
 		enemyProjectiles.clear();
 	}
@@ -303,12 +307,17 @@ public abstract class LevelParent extends Observable {
 	}
 
 	protected int getCurrentNumberOfEnemies() {
-		return enemyUnits.size();
+		return enemyUnits.size() + shields.size(); // 包含Shields
 	}
 
-	protected void addEnemyUnit(ActiveActor enemy) {
-		enemyUnits.add(enemy);
-		root.getChildren().add(enemy);
+	public void addEnemyUnit(ActiveActor enemy) {
+		if (!enemyUnits.contains(enemy) && !(enemy instanceof Shield)) { // 确保不重复添加，且Shield单独管理
+			enemyUnits.add(enemy);
+			root.getChildren().add(enemy);
+		} else if (enemy instanceof Shield && !shields.contains(enemy)) {
+			shields.add(enemy);
+			root.getChildren().add(enemy);
+		}
 	}
 
 	protected double getEnemyMaximumYPosition() {
@@ -328,7 +337,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateNumberOfEnemies() {
-		currentNumberOfEnemies = enemyUnits.size();
+		currentNumberOfEnemies = enemyUnits.size() + shields.size();
 	}
 
 	private void removeProjectilesOutOfBounds() {

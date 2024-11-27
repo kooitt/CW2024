@@ -1,5 +1,3 @@
-// LevelTwo.java
-
 package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActor;
@@ -17,7 +15,7 @@ public class LevelTwo extends LevelParent {
 
 	public LevelTwo(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
-		boss = new Boss(getRoot());
+		boss = new Boss(getRoot(), this); // 传递 'this' 作为 LevelParent
 	}
 
 	@Override

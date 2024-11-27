@@ -2,7 +2,7 @@
 
 package com.example.demo.components;
 
-import com.example.demo.actors.FighterPlane;
+import com.example.demo.actors.ActiveActor;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.projectiles.Projectile;
 import com.example.demo.utils.ObjectPool;
@@ -11,12 +11,12 @@ public class ShootingComponent {
     private double fireRate; // 每秒发射次数
     private double timeSinceLastShot; // 距离上次射击的时间
     private ObjectPool<Projectile> projectilePool;
-    private FighterPlane owner; // 将类型修改为 FighterPlane
+    private ActiveActor owner; // 将类型修改为 FighterPlane
     private double projectileXOffset;
     private double projectileYOffset;
     private boolean isFiring;
 
-    public ShootingComponent(FighterPlane owner, double fireRate, ObjectPool<Projectile> projectilePool, double projectileXOffset, double projectileYOffset) {
+    public ShootingComponent(ActiveActor owner, double fireRate, ObjectPool<Projectile> projectilePool, double projectileXOffset, double projectileYOffset) {
         this.owner = owner;
         this.fireRate = fireRate;
         this.projectilePool = projectilePool;

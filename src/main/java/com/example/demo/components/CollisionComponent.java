@@ -49,11 +49,16 @@ public class CollisionComponent implements Hitbox {
         }
     }
 
-    public boolean checkCollision(Hitbox other) {
-        return getHitboxX() < other.getHitboxX() + other.getHitboxWidth() &&
-                getHitboxX() + getHitboxWidth() > other.getHitboxX() &&
-                getHitboxY() < other.getHitboxY() + other.getHitboxHeight() &&
-                getHitboxY() + getHitboxHeight() > other.getHitboxY();
+    public boolean checkCollision(CollisionComponent other) {
+        double thisX = this.getHitboxX();
+        double thisY = this.getHitboxY();
+        double otherX = other.getHitboxX();
+        double otherY = other.getHitboxY();
+
+        return thisX < otherX + other.getHitboxWidth() &&
+                thisX + this.getHitboxWidth() > otherX &&
+                thisY < otherY + other.getHitboxHeight() &&
+                thisY + this.getHitboxHeight() > otherY;
     }
 
     @Override
