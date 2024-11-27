@@ -28,10 +28,12 @@ public class Boss extends FighterPlane {
 
     private final List<Integer> movePattern;
     private final LevelViewBoss levelView;
-    private final AudioClip fireBallSound;
-    private final AudioClip shieldActivateSound;
-    private final AudioClip shieldDeactivateSound;
-    private final AudioClip explosionSound;
+
+    private final AudioPlayer fireBallAudio;
+    private final AudioPlayer shieldActivateAudio;
+    private final AudioPlayer shieldDeactivateAudio;
+    private final AudioPlayer explosionAudio;
+
     private boolean isShielded;
     private int consecutiveMovesInSameDirection;
     private int indexOfCurrentMove;
@@ -40,26 +42,21 @@ public class Boss extends FighterPlane {
     public Boss(LevelViewBoss levelView) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
         this.levelView = levelView;
+
         movePattern = new ArrayList<>();
-        consecutiveMovesInSameDirection = 0;
-        indexOfCurrentMove = 0;
-        framesWithShieldActivated = 0;
-        isShielded = false;
-
-        fireBallSound = new AudioClip(Objects.requireNonNull(getClass()
-                        .getResource("/com/example/demo/audio/fireball.wav"))
-                .toExternalForm());
-        shieldActivateSound = new AudioClip(Objects.requireNonNull(getClass()
-                        .getResource("/com/example/demo/audio/activateshield.wav"))
-                .toExternalForm());
-        shieldDeactivateSound = new AudioClip(Objects.requireNonNull(getClass()
-                        .getResource("/com/example/demo/audio/deactivateshield.wav"))
-                .toExternalForm());
-        explosionSound = new AudioClip(Objects.requireNonNull(getClass()
-                        .getResource("/com/example/demo/audio/explosion.wav"))
-                .toExternalForm());
-
         initializeMovePattern();
+
+        fireBallAudio = new AudioPlayer();
+        fireBallAudio.loadAudio("/com/example/demo/audio/fireball.wav");
+
+        shieldActivateAudio = new AudioPlayer();
+        shieldActivateAudio.loadAudio("/com/example/demo/audio/activateshield.wav");
+
+        shieldDeactivateAudio = new AudioPlayer();
+        shieldDeactivateAudio.loadAudio("/com/example/demo/audio/deactivateshield.wav");
+
+        explosionAudio = new AudioPlayer();
+        explosionAudio.loadAudio("/com/example/demo/audio/explosion.wav");
     }
 
     @Override
