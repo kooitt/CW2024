@@ -2,13 +2,15 @@ package com.example.demo;
 
 import javafx.scene.media.AudioClip;
 
+import java.util.Objects;
+
 public class AudioPlayer {
     private AudioClip audioClip;
 
     // Load audio file
     public void loadAudio(String filePath) {
         try {
-            audioClip = new AudioClip(getClass().getResource(filePath).toExternalForm());
+            audioClip = new AudioClip(Objects.requireNonNull(getClass().getResource(filePath)).toExternalForm());
         } catch (Exception e) {
             System.err.println("Error loading audio: " + e.getMessage());
         }
