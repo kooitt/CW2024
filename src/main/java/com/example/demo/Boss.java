@@ -6,6 +6,7 @@ import javafx.scene.media.AudioClip;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Boss extends FighterPlane {
 
@@ -46,17 +47,17 @@ public class Boss extends FighterPlane {
         framesWithShieldActivated = 0;
         isShielded = false;
 
-        fireBallSound = new AudioClip(getClass()
-                .getResource("/com/example/demo/audio/fireball.wav")
+        fireBallSound = new AudioClip(Objects.requireNonNull(getClass()
+                        .getResource("/com/example/demo/audio/fireball.wav"))
                 .toExternalForm());
-        shieldActivateSound = new AudioClip(getClass()
-                .getResource("/com/example/demo/audio/activateshield.wav")
+        shieldActivateSound = new AudioClip(Objects.requireNonNull(getClass()
+                        .getResource("/com/example/demo/audio/activateshield.wav"))
                 .toExternalForm());
-        shieldDeactivateSound = new AudioClip(getClass()
-                .getResource("/com/example/demo/audio/deactivateshield.wav")
+        shieldDeactivateSound = new AudioClip(Objects.requireNonNull(getClass()
+                        .getResource("/com/example/demo/audio/deactivateshield.wav"))
                 .toExternalForm());
-        explosionSound = new AudioClip(getClass()
-                .getResource("/com/example/demo/audio/explosion.wav")
+        explosionSound = new AudioClip(Objects.requireNonNull(getClass()
+                        .getResource("/com/example/demo/audio/explosion.wav"))
                 .toExternalForm());
 
         initializeMovePattern();
