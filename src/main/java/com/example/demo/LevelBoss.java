@@ -6,13 +6,22 @@ public class LevelBoss extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/space3.jpg";
     private static final int PLAYER_INITIAL_HEALTH = 5;
+
     private final Boss boss;
     private LevelViewBoss levelView;
 
+    /**
+     * Constructor for LevelBoss.
+     *
+     * @param screenHeight Height of the game screen.
+     * @param screenWidth  Width of the game screen.
+     * @param stage        The main game stage.
+     */
     public LevelBoss(double screenHeight, double screenWidth, Stage stage) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, stage);
-        // Initialize the boss enemy
-        boss = new Boss();
+
+        // Initialize the boss with a reference to this LevelBoss
+        boss = new Boss(this);
     }
 
     @Override
@@ -23,11 +32,11 @@ public class LevelBoss extends LevelParent {
 
     @Override
     protected void checkIfGameOver() {
-        // Check if the player is destroyed
+        // Check if the user is destroyed
         if (userIsDestroyed()) {
             loseGame();
         }
-        // Check if the boss has been destroyed to declare victory
+        // Check if the boss is destroyed to declare victory
         else if (boss.isDestroyed()) {
             winGame();
         }
@@ -43,12 +52,20 @@ public class LevelBoss extends LevelParent {
 
     @Override
     protected LevelView instantiateLevelView() {
-        // Create a LevelViewLevelTwo specific to this level
+        // Create a LevelViewBoss specific to this level
         levelView = new LevelViewBoss(getRoot(), PLAYER_INITIAL_HEALTH);
         return levelView;
     }
 
-    // Additional functionality for managing the boss shield
+    @Override
+    protected void updateScene() {
+        super.updateScene(); // Call the parent class's updateScene method
+        updateShieldState(); // Update the shield state of the boss
+    }
+
+    /**
+     * Updates the shield display for the boss.
+     */
     public void updateShieldState() {
         if (boss.isDestroyed()) return; // Skip if the boss is already destroyed
         if (boss.isShielded()) {
@@ -58,9 +75,28 @@ public class LevelBoss extends LevelParent {
         }
     }
 
-    @Override
-    protected void updateScene() {
-        super.updateScene(); // Call the parent class method
-        updateShieldState(); // Add specific functionality for LevelTwo
+    /**
+     * Updates the boss's health display in the LevelViewBoss.
+     *
+     * @param health The current health of the boss.
+     */
+    public void updateBossHealthDisplay(int health) {
+        if (levelView instanceof LevelViewBoss) {
+            ((LevelViewBoss) levelView).updateBossHealth(health);
+        }
+    }
+
+    /**
+     * Custom method to disable kill count updates for the Boss level.
+     */
+    protected void updateKillCount() {
+        // Do nothing to disable score updates
+    }
+
+    /**
+     * Custom method to disable score display updates for the Boss level.
+     */
+    protected void updateScoreDisplay() {
+        // Do nothing to disable score display
     }
 }

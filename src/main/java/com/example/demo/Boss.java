@@ -27,8 +27,16 @@ public class Boss extends FighterPlane {
     private int indexOfCurrentMove;
     private int framesWithShieldActivated;
 
-    public Boss() {
+    private final LevelBoss levelBoss; // Reference to the LevelBoss instance
+
+    /**
+     * Constructor for the Boss class.
+     *
+     * @param levelBoss Reference to the LevelBoss instance.
+     */
+    public Boss(LevelBoss levelBoss) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
+        this.levelBoss = levelBoss;
         movePattern = new ArrayList<>();
         consecutiveMovesInSameDirection = 0;
         indexOfCurrentMove = 0;
@@ -66,6 +74,7 @@ public class Boss extends FighterPlane {
     public void takeDamage() {
         if (!isShielded) {
             super.takeDamage();
+            levelBoss.updateBossHealthDisplay(getHealth()); // Notify LevelBoss about health changes
         }
     }
 
