@@ -12,8 +12,9 @@ public class LevelThree extends LevelParent {
     private static final int TOTAL_ENEMIES = 5;
     private static final int KILLS_TO_ADVANCE = 20;
     private static final double ENEMY_SPAWN_PROBABILITY = .20;
-    private static final double ADVANCED_ENEMY_PROBABILITY = .30;
     private static final int PLAYER_INITIAL_HEALTH = 5;
+
+    private boolean spawnEnemyPlaneNext = true;
 
     public LevelThree(double screenHeight, double screenWidth) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
@@ -41,11 +42,13 @@ public class LevelThree extends LevelParent {
                 double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
 
                 ActiveActorDestructible newEnemy;
-                if (Math.random() < ADVANCED_ENEMY_PROBABILITY) {
-                    newEnemy = new AdvancedEnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
-                } else {
+                if (spawnEnemyPlaneNext) {
                     newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+                } else {
+                    newEnemy = new AdvancedEnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
                 }
+
+                spawnEnemyPlaneNext = !spawnEnemyPlaneNext;
 
                 addEnemyUnit(newEnemy);
             }
