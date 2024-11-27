@@ -4,7 +4,7 @@ public class EnemyProjectile extends Projectile {
 
     private static final String IMAGE_NAME = "enemyFire.png";
     private static final int IMAGE_HEIGHT = 35;
-    private int horizontalVelocity; // Make velocity configurable
+    private int horizontalVelocity;
 
     // Constructor with default speed for regular levels
     public EnemyProjectile(double initialXPos, double initialYPos) {
@@ -19,7 +19,7 @@ public class EnemyProjectile extends Projectile {
 
     @Override
     public void updatePosition() {
-        moveHorizontally(horizontalVelocity); // Use the configurable velocity
+        moveHorizontally(horizontalVelocity);
     }
 
     @Override

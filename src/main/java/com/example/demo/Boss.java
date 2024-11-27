@@ -1,6 +1,8 @@
 package com.example.demo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Boss extends FighterPlane {
 
@@ -54,7 +56,11 @@ public class Boss extends FighterPlane {
 
     @Override
     public ActiveActorDestructible fireProjectile() {
-        return bossFiresInCurrentFrame() ? new BossProjectile(getProjectileInitialPosition()) : null;
+        if (Math.random() < BOSS_FIRE_RATE) {
+            double targetY = getLayoutY() + getTranslateY(); // Aim at current position
+            return new BossProjectile(targetY);
+        }
+        return null;
     }
 
     @Override
@@ -96,14 +102,6 @@ public class Boss extends FighterPlane {
             indexOfCurrentMove = 0;
         }
         return currentMove;
-    }
-
-    private boolean bossFiresInCurrentFrame() {
-        return Math.random() < BOSS_FIRE_RATE;
-    }
-
-    private double getProjectileInitialPosition() {
-        return getLayoutY() + getTranslateY() + PROJECTILE_Y_POSITION_OFFSET;
     }
 
     private boolean shieldShouldBeActivated() {
