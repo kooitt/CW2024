@@ -7,8 +7,6 @@ import java.util.List;
 public class AdvancedEnemyPlane extends FighterPlane {
 
     private static final String IMAGE_NAME = "advancedenemyplane.png";
-    private static final double INITIAL_X_POSITION = 1000.0;
-    private static final double INITIAL_Y_POSITION = 300;
     private static final int IMAGE_HEIGHT = 54;
     private static final int HEALTH = 1;
     private static final int HORIZONTAL_SPEED = -6;
@@ -26,8 +24,8 @@ public class AdvancedEnemyPlane extends FighterPlane {
     private final AudioPlayer explosionAudio;
     private final AudioPlayer missileAudio;
 
-    public AdvancedEnemyPlane(double initialYPosition) {
-        super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, initialYPosition, HEALTH);
+    public AdvancedEnemyPlane(double screenWidth, double initialYPosition) {
+        super(IMAGE_NAME, IMAGE_HEIGHT, screenWidth, initialYPosition, HEALTH);
 
         movePattern = new ArrayList<>();
         initializeMovePattern();
