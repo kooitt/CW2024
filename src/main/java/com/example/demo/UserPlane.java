@@ -18,16 +18,15 @@ public class UserPlane extends FighterPlane {
     private int horizontalVelocityMultiplier;
     private int numberOfKills;
 
-    private final AudioPlayer audioPlayer;
+    private final AudioPlayer pewAudio;
 
     public UserPlane(int initialHealth) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
         verticalVelocityMultiplier = 0;
         horizontalVelocityMultiplier = 0;
 
-        // Initialize and load the pew sound
-        audioPlayer = new AudioPlayer();
-        audioPlayer.loadAudio("/com/example/demo/audio/pew.wav");
+        pewAudio = new AudioPlayer();
+        pewAudio.loadAudio("/com/example/demo/audio/pew.wav");
     }
 
     @Override
@@ -58,9 +57,8 @@ public class UserPlane extends FighterPlane {
 
     @Override
     public ActiveActorDestructible fireProjectile() {
-        // Play the pew sound
-        if (audioPlayer != null) {
-            audioPlayer.play();
+        if (pewAudio != null) {
+            pewAudio.play();
         }
         return new UserProjectile(getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET),
                 getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
