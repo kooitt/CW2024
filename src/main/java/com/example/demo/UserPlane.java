@@ -14,11 +14,13 @@ public class UserPlane extends FighterPlane {
     private static final int HORIZONTAL_VELOCITY = 8;
     private static final int PROJECTILE_X_POSITION_OFFSET = 110;
     private static final int PROJECTILE_Y_POSITION_OFFSET = 20;
+
     private int verticalVelocityMultiplier;
     private int horizontalVelocityMultiplier;
     private int numberOfKills;
 
     private final AudioPlayer pewAudio;
+    private final AudioPlayer explosionAudio;
 
     public UserPlane(int initialHealth) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
@@ -27,6 +29,9 @@ public class UserPlane extends FighterPlane {
 
         pewAudio = new AudioPlayer();
         pewAudio.loadAudio("/com/example/demo/audio/pew.wav");
+
+        explosionAudio = new AudioPlayer();
+        explosionAudio.loadAudio("/com/example/demo/audio/explosion.wav");
     }
 
     @Override
@@ -62,6 +67,14 @@ public class UserPlane extends FighterPlane {
         }
         return new UserProjectile(getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET),
                 getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (explosionAudio != null) {
+            explosionAudio.play();
+        }
     }
 
     private boolean isMoving() {
