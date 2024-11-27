@@ -35,6 +35,7 @@ public class LevelOne extends LevelParent {
 				double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
 				ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
 				addEnemyUnit(newEnemy);
+				getRoot().getChildren().add(newEnemy.getHitbox());
 			}
 		}
 	}

@@ -16,6 +16,7 @@ public class LevelTwo extends LevelParent {
 	protected void initializeFriendlyUnits() {
 		getRoot().getChildren().add(getUser());
 		getRoot().getChildren().add(boss.getShieldImage());
+		getRoot().getChildren().add(boss.getHitbox());
 	}
 
 	@Override
