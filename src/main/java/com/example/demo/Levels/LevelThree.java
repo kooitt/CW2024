@@ -42,7 +42,7 @@ public class LevelThree extends LevelParent {
 
                 ActiveActorDestructible newEnemy;
                 if (Math.random() < ADVANCED_ENEMY_PROBABILITY) {
-                    newEnemy = new AdvancedEnemyPlane(newEnemyInitialYPosition);
+                    newEnemy = new AdvancedEnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
                 } else {
                     newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
                 }
