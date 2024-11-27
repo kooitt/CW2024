@@ -2,6 +2,8 @@ package com.example.demo;
 
 import javafx.scene.media.AudioClip;
 
+import java.util.Objects;
+
 public class EnemyPlane extends FighterPlane {
 
     private static final String IMAGE_NAME = "enemyplane.png";
@@ -16,8 +18,8 @@ public class EnemyPlane extends FighterPlane {
 
     public EnemyPlane(double initialXPos, double initialYPos) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
-        explosionSound = new AudioClip(getClass()
-                .getResource("/com/example/demo/audio/explosion.wav")
+        explosionSound = new AudioClip(Objects.requireNonNull(getClass()
+                        .getResource("/com/example/demo/audio/explosion.wav"))
                 .toExternalForm());
     }
 
