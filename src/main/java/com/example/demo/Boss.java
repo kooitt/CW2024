@@ -157,17 +157,13 @@ public class Boss extends FighterPlane {
     private void activateShield() {
         isShielded = true;
         levelView.showShield();
-        if (shieldActivateSound != null) {
-            shieldActivateSound.play();
-        }
+        shieldActivateAudio.play();
     }
 
     private void deactivateShield() {
         isShielded = false;
         framesWithShieldActivated = 0;
         levelView.hideShield();
-        if (shieldDeactivateSound != null) {
-            shieldDeactivateSound.play();
-        }
+        shieldDeactivateAudio.play();
     }
 }
