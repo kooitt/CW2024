@@ -21,6 +21,7 @@ public class UserPlane extends FighterPlane {
 
     private final AudioPlayer pewAudio;
     private final AudioPlayer explosionAudio;
+    private final AudioPlayer takeDamageAudio;
 
     public UserPlane(int initialHealth) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
@@ -32,6 +33,9 @@ public class UserPlane extends FighterPlane {
 
         explosionAudio = new AudioPlayer();
         explosionAudio.loadAudio("/com/example/demo/audio/explosion.wav");
+
+        takeDamageAudio = new AudioPlayer();
+        takeDamageAudio.loadAudio("/com/example/demo/audio/oof.wav"); // Load the "oof" sound
     }
 
     @Override
