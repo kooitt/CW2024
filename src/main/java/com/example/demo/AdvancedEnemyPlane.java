@@ -9,7 +9,7 @@ public class AdvancedEnemyPlane extends FighterPlane {
     private static final String IMAGE_NAME = "advancedenemyplane.png";
     private static final int IMAGE_HEIGHT = 54;
     private static final int HEALTH = 1;
-    private static final int HORIZONTAL_SPEED = -6;
+    private static final int HORIZONTAL_SPEED = -8;
     private static final int VERTICAL_VELOCITY = 5;
     private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
     private static final int ZERO = 0;
