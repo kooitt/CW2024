@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.LevelViews.LevelViewBoss;
+import javafx.scene.media.AudioClip;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,13 +17,14 @@ public class Boss extends FighterPlane {
     private static final double BOSS_SHIELD_PROBABILITY = .002;
     private static final int IMAGE_HEIGHT = 56;
     private static final int VERTICAL_VELOCITY = 8;
-    private static final int HEALTH = 3; // lowered from 100 for testing
+    private static final int HEALTH = 3; // Lowered from 100 for testing
     private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
     private static final int ZERO = 0;
     private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
     private static final int Y_POSITION_UPPER_BOUND = 20;
     private static final int Y_POSITION_LOWER_BOUND = 475;
     private static final int MAX_FRAMES_WITH_SHIELD = 500;
+
     private final List<Integer> movePattern;
     private boolean isShielded;
     private int consecutiveMovesInSameDirection;
@@ -30,6 +32,7 @@ public class Boss extends FighterPlane {
     private int framesWithShieldActivated;
 
     private final LevelViewBoss levelView;
+    private final AudioClip pewSound;
 
     public Boss(LevelViewBoss levelView) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
@@ -39,6 +42,11 @@ public class Boss extends FighterPlane {
         indexOfCurrentMove = 0;
         framesWithShieldActivated = 0;
         isShielded = false;
+
+        pewSound = new AudioClip(getClass()
+                .getResource("/com/example/demo/audio/fireball.wav")
+                .toExternalForm());
+
         initializeMovePattern();
     }
 
@@ -61,7 +69,14 @@ public class Boss extends FighterPlane {
 
     @Override
     public ActiveActorDestructible fireProjectile() {
-        return bossFiresInCurrentFrame() ? new BossProjectile(getProjectileInitialPosition()) : null;
+        if (bossFiresInCurrentFrame()) {
+            if (pewSound != null) {
+                pewSound.play();
+            }
+
+            return new BossProjectile(getProjectileInitialPosition());
+        }
+        return null;
     }
 
     @Override
@@ -129,5 +144,4 @@ public class Boss extends FighterPlane {
         framesWithShieldActivated = 0;
         levelView.hideShield();
     }
-
 }
