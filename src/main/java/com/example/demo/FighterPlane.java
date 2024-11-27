@@ -5,7 +5,6 @@ import javafx.geometry.Bounds;
 
 public abstract class FighterPlane extends ActiveActorDestructible {
 
-    private static final int PLANE_HITBOX_MARGIN = 15; // Margin to reduce hitbox size
     private int health;
 
     public FighterPlane(String imageName, int imageHeight, double initialXPos, double initialYPos, int health) {

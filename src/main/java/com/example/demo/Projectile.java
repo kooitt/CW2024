@@ -5,7 +5,6 @@ import javafx.geometry.Bounds;
 
 public abstract class Projectile extends ActiveActorDestructible {
 
-    private static final int PROJECTILE_HITBOX_MARGIN = 5; // Margin to reduce hitbox size
 
     public Projectile(String imageName, int imageHeight, double initialXPos, double initialYPos) {
         super(imageName, imageHeight, initialXPos, initialYPos);
