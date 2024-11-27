@@ -11,12 +11,16 @@ public class EnemyPlane extends FighterPlane {
     private static final double FIRE_RATE = .01;
 
     private final AudioPlayer explosionAudio;
+    private final AudioPlayer missileAudio;
 
     public EnemyPlane(double initialXPos, double initialYPos) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
 
         explosionAudio = new AudioPlayer();
         explosionAudio.loadAudio("/com/example/demo/audio/explosion.wav");
+
+        missileAudio = new AudioPlayer();
+        missileAudio.loadAudio("/com/example/demo/audio/missile.wav");
     }
 
     @Override
@@ -29,6 +33,9 @@ public class EnemyPlane extends FighterPlane {
         if (Math.random() < FIRE_RATE) {
             double projectileXPosition = getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET);
             double projectileYPosition = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
+
+            missileAudio.play();
+
             return new EnemyProjectile(projectileXPosition, projectileYPosition);
         }
         return null;
