@@ -1,10 +1,6 @@
 package com.example.demo;
 
 import com.example.demo.controller.MainMenu;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;
@@ -12,14 +8,24 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.stream.Collectors;
 
 public abstract class LevelParent extends Observable {
 
     private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
     private static final int MILLISECOND_DELAY = 50;
+
+    private static final String DEFAULT_LEVEL_MUSIC = "/com/example/demo/sounds/level_music.wav"; // Shared music path
 
     private final double screenHeight;
     private final double screenWidth;
@@ -42,10 +48,11 @@ public abstract class LevelParent extends Observable {
     private int score; // Field to track the score
     private Text scoreDisplay; // UI element to show the score
 
-    // Pause menu variables
     private PauseMenu pauseMenu;
     private boolean isPaused;
     private final Stage stage;
+
+    private MediaPlayer backgroundMusicPlayer; // MediaPlayer for background music
 
     public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage stage) {
         this.root = new Group();
@@ -73,9 +80,11 @@ public abstract class LevelParent extends Observable {
 
         initializeTimeline();
         friendlyUnits.add(user);
+
+        // Initialize background music
+        initializeBackgroundMusic(DEFAULT_LEVEL_MUSIC);
     }
 
-    // Abstract methods for subclasses to implement
     protected abstract void initializeFriendlyUnits();
 
     protected abstract void checkIfGameOver();
@@ -84,7 +93,18 @@ public abstract class LevelParent extends Observable {
 
     protected abstract LevelView instantiateLevelView();
 
-    // Scene initialization
+    // Initialize background music
+    private void initializeBackgroundMusic(String musicPath) {
+        try {
+            Media backgroundMusic = new Media(getClass().getResource(musicPath).toExternalForm());
+            backgroundMusicPlayer = new MediaPlayer(backgroundMusic);
+            backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the music
+        } catch (Exception e) {
+            System.err.println("Error loading level background music: " + musicPath);
+            e.printStackTrace();
+        }
+    }
+
     public Scene initializeScene() {
         initializeBackground();
         initializeFriendlyUnits();
@@ -99,17 +119,22 @@ public abstract class LevelParent extends Observable {
         return scene;
     }
 
-    // Start game loop
     public void startGame() {
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.play(); // Start playing background music
+        }
         background.requestFocus();
         timeline.play();
     }
 
-    // Notify observers to transition to the next level
     public void goToNextLevel(String levelName) {
-        timeline.stop(); // Stop the game loop before transitioning
-        setChanged();
-        notifyObservers(levelName);
+        try {
+            timeline.stop();
+            setChanged();
+            notifyObservers(levelName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void updateScene() {
@@ -129,14 +154,12 @@ public abstract class LevelParent extends Observable {
         checkIfGameOver();
     }
 
-    // Timeline setup
     private void initializeTimeline() {
         timeline.setCycleCount(Timeline.INDEFINITE);
         KeyFrame gameLoop = new KeyFrame(Duration.millis(MILLISECOND_DELAY), e -> updateScene());
         timeline.getKeyFrames().add(gameLoop);
     }
 
-    // Initialize background and controls
     private void initializeBackground() {
         background.setFocusTraversable(true);
         background.setFitHeight(screenHeight);
@@ -157,7 +180,6 @@ public abstract class LevelParent extends Observable {
         root.getChildren().add(background);
     }
 
-    // Fire user projectile
     private void fireProjectile() {
         ActiveActorDestructible projectile = user.fireProjectile();
         if (projectile != null) {
@@ -166,12 +188,10 @@ public abstract class LevelParent extends Observable {
         }
     }
 
-    // Generate enemy fire
     private void generateEnemyFire() {
         enemyUnits.forEach(enemy -> spawnEnemyProjectile(((FighterPlane) enemy).fireProjectile()));
     }
 
-    // Spawn enemy projectile
     private void spawnEnemyProjectile(ActiveActorDestructible projectile) {
         if (projectile != null) {
             root.getChildren().add(projectile);
@@ -179,7 +199,6 @@ public abstract class LevelParent extends Observable {
         }
     }
 
-    // Update all actors
     private void updateActors() {
         friendlyUnits.forEach(ActiveActorDestructible::updateActor);
         enemyUnits.forEach(ActiveActorDestructible::updateActor);
@@ -187,7 +206,6 @@ public abstract class LevelParent extends Observable {
         enemyProjectiles.forEach(ActiveActorDestructible::updateActor);
     }
 
-    // Remove destroyed actors
     private void removeAllDestroyedActors() {
         removeDestroyedActors(friendlyUnits);
         removeDestroyedActors(enemyUnits);
@@ -202,7 +220,6 @@ public abstract class LevelParent extends Observable {
         actors.removeAll(destroyedActors);
     }
 
-    // Handle collisions
     private void handlePlaneCollisions() {
         handleCollisions(friendlyUnits, enemyUnits);
     }
@@ -226,7 +243,6 @@ public abstract class LevelParent extends Observable {
         }
     }
 
-    // Handle enemy penetration
     private void handleEnemyPenetration() {
         for (ActiveActorDestructible enemy : enemyUnits) {
             if (enemyHasPenetratedDefenses(enemy)) {
@@ -236,7 +252,6 @@ public abstract class LevelParent extends Observable {
         }
     }
 
-    // Update level view
     private void updateLevelView() {
         levelView.removeHearts(user.getHealth());
     }
@@ -247,7 +262,6 @@ public abstract class LevelParent extends Observable {
         scoreDisplay.toFront(); // Ensure it's on top
     }
 
-    // Update kill count
     private void updateKillCount() {
         int kills = currentNumberOfEnemies - enemyUnits.size();
         if (kills > 0) {
@@ -272,18 +286,24 @@ public abstract class LevelParent extends Observable {
         return Math.abs(enemy.getTranslateX()) > screenWidth;
     }
 
-    // Game outcomes
     protected void winGame() {
+        stopBackgroundMusic();
         timeline.stop();
         levelView.showWinImage();
     }
 
     protected void loseGame() {
+        stopBackgroundMusic();
         timeline.stop();
         levelView.showGameOverImage();
     }
 
-    // Utility methods for subclasses
+    protected void stopBackgroundMusic() {
+        if (backgroundMusicPlayer != null) {
+            backgroundMusicPlayer.stop();
+        }
+    }
+
     protected UserPlane getUser() {
         return user;
     }
@@ -317,7 +337,6 @@ public abstract class LevelParent extends Observable {
         currentNumberOfEnemies = enemyUnits.size();
     }
 
-    // Pause functionality
     private void togglePause() {
         if (isPaused) {
             resumeGame();
@@ -344,6 +363,7 @@ public abstract class LevelParent extends Observable {
     }
 
     private void goToMainMenu() {
+        stopBackgroundMusic();
         timeline.stop();
         MainMenu mainMenu = new MainMenu();
         try {
@@ -354,6 +374,7 @@ public abstract class LevelParent extends Observable {
     }
 
     private void quitGame() {
+        stopBackgroundMusic();
         System.exit(0); // Close the game
     }
 }
