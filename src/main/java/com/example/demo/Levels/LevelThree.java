@@ -1,23 +1,31 @@
 package com.example.demo.Levels;
 
-import com.example.demo.*;
+import com.example.demo.ActiveActorDestructible;
+import com.example.demo.EnemyPlane;
+import com.example.demo.AdvancedEnemyPlane;
 import com.example.demo.LevelViews.LevelView;
-import com.example.demo.LevelViews.LevelViewBoss;
 
 public class LevelThree extends LevelParent {
 
-    private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
-    private static final String NEXT_LEVEL = "com.example.demo.Levels.LevelFour";
+    private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
+    private static final String NEXT_LEVEL = "com.example.demo.Levels.LevelTwo";
     private static final int TOTAL_ENEMIES = 5;
+    private static final int KILLS_TO_ADVANCE = 10;
     private static final double ENEMY_SPAWN_PROBABILITY = .20;
+    private static final double ADVANCED_ENEMY_PROBABILITY = .30;
     private static final int PLAYER_INITIAL_HEALTH = 5;
-    private final Boss boss;
-    private boolean bossSpawned = false;
-    private LevelViewBoss levelView;
 
     public LevelThree(double screenHeight, double screenWidth) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
-        boss = new Boss(levelView);
+    }
+
+    @Override
+    protected void checkIfGameOver() {
+        if (userIsDestroyed()) {
+            loseGame();
+        } else if (userHasReachedKillTarget()) {
+            goToNextLevel(NEXT_LEVEL);
+        }
     }
 
     @Override
@@ -26,26 +34,19 @@ public class LevelThree extends LevelParent {
     }
 
     @Override
-    protected void checkIfGameOver() {
-        if (userIsDestroyed()) {
-            loseGame();
-        } else if (boss.isDestroyed()) {
-            goToNextLevel(NEXT_LEVEL);
-        }
-    }
-
-    @Override
     protected void spawnEnemyUnits() {
-        if (!bossSpawned) {
-            addEnemyUnit(boss);
-            bossSpawned = true;
-        }
-
         int currentNumberOfEnemies = getCurrentNumberOfEnemies();
         for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
             if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
                 double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-                ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+
+                ActiveActorDestructible newEnemy;
+                if (Math.random() < ADVANCED_ENEMY_PROBABILITY) {
+                    newEnemy = new AdvancedEnemyPlane(newEnemyInitialYPosition);
+                } else {
+                    newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+                }
+
                 addEnemyUnit(newEnemy);
             }
         }
@@ -53,8 +54,10 @@ public class LevelThree extends LevelParent {
 
     @Override
     protected LevelView instantiateLevelView() {
-        levelView = new LevelViewBoss(getRoot(), PLAYER_INITIAL_HEALTH);
-        return levelView;
+        return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
     }
 
+    private boolean userHasReachedKillTarget() {
+        return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
+    }
 }
