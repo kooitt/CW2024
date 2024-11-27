@@ -1,18 +1,14 @@
 package com.example.demo;
 
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
-import java.io.File;
+import javafx.scene.media.AudioClip;
 
 public class AudioPlayer {
-    private MediaPlayer mediaPlayer;
+    private AudioClip audioClip;
 
     // Load audio file
     public void loadAudio(String filePath) {
         try {
-            Media media = new Media(new File(filePath).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
+            audioClip = new AudioClip(getClass().getResource(filePath).toExternalForm());
         } catch (Exception e) {
             System.err.println("Error loading audio: " + e.getMessage());
         }
@@ -21,48 +17,19 @@ public class AudioPlayer {
     // Play audio
     public void play() {
         if (isReady()) {
-            mediaPlayer.play();
+            audioClip.play();
         }
     }
 
-    // Pause audio
-    public void pause() {
-        if (isReady()) {
-            mediaPlayer.pause();
-        }
-    }
-
-    // Stop audio
-    public void stop() {
-        if (isReady()) {
-            mediaPlayer.stop();
-        }
-    }
-
-    // Loop audio
-    public void loop() {
-        if (isReady()) {
-            mediaPlayer.setOnEndOfMedia(() -> mediaPlayer.seek(Duration.ZERO));
-            mediaPlayer.play();
-        }
-    }
-
-    // Set volume
+    // Set volume (0.0 to 1.0)
     public void setVolume(double volume) {
-        if (mediaPlayer != null) {
-            mediaPlayer.setVolume(Math.max(0.0, Math.min(volume, 1.0)));
+        if (audioClip != null) {
+            audioClip.setVolume(Math.max(0.0, Math.min(volume, 1.0)));
         }
     }
 
-    // Close audio resources
-    public void close() {
-        if (mediaPlayer != null) {
-            mediaPlayer.dispose();
-        }
-    }
-
-    // Check if media player is ready
+    // Check if audio clip is ready
     private boolean isReady() {
-        return mediaPlayer != null && mediaPlayer.getStatus() != MediaPlayer.Status.UNKNOWN;
+        return audioClip != null;
     }
 }
