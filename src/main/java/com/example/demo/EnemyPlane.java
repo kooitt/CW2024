@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import javafx.scene.media.AudioClip;
+
 public class EnemyPlane extends FighterPlane {
 
     private static final String IMAGE_NAME = "enemyplane.png";
@@ -10,12 +12,13 @@ public class EnemyPlane extends FighterPlane {
     private static final int INITIAL_HEALTH = 1;
     private static final double FIRE_RATE = .01;
 
-    private final AudioPlayer audioPlayer;
+    private final AudioClip explosionSound;
 
     public EnemyPlane(double initialXPos, double initialYPos) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
-        this.audioPlayer = new AudioPlayer();
-        audioPlayer.loadAudio("src/main/resources/com/example/demo/audio/explosion.wav");
+        explosionSound = new AudioClip(getClass()
+                .getResource("/com/example/demo/audio/explosion.wav")
+                .toExternalForm());
     }
 
     @Override
@@ -41,9 +44,8 @@ public class EnemyPlane extends FighterPlane {
     @Override
     public void destroy() {
         super.destroy();
-        // Play explosion sound
-        if (audioPlayer != null) {
-            audioPlayer.play();
+        if (explosionSound != null) {
+            explosionSound.play();
         }
     }
 }
