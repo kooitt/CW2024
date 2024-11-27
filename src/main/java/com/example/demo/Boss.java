@@ -98,9 +98,7 @@ public class Boss extends FighterPlane {
     @Override
     public void destroy() {
         super.destroy();
-        if (explosionSound != null) {
-            explosionSound.play();
-        }
+        explosionAudio.play();
     }
 
     private void initializeMovePattern() {
