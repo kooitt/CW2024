@@ -14,14 +14,12 @@ public class UserPlane extends FighterPlane {
     private static final int HORIZONTAL_VELOCITY = 8;
     private static final int PROJECTILE_X_POSITION_OFFSET = 110;
     private static final int PROJECTILE_Y_POSITION_OFFSET = 20;
-
-    private int verticalVelocityMultiplier;
-    private int horizontalVelocityMultiplier;
-    private int numberOfKills;
-
     private final AudioPlayer pewAudio;
     private final AudioPlayer explosionAudio;
     private final AudioPlayer takeDamageAudio;
+    private int verticalVelocityMultiplier;
+    private int horizontalVelocityMultiplier;
+    private int numberOfKills;
 
     public UserPlane(int initialHealth) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
@@ -35,7 +33,7 @@ public class UserPlane extends FighterPlane {
         explosionAudio.loadAudio("/com/example/demo/audio/explosion.wav");
 
         takeDamageAudio = new AudioPlayer();
-        takeDamageAudio.loadAudio("/com/example/demo/audio/oof.wav"); // Load the "oof" sound
+        takeDamageAudio.loadAudio("/com/example/demo/audio/oof.wav");
     }
 
     @Override
