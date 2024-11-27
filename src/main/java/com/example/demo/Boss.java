@@ -82,10 +82,7 @@ public class Boss extends FighterPlane {
     @Override
     public ActiveActorDestructible fireProjectile() {
         if (bossFiresInCurrentFrame()) {
-            if (fireBallSound != null) {
-                fireBallSound.play();
-            }
-
+            fireBallAudio.play();
             return new BossProjectile(getProjectileInitialPosition());
         }
         return null;
