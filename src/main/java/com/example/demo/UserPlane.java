@@ -62,9 +62,7 @@ public class UserPlane extends FighterPlane {
 
     @Override
     public ActiveActorDestructible fireProjectile() {
-        if (pewAudio != null) {
-            pewAudio.play();
-        }
+        pewAudio.play();
         return new UserProjectile(getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET),
                 getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET));
     }
@@ -72,9 +70,7 @@ public class UserPlane extends FighterPlane {
     @Override
     public void destroy() {
         super.destroy();
-        if (explosionAudio != null) {
-            explosionAudio.play();
-        }
+        explosionAudio.play();
     }
 
     private boolean isMoving() {
