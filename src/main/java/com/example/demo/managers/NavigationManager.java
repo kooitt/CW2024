@@ -25,23 +25,6 @@ public class NavigationManager {
         this.currentScene = currentScene;
     }
 
-    public void goToMainMenu() {
-        try {
-            URL fxmlLocation = getClass().getClassLoader().getResource("MenuScreen.fxml");
-            FXMLLoader loader = new FXMLLoader(fxmlLocation);
-            Parent menuRoot = loader.load();
-            Scene menuScene = new Scene(menuRoot, screenWidth, screenHeight);
-
-            // Get stage from current scene
-            Stage stage = (Stage) currentScene.getWindow();
-            MainMenuController controller = loader.getController();
-            controller.setStage(stage);
-            stage.setScene(menuScene);
-        } catch (IOException e) {
-            showErrorAlert(e);
-        }
-    }
-
     public void restartLevel(Class<?> currentLevelClass) {
         try {
             Constructor<?> constructor = currentLevelClass.getConstructor();
@@ -68,41 +51,46 @@ public class NavigationManager {
         }
     }
 
+    public void goToMainMenu() {
+        loadScreen("MenuScreen.fxml", MainMenuController.class);
+    }
+
     public void showWinScreen() {
-        try {
-            URL fxmlLocation = getClass().getClassLoader().getResource("WinScreen.fxml");
-            FXMLLoader loader = new FXMLLoader(fxmlLocation);
-            Parent winRoot = loader.load();
-            Scene winScene = new Scene(winRoot, screenWidth, screenHeight);
-            winRoot.prefWidth(screenWidth);
-            winRoot.prefHeight(screenHeight);
-            // Get stage from current scene
-            Stage stage = (Stage) currentScene.getWindow();
-            WinScreenController controller = loader.getController();
-            controller.setStage(stage);
-            stage.setScene(winScene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadScreen("WinScreen.fxml", WinScreenController.class);
     }
 
     public void showGameOverScreen(Class<?> levelClass) {
-        try {
-            URL fxmlLocation = getClass().getClassLoader().getResource("GameOver.fxml");
-            FXMLLoader loader = new FXMLLoader(fxmlLocation);
-            Parent gameOverRoot = loader.load();
-            gameOverRoot.prefWidth(screenWidth);
-            gameOverRoot.prefHeight(screenHeight);
-            Scene gameOverScene = new Scene(gameOverRoot, screenWidth, screenHeight);
-
-            // Get stage from current scene
-            Stage stage = (Stage) currentScene.getWindow();
-            GameOverController controller = loader.getController();
-            controller.setStage(stage);
-            stage.setScene(gameOverScene);
+        GameOverController controller = loadScreen("GameOver.fxml", GameOverController.class);
+        if (controller != null) {
             controller.setCurrentLevelClass(levelClass);
+        }
+    }
+
+    private <T> T loadScreen(String fxmlName, Class<T> controllerType) {
+        try {
+            URL fxmlLocation = getClass().getClassLoader().getResource(fxmlName);
+            FXMLLoader loader = new FXMLLoader(fxmlLocation);
+            Parent root = loader.load();
+            root.prefWidth(screenWidth);
+            root.prefHeight(screenHeight);
+            Scene scene = new Scene(root, screenWidth, screenHeight);
+
+            Stage stage = (Stage) currentScene.getWindow();
+            T controller = loader.getController();
+            if (controller != null) {
+                if (controller instanceof MainMenuController) {
+                    ((MainMenuController) controller).setStage(stage);
+                } else if (controller instanceof GameOverController) {
+                    ((GameOverController) controller).setStage(stage);
+                } else if (controller instanceof WinScreenController) {
+                    ((WinScreenController) controller).setStage(stage);
+                }
+            }
+            stage.setScene(scene);
+            return controller;
         } catch (IOException e) {
-            e.printStackTrace();
+            showErrorAlert(e);
+            return null;
         }
     }
 

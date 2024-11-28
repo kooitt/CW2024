@@ -1,9 +1,10 @@
-package com.example.demo.controller;
+package com.example.demo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import com.example.demo.config.GameConfig;
+import com.example.demo.controller.MainMenuController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
