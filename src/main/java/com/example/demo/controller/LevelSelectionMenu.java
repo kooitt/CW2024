@@ -2,6 +2,12 @@ package com.example.demo.controller;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -17,6 +23,14 @@ public class LevelSelectionMenu {
     public Scene createLevelSelectionScene() {
         VBox layout = new VBox(20);
         layout.setStyle("-fx-alignment: center; -fx-padding: 50;");
+
+        Image backgroundImage = new Image(getClass().getResource("/com/example/demo/images/background1.jpg").toExternalForm());
+        BackgroundImage bgImage = new BackgroundImage(backgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
+        layout.setBackground(new Background(bgImage));
 
         for (int i = 1; i <= 5; i++) {
             int level = i;
