@@ -31,7 +31,15 @@ public class Controller {
         goToLevel(LEVEL_ONE_CLASS_NAME);
     }
 
-    private void goToLevel(String className) throws Exception {
+
+    public void showLevelSelectionMenu() {
+        LevelSelectionMenu levelSelectionMenu = new LevelSelectionMenu(stage, this);
+        Scene levelSelectionScene = levelSelectionMenu.createLevelSelectionScene();
+        stage.setScene(levelSelectionScene);
+        stage.show();
+    }
+
+    protected void goToLevel(String className) throws Exception {
         Class<?> myClass = Class.forName(className);
         Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
         LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
