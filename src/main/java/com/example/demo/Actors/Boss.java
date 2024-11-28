@@ -1,5 +1,6 @@
 package com.example.demo.Actors;
 
+import com.example.demo.Actors.Projectiles.BossProjectile;
 import com.example.demo.Util.AudioPlayer;
 import com.example.demo.LevelViews.LevelViewBoss;
 

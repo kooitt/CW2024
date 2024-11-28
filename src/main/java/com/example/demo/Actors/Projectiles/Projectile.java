@@ -1,4 +1,6 @@
-package com.example.demo.Actors;
+package com.example.demo.Actors.Projectiles;
+
+import com.example.demo.Actors.ActiveActorDestructible;
 
 public abstract class Projectile extends ActiveActorDestructible {
 
