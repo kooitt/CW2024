@@ -1,6 +1,6 @@
 package com.example.demo.Actors;
 
-import com.example.demo.AudioPlayer;
+import com.example.demo.Util.AudioPlayer;
 import com.example.demo.LevelViews.LevelViewBoss;
 
 import java.util.ArrayList;
