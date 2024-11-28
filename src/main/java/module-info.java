@@ -6,12 +6,12 @@ module com.example.demo {
 
     // opens com.example.demo to javafx.fxml; // to be removed later
     exports com.example.demo.controller;
-    opens com.example.demo.Levels to javafx.fxml;
-    opens com.example.demo.ImageInitializers to javafx.fxml;
-    opens com.example.demo.LevelViews to javafx.fxml;
+    opens com.example.demo.levels to javafx.fxml;
+    opens com.example.demo.images to javafx.fxml;
+    opens com.example.demo.levelviews to javafx.fxml;
     opens com.example.demo.controller to javafx.fxml;
-    opens com.example.demo.Actors to javafx.fxml;
-    opens com.example.demo.Util to javafx.fxml;
-    opens com.example.demo.Projectiles to javafx.fxml;
-    opens com.example.demo.Planes to javafx.fxml;
+    opens com.example.demo.actors to javafx.fxml;
+    opens com.example.demo.audio to javafx.fxml;
+    opens com.example.demo.projectiles to javafx.fxml;
+    opens com.example.demo.planes to javafx.fxml;
 }
