@@ -12,5 +12,5 @@ module com.example.demo {
     opens com.example.demo.controller to javafx.fxml;
     opens com.example.demo.Actors to javafx.fxml;
     opens com.example.demo.Util to javafx.fxml;
-    opens com.example.demo.Actors.Projectiles to javafx.fxml;
+    opens com.example.demo.Projectiles to javafx.fxml;
 }
