@@ -18,13 +18,7 @@ public class MainMenu {
         menuLayout.setStyle("-fx-alignment: center; -fx-padding: 50;");
 
         Button playButton = new Button("Play");
-        playButton.setOnAction(e -> {
-            try {
-                controller.launchGame();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        playButton.setOnAction(e -> controller.showLevelSelectionMenu());
 
         Button quitButton = new Button("Quit");
         quitButton.setOnAction(e -> stage.close());
