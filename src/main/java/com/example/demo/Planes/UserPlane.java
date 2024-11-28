@@ -1,5 +1,6 @@
-package com.example.demo.Actors;
+package com.example.demo.Planes;
 
+import com.example.demo.Actors.ActiveActorDestructible;
 import com.example.demo.Projectiles.UserProjectile;
 import com.example.demo.Util.AudioPlayer;
 
