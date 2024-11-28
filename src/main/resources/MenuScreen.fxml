@@ -20,7 +20,9 @@
                   <Image url="@com/example/demo/images/logo.png" />
                </image>
             </ImageView>
-            <Button mnemonicParsing="false" onAction="#startGame" text="Start Game" />
+            <Button mnemonicParsing="false" onAction="#startGame" text="Story Mode" />
+            <Button mnemonicParsing="false" onAction="#startArcadeMode" text="Arcade Mode" />
+            <Button mnemonicParsing="false" onAction="#showLeaderboard" text="Leaderboard" />
             <Button mnemonicParsing="false" onAction="#exitGame" text="Exit Game" />
          </children>
       </VBox>

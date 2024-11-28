@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SoundManager {
+    // Singleton instance
+    private static SoundManager instance;
+
     private Map<String, MediaPlayer> musicPlayers;
     private Map<String, AudioClip> shootSounds;
     private final static String LEVEL_BACKGROUND_MUSIC_FILE_PATH = "/music/fightmusic.mp3";
@@ -14,7 +17,8 @@ public class SoundManager {
     private final static String USER_SHOOT_SOUND_FILE_PATH = "/music/userprojectile.wav";
     private final static String ENEMY_SHOOT_SOUND_FILE_PATH = "/music/enemyprojectile.wav";
 
-    public SoundManager() {
+    // Make constructor private
+    private SoundManager() {
         musicPlayers = new HashMap<>();
         shootSounds = new HashMap<>();
 
@@ -23,6 +27,14 @@ public class SoundManager {
         loadBackgroundMusic("level", LEVEL_BACKGROUND_MUSIC_FILE_PATH);
         loadShootSound("user", USER_SHOOT_SOUND_FILE_PATH);
         loadShootSound("enemy", ENEMY_SHOOT_SOUND_FILE_PATH);
+    }
+
+    // Singleton getter
+    public static SoundManager getInstance() {
+        if (instance == null) {
+            instance = new SoundManager();
+        }
+        return instance;
     }
 
     private void loadBackgroundMusic(String key, String musicFilePath) {
@@ -41,6 +53,8 @@ public class SoundManager {
         MediaPlayer player = musicPlayers.get(key);
         if (player != null) {
             stopAllBackgroundMusic(); // Stop any currently playing music
+            player.stop(); // Ensure this specific player is stopped
+            player.seek(player.getStartTime()); // Reset to beginning
             player.play();
         }
     }
@@ -48,6 +62,7 @@ public class SoundManager {
     public void stopAllBackgroundMusic() {
         for (MediaPlayer player : musicPlayers.values()) {
             player.stop();
+            player.seek(player.getStartTime()); // Reset all players to beginning
         }
     }
 

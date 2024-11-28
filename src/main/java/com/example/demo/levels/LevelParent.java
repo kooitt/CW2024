@@ -74,7 +74,7 @@ public abstract class LevelParent {
         );
         this.gameInitializer = new GameInitializer(root, scene, background, user, levelView, pauseHandler);
         this.navigationManager = new NavigationManager(scene, screenWidth, screenHeight);
-        this.soundManager = new SoundManager();
+        this.soundManager = SoundManager.getInstance();
         initializeTimelineAndMusic();
         entityManager.addFriendlyUnit(user);
         entityManager.addEnemyDestroyedListener(enemy -> user.incrementKillCount());
@@ -239,14 +239,12 @@ public abstract class LevelParent {
     protected void winGame() {
         stopTimelineAndMusic();
         inputManager.setGameState(GameState.WIN);
-//        levelView.showWinImage();
         navigationManager.showWinScreen();
     }
 
     protected void loseGame() {
         stopTimelineAndMusic();
         inputManager.setGameState(GameState.LOSE);
-//        levelView.showGameOverImage();
         navigationManager.showGameOverScreen(this.getClass());
     }
 }

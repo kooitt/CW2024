@@ -19,7 +19,7 @@ public class HeartDisplay {
 	private double containerXPosition;
 	private double containerYPosition;
 	private int numberOfHeartsToDisplay;
-	private final SoundManager soundManager = new SoundManager();
+	private final SoundManager soundManager = SoundManager.getInstance();
 
 	/**
 	 * Constructs a HeartDisplay with the specified position and number of hearts.

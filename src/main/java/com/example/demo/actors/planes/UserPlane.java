@@ -24,7 +24,7 @@ public class UserPlane extends FighterPlane {
 	private int horizontalVelocityMultiplier; // Separate multiplier for horizontal movement
 	private int numberOfKills;
 	private final ProjectileFactory projectileFactory;
-	private final SoundManager soundManager = new SoundManager();
+	private final SoundManager soundManager = SoundManager.getInstance();
 
 
 	/**
