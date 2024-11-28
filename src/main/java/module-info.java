@@ -9,4 +9,5 @@ module com.example.demo {
     opens com.example.demo.Levels to javafx.fxml;
     opens com.example.demo.ImageInitializers to javafx.fxml;
     opens com.example.demo.LevelViews to javafx.fxml;
+    opens com.example.demo.controller to javafx.fxml;
 }
