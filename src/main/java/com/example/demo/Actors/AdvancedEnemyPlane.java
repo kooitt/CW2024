@@ -1,6 +1,6 @@
 package com.example.demo.Actors;
 
-import com.example.demo.Actors.Projectiles.EnemyProjectile;
+import com.example.demo.Projectiles.EnemyProjectile;
 import com.example.demo.Util.AudioPlayer;
 
 import java.util.ArrayList;
