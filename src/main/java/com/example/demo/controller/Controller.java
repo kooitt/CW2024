@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Observable;
 import java.util.Observer;
 
-public class Controller implements Observer {
+public class Controller {
 
     private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.Levels.LevelOne";
     private final Stage stage;
@@ -20,36 +20,30 @@ public class Controller implements Observer {
         this.stage = stage;
     }
 
-    public void launchGame() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-            InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
+    public void showMainMenu() {
+        MainMenu mainMenu = new MainMenu(stage);
+        Scene mainMenuScene = mainMenu.createMainMenuScene(this);
+        stage.setScene(mainMenuScene);
         stage.show();
+    }
+
+    public void launchGame() throws Exception {
         goToLevel(LEVEL_ONE_CLASS_NAME);
     }
 
-    private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-            InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    private void goToLevel(String className) throws Exception {
         Class<?> myClass = Class.forName(className);
         Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
         LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
-        myLevel.addObserver(this);
+        myLevel.addObserver((o, arg) -> {
+            try {
+                goToLevel((String) arg);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         Scene scene = myLevel.initializeScene();
         stage.setScene(scene);
         myLevel.startGame();
-
     }
-
-    @Override
-    public void update(Observable arg0, Object arg1) {
-        try {
-            goToLevel((String) arg1);
-        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-                 | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setContentText(e.getClass().toString());
-            alert.show();
-            e.printStackTrace();
-        }
-    }
-
 }
