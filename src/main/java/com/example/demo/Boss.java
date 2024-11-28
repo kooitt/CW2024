@@ -11,8 +11,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Boss represents the boss plane in the game.
- * It extends FighterPlane and includes logic for movement, firing projectiles, shields, and hitbox visualization.
+ * The Boss class represents the boss plane in the game.
+ * It handles movement, shield activation, firing projectiles,
+ * and ensures the shield is positioned correctly relative to the boss.
  */
 public class Boss extends FighterPlane {
 
@@ -20,21 +21,21 @@ public class Boss extends FighterPlane {
     private static final double INITIAL_X_POSITION = 1000.0; // Starting X position
     private static final double INITIAL_Y_POSITION = 400.0; // Starting Y position
     private static final double BOSS_FIRE_RATE = 0.04; // Probability of firing a projectile per frame
-    private static final double BOSS_SHIELD_PROBABILITY = 0.002; // Probability of activating shield per frame
+    private static final double BOSS_SHIELD_PROBABILITY = 0.01; // Probability of activating the shield
     private static final int IMAGE_HEIGHT = 300; // Height of the boss plane's image
     private static final int VERTICAL_VELOCITY = 8; // Speed of vertical movement
-    private static final int HEALTH = 100; // Initial health of the boss plane
+    private static final int HEALTH = 50; // Initial health of the boss plane
     private static final int MOVE_FREQUENCY_PER_CYCLE = 5; // Frequency of movement changes
     private static final int MAX_FRAMES_WITH_SAME_MOVE = 10; // Max frames for a single move direction
     private static final int Y_POSITION_UPPER_BOUND = -100; // Upper Y boundary
     private static final int Y_POSITION_LOWER_BOUND = 475; // Lower Y boundary
-    private static final int MAX_FRAMES_WITH_SHIELD = 500; // Max duration for shield
+    private static final int MAX_FRAMES_WITH_SHIELD = 300; // Max duration for shield in frames
     private static final boolean DEBUG_HITBOXES = true; // Enable or disable hitbox visualization
 
     private final List<Integer> movePattern; // Movement pattern for vertical motion
     private boolean isShielded; // Whether the boss has an active shield
     private int consecutiveMovesInSameDirection; // Tracks consecutive frames with the same move
-    private int indexOfCurrentMove; // Current move index in the move pattern
+    private int indexOfCurrentMove; // Current move index in the movement pattern
     private int framesWithShieldActivated; // Number of frames the shield has been active
 
     private final LevelBoss levelBoss; // Reference to the LevelBoss instance
@@ -56,20 +57,37 @@ public class Boss extends FighterPlane {
     }
 
     /**
-     * Updates the position of the boss plane based on its movement pattern.
+     * Updates the position of the boss plane and synchronizes the shield's position to stay in front of and slightly above the boss.
      */
     @Override
     public void updatePosition() {
         double initialTranslateY = getTranslateY();
         moveVertically(getNextMove());
         double currentPosition = getLayoutY() + getTranslateY();
+
         if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
             setTranslateY(initialTranslateY); // Reset position if out of bounds
+        }
+
+        // Synchronize the shield's position with the boss
+        synchronizeShieldPosition();
+    }
+
+    /**
+     * Synchronizes the shield's position to always appear in front of and slightly above the boss plane.
+     */
+    private void synchronizeShieldPosition() {
+        if (levelBoss != null && levelBoss.getLevelViewBoss() != null) {
+            ShieldImage shieldImage = levelBoss.getLevelViewBoss().getShieldImage();
+            
+            // Adjust the shield's position based on the visual requirements
+            shieldImage.setLayoutX(this.getLayoutX() + 30); // Position shield to the right
+            shieldImage.setLayoutY(this.getLayoutY() + this.getTranslateY() - 50); // Position shield slightly above
         }
     }
 
     /**
-     * Updates the state of the boss plane, including movement and shield status.
+     * Updates the actor state, including movement and shield logic.
      */
     @Override
     public void updateActor() {
@@ -78,7 +96,7 @@ public class Boss extends FighterPlane {
     }
 
     /**
-     * Fires a projectile from the boss plane's current position with a certain probability.
+     * Fires a projectile from the boss plane's current position based on a probability.
      *
      * @return A new BossProjectile instance if fired, otherwise null.
      */
@@ -92,13 +110,13 @@ public class Boss extends FighterPlane {
     }
 
     /**
-     * Handles damage taken by the boss plane. Shield blocks damage when active.
+     * Handles damage taken by the boss plane. Damage is blocked if the shield is active.
      */
     @Override
     public void takeDamage() {
         if (!isShielded) {
             super.takeDamage();
-            levelBoss.updateBossHealthDisplay(getHealth()); // Notify LevelBoss about health changes
+            levelBoss.updateBossHealthDisplay(getHealth()); // Notify LevelBoss to update health display
         }
     }
 
@@ -115,7 +133,31 @@ public class Boss extends FighterPlane {
     }
 
     /**
-     * Updates the shield status of the boss plane.
+     * Retrieves the next move in the movement pattern.
+     *
+     * @return The vertical velocity for the next move.
+     */
+    private int getNextMove() {
+        int currentMove = movePattern.get(indexOfCurrentMove);
+        consecutiveMovesInSameDirection++;
+
+        // Shuffle the movement pattern if the current move has been repeated too many times
+        if (consecutiveMovesInSameDirection >= MAX_FRAMES_WITH_SAME_MOVE) {
+            Collections.shuffle(movePattern); // Randomize movement pattern
+            consecutiveMovesInSameDirection = 0; // Reset counter
+            indexOfCurrentMove++;
+        }
+
+        // Reset index if it exceeds the pattern size
+        if (indexOfCurrentMove >= movePattern.size()) {
+            indexOfCurrentMove = 0;
+        }
+
+        return currentMove; // Return the next movement value
+    }
+
+    /**
+     * Updates the shield's state, including activation and deactivation logic.
      */
     private void updateShield() {
         if (isShielded) {
@@ -126,25 +168,6 @@ public class Boss extends FighterPlane {
         if (shieldExhausted()) {
             deactivateShield();
         }
-    }
-
-    /**
-     * Retrieves the next move in the movement pattern.
-     *
-     * @return The vertical velocity for the next move.
-     */
-    private int getNextMove() {
-        int currentMove = movePattern.get(indexOfCurrentMove);
-        consecutiveMovesInSameDirection++;
-        if (consecutiveMovesInSameDirection == MAX_FRAMES_WITH_SAME_MOVE) {
-            Collections.shuffle(movePattern);
-            consecutiveMovesInSameDirection = 0;
-            indexOfCurrentMove++;
-        }
-        if (indexOfCurrentMove == movePattern.size()) {
-            indexOfCurrentMove = 0;
-        }
-        return currentMove;
     }
 
     /**
@@ -170,6 +193,7 @@ public class Boss extends FighterPlane {
      */
     private void activateShield() {
         isShielded = true;
+        levelBoss.updateShieldState(); // Ensure the shield is visually displayed
     }
 
     /**
@@ -178,12 +202,13 @@ public class Boss extends FighterPlane {
     private void deactivateShield() {
         isShielded = false;
         framesWithShieldActivated = 0;
+        levelBoss.updateShieldState(); // Ensure the shield is visually hidden
     }
 
     /**
      * Checks if the boss currently has an active shield.
      *
-     * @return True if shielded, otherwise false.
+     * @return True if the shield is active, otherwise false.
      */
     public boolean isShielded() {
         return isShielded;
@@ -191,7 +216,7 @@ public class Boss extends FighterPlane {
 
     /**
      * Retrieves the reduced bounds for collision detection.
-     * This reduces the effective hitbox of the boss plane for better gameplay experience.
+     * The reduced bounds create a smaller hitbox for more precise collisions.
      *
      * @return A BoundingBox representing the reduced hitbox.
      */
@@ -208,7 +233,7 @@ public class Boss extends FighterPlane {
     }
 
     /**
-     * Renders the hitbox for debugging purposes. Adds a rectangle to the game scene to visualize the reduced hitbox.
+     * Renders the hitbox for debugging purposes.
      *
      * @param root The Group object representing the game scene's root node.
      */
