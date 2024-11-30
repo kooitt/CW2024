@@ -1,8 +1,8 @@
+// MainMenu.java
 package com.example.demo.ui;
 
 import com.example.demo.controller.Controller;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
@@ -13,7 +13,7 @@ import javafx.scene.image.ImageView;
  */
 public class MainMenu {
 
-    private Scene scene;
+    private StackPane root; // 使用 StackPane 作为根布局
     private Controller controller;
 
     /**
@@ -27,14 +27,16 @@ public class MainMenu {
     }
 
     private void initialize() {
-        StackPane root = new StackPane();
+        root = new StackPane();
 
-        Image background = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
-        ImageView bgView = new ImageView(background);
+        // 加载背景图
+        Image backgroundImage = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
+        ImageView bgView = new ImageView(backgroundImage);
         bgView.setFitWidth(controller.getStage().getWidth());
         bgView.setFitHeight(controller.getStage().getHeight());
         bgView.setPreserveRatio(false);
 
+        // 创建按钮
         VBox menuBox = new VBox(20);
         menuBox.setAlignment(Pos.CENTER);
 
@@ -43,8 +45,9 @@ public class MainMenu {
         Button exitBtn = createButton("Exit Game", controller::exitGame);
 
         menuBox.getChildren().addAll(startBtn, settingsBtn, exitBtn);
+
+        // 将背景图和按钮添加到 StackPane
         root.getChildren().addAll(bgView, menuBox);
-        scene = new Scene(root, controller.getStage().getWidth(), controller.getStage().getHeight());
     }
 
     private Button createButton(String text, Runnable action) {
@@ -58,7 +61,12 @@ public class MainMenu {
         return button;
     }
 
-    public Scene getScene() {
-        return scene;
+    /**
+     * Returns the root layout of the MainMenu.
+     *
+     * @return the StackPane root.
+     */
+    public StackPane getRoot() {
+        return root;
     }
 }

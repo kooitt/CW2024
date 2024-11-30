@@ -4,10 +4,12 @@ package com.example.demo.controller;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Observer;
+import java.util.Observable;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.ui.MainMenu;
@@ -23,6 +25,7 @@ public class Controller implements Observer {
 	private LevelParent currentLevel;
 	private MainMenu mainMenu;
 	private SettingsPage settingsPage;
+	private StackPane rootPane; // 使用 StackPane 来包含 MainMenu 和 SettingsPage
 
 	/**
 	 * Constructs a Controller with the specified stage.
@@ -31,6 +34,28 @@ public class Controller implements Observer {
 	 */
 	public Controller(Stage stage) {
 		this.stage = stage;
+		initialize();
+	}
+
+	private void initialize() {
+		rootPane = new StackPane();
+
+		// 初始化 MainMenu 和 SettingsPage
+		mainMenu = new MainMenu(this);
+		settingsPage = new SettingsPage(this);
+
+		// 将 MainMenu 和 SettingsPage 添加到 StackPane 中
+		rootPane.getChildren().addAll(mainMenu.getRoot(), settingsPage.getRoot());
+
+		// 初始时显示 MainMenu，隐藏 SettingsPage
+		mainMenu.getRoot().setVisible(true);
+		settingsPage.getRoot().setVisible(false);
+
+		// 创建一个单一的 Scene
+		Scene scene = new Scene(rootPane, stage.getWidth(), stage.getHeight());
+
+		stage.setScene(scene);
+		stage.show();
 	}
 
 	public Stage getStage() {
@@ -38,13 +63,11 @@ public class Controller implements Observer {
 	}
 
 	/**
-	 * Displays the main menu.
+	 * Displays the main menu by showing MainMenu pane and hiding SettingsPage pane.
 	 */
 	public void showMainMenu() {
-		if (mainMenu == null) mainMenu = new MainMenu(this);
-		Scene scene = mainMenu.getScene();
-		stage.setScene(scene);
-		stage.show();
+		mainMenu.getRoot().setVisible(true);
+		settingsPage.getRoot().setVisible(false);
 	}
 
 	/**
@@ -59,12 +82,11 @@ public class Controller implements Observer {
 	}
 
 	/**
-	 * Displays the settings page.
+	 * Displays the settings page by showing SettingsPage pane and hiding MainMenu pane.
 	 */
 	public void showSettings() {
-		if (settingsPage == null) settingsPage = new SettingsPage(stage, this);
-		Scene scene = settingsPage.getScene();
-		stage.setScene(scene);
+		mainMenu.getRoot().setVisible(false);
+		settingsPage.getRoot().setVisible(true);
 	}
 
 	/**
@@ -74,28 +96,23 @@ public class Controller implements Observer {
 		stage.close();
 	}
 
-	// 在 Controller 的 goToLevel 方法中
 	private void goToLevel(String className) {
 		try {
-			if (currentLevel != null) {
-				currentLevel.deleteObserver(this); // 移除当前观察者
-				currentLevel.cleanUp();
-			}
+			if (currentLevel != null) currentLevel.cleanUp();
 			Class<?> myClass = Class.forName(className);
 			Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
 			currentLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
 			currentLevel.addObserver(this);
-			Scene scene = currentLevel.initializeScene();
-			stage.setScene(scene);
+			Scene levelScene = currentLevel.initializeScene();
+			stage.setScene(levelScene);
 			currentLevel.startGame();
 		} catch (Exception e) {
 			handleException(e);
 		}
 	}
 
-
 	@Override
-	public void update(java.util.Observable o, Object arg) {
+	public void update(Observable o, Object arg) {
 		try {
 			goToLevel((String) arg);
 		} catch (Exception e) {

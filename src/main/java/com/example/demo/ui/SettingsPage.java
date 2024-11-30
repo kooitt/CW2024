@@ -1,3 +1,4 @@
+// SettingsPage.java
 package com.example.demo.ui;
 
 import com.example.demo.controller.Controller;
@@ -17,31 +18,29 @@ import javafx.stage.Stage;
  */
 public class SettingsPage {
 
-    private Scene scene;
-    private Stage stage;
+    private StackPane root; // 使用 StackPane 作为根布局
     private Controller controller;
     private KeyBindings keyBindings;
 
     /**
-     * Constructs a SettingsPage with specified stage and controller.
+     * Constructs a SettingsPage with the specified controller.
      *
-     * @param stage      the primary stage.
      * @param controller the game controller.
      */
-    public SettingsPage(Stage stage, Controller controller) {
-        this.stage = stage;
+    public SettingsPage(Controller controller) {
         this.controller = controller;
         this.keyBindings = KeyBindings.getInstance();
-        initializeScene();
+        initialize();
     }
 
-    private void initializeScene() {
-        StackPane root = new StackPane();
+    private void initialize() {
+        root = new StackPane();
 
-        Image background = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
-        ImageView bgView = new ImageView(background);
-        bgView.setFitWidth(stage.getWidth());
-        bgView.setFitHeight(stage.getHeight());
+        // 加载背景图
+        Image backgroundImage = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
+        ImageView bgView = new ImageView(backgroundImage);
+        bgView.setFitWidth(controller.getStage().getWidth());
+        bgView.setFitHeight(controller.getStage().getHeight());
         bgView.setPreserveRatio(false);
 
         VBox contentBox = new VBox(20);
@@ -62,9 +61,11 @@ public class SettingsPage {
         );
 
         Button backBtn = createButton("Back to Main Menu", controller::showMainMenu);
+
         contentBox.getChildren().addAll(title, keyBox, backBtn);
+
+        // 将背景图和内容添加到 StackPane
         root.getChildren().addAll(bgView, contentBox);
-        scene = new Scene(root, stage.getWidth(), stage.getHeight());
     }
 
     private HBox createKeySetting(String labelText, KeyCode currentKey, java.util.function.Consumer<KeyCode> setter) {
@@ -109,7 +110,12 @@ public class SettingsPage {
         return button;
     }
 
-    public Scene getScene() {
-        return scene;
+    /**
+     * Returns the root layout of the SettingsPage.
+     *
+     * @return the StackPane root.
+     */
+    public StackPane getRoot() {
+        return root;
     }
 }

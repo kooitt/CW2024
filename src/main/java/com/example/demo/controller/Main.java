@@ -23,7 +23,7 @@ public class Main extends Application {
 		stage.setHeight(SCREEN_HEIGHT);
 		stage.setWidth(SCREEN_WIDTH);
 		myController = new Controller(stage);
-		myController.showMainMenu();
+		// Controller 已经在初始化时显示了主菜单
 	}
 
 	public static void main(String[] args) {
