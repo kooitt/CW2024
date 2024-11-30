@@ -8,9 +8,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
-import javafx.beans.binding.Bindings;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -37,8 +35,8 @@ public class Boss extends ActiveActor {
     private int indexOfCurrentMove;
 
     private ProgressBar healthBar;
-    private static final int HEALTH_BAR_WIDTH = 300;
-    private static final int HEALTH_BAR_HEIGHT = 20;
+    private static final int HEALTH_BAR_WIDTH = 150; // 根据需要调整宽度
+    private static final int HEALTH_BAR_HEIGHT = 15; // 根据需要调整高度
 
     private ShootingComponent shootingComponent;
     private AnimationComponent animationComponent;
@@ -64,7 +62,9 @@ public class Boss extends ActiveActor {
         initializeMovePattern();
 
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT * 3, IMAGE_HEIGHT);
-        Platform.runLater(() -> initializeHealthBar(root));
+
+        // 初始化血条
+        initializeHealthBar();
 
         getMovementComponent().setVelocity(0, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, 0, PROJECTILE_Y_POSITION_OFFSET);
@@ -73,56 +73,21 @@ public class Boss extends ActiveActor {
         initializeShieldCheck();
     }
 
-    private void initializeShieldCheck() {
-        shieldCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(10.0), e -> {
-            if (shield == null || shield.isDestroyed()) {
-                summonShield();
-            }
-        }));
-        shieldCheckTimeline.setCycleCount(Timeline.INDEFINITE);
-        shieldCheckTimeline.play();
-    }
-
-    private void summonShield() {
-        if (isSummoningShield) return;
-        isSummoningShield = true;
-
-        Platform.runLater(() -> {
-            double shieldX = getCollisionComponent().getHitboxX();
-            double shieldY = getCollisionComponent().getHitboxY() + (getCollisionComponent().getHitboxHeight() / 2) - (Shield.SHIELD_SIZE / 2);
-            shield = new Shield(shieldX, shieldY);
-            level.addEnemyUnit(shield);
-            isSummoningShield = false;
-        });
-    }
-
-    private void initializeHealthBar(Group root) {
+    private void initializeHealthBar() {
         healthBar = new ProgressBar(1.0);
         healthBar.setPrefSize(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
         healthBar.setStyle("-fx-accent: red;");
-        root.getChildren().add(healthBar);
+
+        // 将血条添加为 Boss 的子节点
+        this.getChildren().add(healthBar);
         healthBar.toFront();
 
-        Scene currentScene = root.getScene();
-        if (currentScene != null) {
-            bindHealthBarToScene(currentScene);
-        } else {
-            root.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                if (newScene != null) bindHealthBarToScene(newScene);
-            });
-        }
+        // 设置血条的位置，使其位于 Boss 的头顶上
+        double imageWidth = getCollisionComponent().getHitboxWidth();
+        healthBar.setLayoutX((imageWidth - HEALTH_BAR_WIDTH) / 2);
+        healthBar.setLayoutY(-HEALTH_BAR_HEIGHT); // 调整偏移量以控制血条与 Boss 的距离
 
         healthBar.setVisible(getCurrentHealth() > 0);
-    }
-
-    private void bindHealthBarToScene(Scene scene) {
-        healthBar.layoutXProperty().bind(
-                Bindings.createDoubleBinding(() -> (scene.getWidth() - healthBar.getPrefWidth()) / 2, scene.widthProperty())
-        );
-
-        healthBar.layoutYProperty().bind(
-                Bindings.createDoubleBinding(() -> scene.getHeight() - healthBar.getPrefHeight() - 10, scene.heightProperty())
-        );
     }
 
     @Override
@@ -152,6 +117,39 @@ public class Boss extends ActiveActor {
         }
     }
 
+    private void updateHealthBar() {
+        Platform.runLater(() -> {
+            double progress = (double) getCurrentHealth() / MAX_HEALTH;
+            healthBar.setProgress(Math.max(progress, 0));
+            healthBar.setVisible(getCurrentHealth() > 0);
+        });
+    }
+
+    // 其余代码保持不变
+
+    private void initializeShieldCheck() {
+        shieldCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(10.0), e -> {
+            if (shield == null || shield.isDestroyed()) {
+                summonShield();
+            }
+        }));
+        shieldCheckTimeline.setCycleCount(Timeline.INDEFINITE);
+        shieldCheckTimeline.play();
+    }
+
+    private void summonShield() {
+        if (isSummoningShield) return;
+        isSummoningShield = true;
+
+        Platform.runLater(() -> {
+            double shieldX = getCollisionComponent().getHitboxX();
+            double shieldY = getCollisionComponent().getHitboxY() + (getCollisionComponent().getHitboxHeight() / 2) - (Shield.SHIELD_SIZE / 2);
+            shield = new Shield(shieldX, shieldY);
+            level.addEnemyUnit(shield);
+            isSummoningShield = false;
+        });
+    }
+
     private void initializeMovePattern() {
         for (int i = 0; i < 5; i++) {
             movePattern.add(VERTICAL_VELOCITY);
@@ -173,14 +171,6 @@ public class Boss extends ActiveActor {
         return currentMove;
     }
 
-    private void updateHealthBar() {
-        Platform.runLater(() -> {
-            double progress = (double) getCurrentHealth() / MAX_HEALTH;
-            healthBar.setProgress(Math.max(progress, 0));
-            healthBar.setVisible(getCurrentHealth() > 0);
-        });
-    }
-
     @Override
     public void destroy() {
         if (!isDestroyed) {
@@ -200,7 +190,7 @@ public class Boss extends ActiveActor {
         getMovementComponent().setVelocity(0, nextMove);
         super.updatePosition();
         double currentPosition = getLayoutY() + getTranslateY();
-        if (currentPosition < 0 || currentPosition > 475) {
+        if (currentPosition < 10 || currentPosition > 475) {
             setTranslateY(initialTranslateY);
             getMovementComponent().setVelocity(0, 0);
         }

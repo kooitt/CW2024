@@ -12,7 +12,7 @@ import com.example.demo.views.LevelViewLevelTwo;
 public class LevelTwo extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
-	private static final double POWER_UP_SPAWN_PROBABILITY = 0.05; // 新增道具生成概率
+	private static final double POWER_UP_SPAWN_PROBABILITY = 0.01; // 新增道具生成概率
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private final Boss boss;
 	private LevelViewLevelTwo levelView;
