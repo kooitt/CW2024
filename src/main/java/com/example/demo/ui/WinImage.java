@@ -1,24 +1,37 @@
+// WinImage.java
 package com.example.demo.ui;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * Displays the win image.
+ */
 public class WinImage extends ImageView {
 
 	private static final String IMAGE_NAME = "/com/example/demo/images/youwin.png";
 	private static final int HEIGHT = 500;
 	private static final int WIDTH = 600;
 
+	/**
+	 * Constructs a WinImage at specified position.
+	 *
+	 * @param xPosition X position.
+	 * @param yPosition Y position.
+	 */
 	public WinImage(double xPosition, double yPosition) {
-		this.setImage(new Image(getClass().getResource(IMAGE_NAME).toExternalForm()));
-		this.setVisible(false);
-		this.setFitHeight(HEIGHT);
-		this.setFitWidth(WIDTH);
-		this.setLayoutX(xPosition);
-		this.setLayoutY(yPosition);
+		setImage(new Image(getClass().getResource(IMAGE_NAME).toExternalForm()));
+		setFitHeight(HEIGHT);
+		setFitWidth(WIDTH);
+		setLayoutX(xPosition);
+		setLayoutY(yPosition);
+		setVisible(false);
 	}
 
+	/**
+	 * Makes the win image visible.
+	 */
 	public void showWinImage() {
-		this.setVisible(true);
+		setVisible(true);
 	}
 }

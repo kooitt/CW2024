@@ -1,3 +1,4 @@
+// ActiveActor.java
 package com.example.demo.actors;
 
 import com.example.demo.components.CollisionComponent;
@@ -8,6 +9,10 @@ import com.example.demo.levels.LevelParent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * Abstract class representing an active actor in the game.
+ * Handles image display, movement, collision, and health.
+ */
 public abstract class ActiveActor extends Actor implements Destructible {
 
 	private static final String IMAGE_LOCATION = "/com/example/demo/images/";
@@ -19,48 +24,50 @@ public abstract class ActiveActor extends Actor implements Destructible {
 	protected boolean isDestroyed;
 
 	/**
-	 * 修改后的构造函数，添加了 maxHealth 参数
+	 * Constructs an ActiveActor with specified image, position, and health.
+	 *
+	 * @param imageName   the name of the image file.
+	 * @param imageHeight the height of the image.
+	 * @param initialXPos initial X position.
+	 * @param initialYPos initial Y position.
+	 * @param maxHealth   maximum health.
 	 */
 	public ActiveActor(String imageName, int imageHeight, double initialXPos, double initialYPos, int maxHealth) {
 		super();
 		imageView = new ImageView(new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm()));
 		imageView.setFitHeight(imageHeight);
 		imageView.setPreserveRatio(true);
-		this.setLayoutX(initialXPos);
-		this.setLayoutY(initialYPos);
-		this.getChildren().add(imageView);
+		setLayoutX(initialXPos);
+		setLayoutY(initialYPos);
+		getChildren().add(imageView);
 
-		// 初始化 MovementComponent，初始速度为 0
 		movementComponent = new MovementComponent(0, 0);
-
-		// 初始化 HealthComponent
 		healthComponent = new HealthComponent(this, maxHealth);
 		setHealthComponent(healthComponent);
 
-		// 初始化 CollisionComponent，使用默认的碰撞盒大小
 		double hitboxWidth = imageView.getFitWidth();
 		double hitboxHeight = imageView.getFitHeight();
 		collisionComponent = new CollisionComponent(this, hitboxWidth, hitboxHeight);
 		setCollisionComponent(collisionComponent);
 
-		// 初始化 isDestroyed
 		isDestroyed = false;
 	}
 
 	/**
-	 * 更新位置的方法
+	 * Updates the position based on movement component.
 	 */
 	public void updatePosition() {
-		// 使用 MovementComponent 更新位置
 		movementComponent.update(this);
 	}
 
 	/**
-	 * 抽象的 updateActor 方法，子类需要实现具体逻辑
+	 * Abstract method to update actor's state.
+	 *
+	 * @param deltaTime time since last update.
+	 * @param level     current game level.
 	 */
 	public abstract void updateActor(double deltaTime, LevelParent level);
 
-	// 提供对 MovementComponent 的访问方法
 	public MovementComponent getMovementComponent() {
 		return movementComponent;
 	}
@@ -79,12 +86,10 @@ public abstract class ActiveActor extends Actor implements Destructible {
 		return isDestroyed;
 	}
 
-	// 提供对 ImageView 的访问方法
 	public ImageView getImageView() {
 		return imageView;
 	}
 
-	// HealthComponent 方法
 	public void setHealthComponent(HealthComponent healthComponent) {
 		this.healthComponent = healthComponent;
 	}
@@ -93,6 +98,7 @@ public abstract class ActiveActor extends Actor implements Destructible {
 		return healthComponent;
 	}
 
+	@Override
 	public void takeDamage(int damage) {
 		if (healthComponent != null) {
 			healthComponent.takeDamage(damage);
@@ -100,20 +106,13 @@ public abstract class ActiveActor extends Actor implements Destructible {
 	}
 
 	public int getCurrentHealth() {
-		if (healthComponent != null) {
-			return healthComponent.getCurrentHealth();
-		}
-		return 0;
+		return healthComponent != null ? healthComponent.getCurrentHealth() : 0;
 	}
 
 	public int getMaxHealth() {
-		if (healthComponent != null) {
-			return healthComponent.getMaxHealth();
-		}
-		return 0;
+		return healthComponent != null ? healthComponent.getMaxHealth() : 0;
 	}
 
-	// CollisionComponent 方法
 	public CollisionComponent getCollisionComponent() {
 		return collisionComponent;
 	}
@@ -123,12 +122,21 @@ public abstract class ActiveActor extends Actor implements Destructible {
 	}
 
 	/**
-	 * 新增方法：获取子弹的发射位置
+	 * Gets the X position for projectile spawning.
+	 *
+	 * @param offset offset from the actor's position.
+	 * @return X position.
 	 */
 	public double getProjectileXPosition(double offset) {
 		return getLayoutX() + getTranslateX() + offset;
 	}
 
+	/**
+	 * Gets the Y position for projectile spawning.
+	 *
+	 * @param offset offset from the actor's position.
+	 * @return Y position.
+	 */
 	public double getProjectileYPosition(double offset) {
 		return getLayoutY() + getTranslateY() + offset;
 	}

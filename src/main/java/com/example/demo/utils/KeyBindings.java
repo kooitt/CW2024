@@ -1,9 +1,10 @@
-// KeyBindings.java
-
 package com.example.demo.utils;
 
 import javafx.scene.input.KeyCode;
 
+/**
+ * Singleton class managing key bindings.
+ */
 public class KeyBindings {
     private static KeyBindings instance;
 
@@ -11,21 +12,16 @@ public class KeyBindings {
     private KeyCode downKey;
     private KeyCode leftKey;
     private KeyCode rightKey;
-    // 移除 fireKey，因为不再需要
 
     private KeyBindings() {
-        // 默认按键绑定
         upKey = KeyCode.UP;
         downKey = KeyCode.DOWN;
         leftKey = KeyCode.LEFT;
         rightKey = KeyCode.RIGHT;
-        // fireKey = KeyCode.SPACE; // 移除
     }
 
     public static KeyBindings getInstance() {
-        if (instance == null) {
-            instance = new KeyBindings();
-        }
+        if (instance == null) instance = new KeyBindings();
         return instance;
     }
 
@@ -60,6 +56,4 @@ public class KeyBindings {
     public void setRightKey(KeyCode rightKey) {
         this.rightKey = rightKey;
     }
-
-    // 移除 getFireKey() 和 setFireKey() 方法
 }

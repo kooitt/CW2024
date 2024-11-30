@@ -1,16 +1,16 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActor;
-import com.example.demo.actors.EnemyPlane;
+import com.example.demo.actors.ActorLevelUp;
 import com.example.demo.actors.Shield;
 import com.example.demo.actors.UserPlane;
-import com.example.demo.interfaces.Hitbox;
+import com.example.demo.components.AnimationComponent;
+import com.example.demo.components.CollisionComponent;
 import com.example.demo.projectiles.Projectile;
 import com.example.demo.utils.ObjectPool;
 import com.example.demo.projectiles.BulletFactory;
 import com.example.demo.utils.KeyBindings;
 import com.example.demo.views.LevelView;
-import com.example.demo.views.LevelViewLevelTwo;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -41,6 +41,7 @@ public abstract class LevelParent extends Observable {
 	protected final List<ActiveActor> userProjectiles;
 	protected final List<ActiveActor> enemyProjectiles;
 	protected final List<ActiveActor> shields; // 新增 Shields 列表
+	protected final List<ActiveActor> powerUps;
 
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
@@ -51,18 +52,22 @@ public abstract class LevelParent extends Observable {
 	private ObjectPool<Projectile> enemyProjectilePool;
 	private ObjectPool<Projectile> bossProjectilePool;
 
+	private AnimationComponent animationComponent; // 新增字段
+
 	private long lastUpdateTime;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
+		this.animationComponent = new AnimationComponent(root); // 初始化 AnimationComponent
 		this.user = new UserPlane();
 		this.friendlyUnits = new ArrayList<>();
 		this.enemyUnits = new ArrayList<>();
 		this.shields = new ArrayList<>(); // 初始化 Shields 列表
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
+		this.powerUps = new ArrayList<>();
 
 		this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
 		this.screenHeight = screenHeight;
@@ -71,6 +76,7 @@ public abstract class LevelParent extends Observable {
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
 		this.activeKeys = new HashSet<>();
+
 		initializeTimeline();
 		friendlyUnits.add(user);
 
@@ -93,10 +99,31 @@ public abstract class LevelParent extends Observable {
 		initializeBackground();
 		initializeFriendlyUnits();
 		levelView.showHeartDisplay();
-
+		user.setAnimationComponent(animationComponent); // 传递 AnimationComponent 给 UserPlane
 		return scene;
 	}
 
+	protected boolean userIsDestroyed() {
+		return user.isDestroyed();
+	}
+	protected double getEnemyMaximumYPosition() {
+		return enemyMaximumYPosition;
+	}
+	protected double getScreenWidth() {
+		return screenWidth;
+	}
+
+	protected double getScreenHeight() {
+		return screenHeight;
+	}
+	public void addEnemyUnit(ActiveActor enemy) {
+		if (enemy instanceof Shield && !shields.contains(enemy)) {
+			shields.add(enemy);
+		} else if (!(enemy instanceof Shield) && !enemyUnits.contains(enemy)) {
+			enemyUnits.add(enemy);
+		}
+		root.getChildren().add(enemy);
+	}
 	public void startGame() {
 		background.requestFocus();
 		timeline.play();
@@ -117,7 +144,7 @@ public abstract class LevelParent extends Observable {
 		updateActors(deltaTime);
 		updateNumberOfEnemies();
 		handleEnemyPenetration();
-		handleCollisions(); // 使用优化后的碰撞检测
+		handleCollisions();
 		removeProjectilesOutOfBounds();
 		removeAllDestroyedActors();
 		updateKillCount();
@@ -133,65 +160,36 @@ public abstract class LevelParent extends Observable {
 
 	private void initializeBackground() {
 		background.setFocusTraversable(true);
-		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
-		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				activeKeys.add(kc);
-			}
-		});
-		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				activeKeys.remove(kc);
-			}
-		});
+		background.setFitHeight(screenHeight);
+		background.setOnKeyPressed((EventHandler<KeyEvent>) e -> activeKeys.add(e.getCode()));
+		background.setOnKeyReleased((EventHandler<KeyEvent>) e -> activeKeys.remove(e.getCode()));
 		root.getChildren().add(background);
 	}
 
 	private void processInput() {
-		KeyBindings keyBindings = KeyBindings.getInstance();
-		boolean movingUp = activeKeys.contains(keyBindings.getUpKey());
-		boolean movingDown = activeKeys.contains(keyBindings.getDownKey());
-		boolean movingLeft = activeKeys.contains(keyBindings.getLeftKey());
-		boolean movingRight = activeKeys.contains(keyBindings.getRightKey());
+		KeyBindings keys = KeyBindings.getInstance();
+		boolean up = activeKeys.contains(keys.getUpKey());
+		boolean down = activeKeys.contains(keys.getDownKey());
+		boolean left = activeKeys.contains(keys.getLeftKey());
+		boolean right = activeKeys.contains(keys.getRightKey());
 
-		// 处理垂直移动
-		if (movingUp && !movingDown) {
-			user.moveUp();
-		} else if (movingDown && !movingUp) {
-			user.moveDown();
-		} else {
-			user.stopVerticalMovement();
-		}
+		if (up && !down) user.moveUp();
+		else if (down && !up) user.moveDown();
+		else user.stopVerticalMovement();
 
-		// 处理水平移动
-		if (movingLeft && !movingRight) {
-			user.moveLeft();
-		} else if (movingRight && !movingLeft) {
-			user.moveRight();
-		} else {
-			user.stopHorizontalMovement();
-		}
+		if (left && !right) user.moveLeft();
+		else if (right && !left) user.moveRight();
+		else user.stopHorizontalMovement();
 	}
 
 	private void updateActors(double deltaTime) {
-		friendlyUnits.forEach(actor -> {
-			actor.updateActor(deltaTime, this);
-		});
-		enemyUnits.forEach(actor -> {
-			actor.updateActor(deltaTime, this);
-		});
-		shields.forEach(shield -> { // 更新 Shields
-			shield.updateActor(deltaTime, this);
-		});
-		userProjectiles.forEach(projectile -> {
-			projectile.updateActor(deltaTime, this);
-		});
-		enemyProjectiles.forEach(projectile -> {
-			projectile.updateActor(deltaTime, this);
-		});
+		friendlyUnits.forEach(actor -> actor.updateActor(deltaTime, this));
+		enemyUnits.forEach(actor -> actor.updateActor(deltaTime, this));
+		shields.forEach(shield -> shield.updateActor(deltaTime, this));
+		userProjectiles.forEach(projectile -> projectile.updateActor(deltaTime, this));
+		enemyProjectiles.forEach(projectile -> projectile.updateActor(deltaTime, this));
+		powerUps.forEach(powerUp -> powerUp.updateActor(deltaTime, this));
 	}
 
 	private void removeAllDestroyedActors() {
@@ -200,6 +198,7 @@ public abstract class LevelParent extends Observable {
 		removeDestroyedActors(shields);
 		removeDestroyedActors(userProjectiles, userProjectilePool);
 		removeDestroyedActors(enemyProjectiles, enemyProjectilePool, bossProjectilePool);
+		removeDestroyedActors(powerUps);
 	}
 
 	private void removeDestroyedActors(List<ActiveActor> actors, ObjectPool<Projectile>... pools) {
@@ -210,9 +209,8 @@ public abstract class LevelParent extends Observable {
 				root.getChildren().remove(actor);
 				iterator.remove();
 				if (actor instanceof Projectile) {
-					Projectile projectile = (Projectile) actor;
 					for (ObjectPool<Projectile> pool : pools) {
-						pool.release(projectile);
+						pool.release((Projectile) actor);
 					}
 				}
 			}
@@ -235,9 +233,36 @@ public abstract class LevelParent extends Observable {
 		handleCollisions(userProjectiles, shields);
 		handleCollisions(enemyProjectiles, friendlyUnits);
 
+		// 处理敌机与用户飞机的碰撞
+		handleCollisions(enemyUnits, Collections.singletonList(getUser()));
+
+		// 处理用户飞机与 `ActorLevelUp` 的碰撞
+		handlePickupCollisions(Collections.singletonList(getUser()), powerUps);
+
 		// 只有当Shield不存在或已销毁时，才处理子弹与敌方单位（包括Boss）的碰撞
 		handleCollisions(userProjectiles, enemyUnits);
 		handleCollisions(enemyProjectiles, friendlyUnits);
+	}
+
+	/**
+	 * Handles collisions for pickup items (e.g., power-ups).
+	 *
+	 * @param actors1  List of actors that can pick up items.
+	 * @param powerUps List of power-ups in the level.
+	 */
+	private void handlePickupCollisions(List<ActiveActor> actors1, List<ActiveActor> powerUps) {
+		for (ActiveActor actor1 : actors1) {
+			for (ActiveActor powerUp : powerUps) {
+				if (actor1.isDestroyed() || powerUp.isDestroyed()) {
+					continue; // Ignore destroyed actors
+				}
+				if (actor1.getCollisionComponent().checkCollision(powerUp.getCollisionComponent())) {
+					if (powerUp instanceof ActorLevelUp) {
+						((ActorLevelUp) powerUp).onPickup(this); // Handle pickup logic
+					}
+				}
+			}
+		}
 	}
 
 	private void handleCollisions(List<ActiveActor> actors1, List<ActiveActor> actors2) {
@@ -247,7 +272,6 @@ public abstract class LevelParent extends Observable {
 					continue; // 忽略已销毁的演员
 				}
 				if (actor1.getCollisionComponent().checkCollision(actor2.getCollisionComponent())) {
-					System.out.println("Collision detected between " + actor1 + " and " + actor2);
 					actor1.takeDamage(1);
 					actor2.takeDamage(1);
 				}
@@ -257,8 +281,8 @@ public abstract class LevelParent extends Observable {
 
 	private void handleEnemyPenetration() {
 		for (ActiveActor enemy : enemyUnits) {
-			if (enemyHasPenetratedDefenses(enemy)) {
-				user.takeDamage(1); // 假设敌机穿过玩家造成1点伤害
+			if (Math.abs(enemy.getTranslateX()) > screenWidth) {
+				user.takeDamage(1);
 				enemy.destroy();
 			}
 		}
@@ -288,6 +312,9 @@ public abstract class LevelParent extends Observable {
 		levelView.showGameOverImage();
 	}
 
+	/**
+	 * Cleans up the level by stopping the timeline and clearing actors.
+	 */
 	public void cleanUp() {
 		timeline.stop();
 		root.getChildren().clear();
@@ -296,9 +323,10 @@ public abstract class LevelParent extends Observable {
 		shields.clear();
 		userProjectiles.clear();
 		enemyProjectiles.clear();
+		powerUps.clear();
 	}
 
-	protected UserPlane getUser() {
+	public UserPlane getUser() {
 		return user;
 	}
 
@@ -307,33 +335,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	protected int getCurrentNumberOfEnemies() {
-		return enemyUnits.size() + shields.size(); // 包含Shields
-	}
-
-	public void addEnemyUnit(ActiveActor enemy) {
-		if (!enemyUnits.contains(enemy) && !(enemy instanceof Shield)) { // 确保不重复添加，且Shield单独管理
-			enemyUnits.add(enemy);
-			root.getChildren().add(enemy);
-		} else if (enemy instanceof Shield && !shields.contains(enemy)) {
-			shields.add(enemy);
-			root.getChildren().add(enemy);
-		}
-	}
-
-	protected double getEnemyMaximumYPosition() {
-		return enemyMaximumYPosition;
-	}
-
-	protected double getScreenWidth() {
-		return screenWidth;
-	}
-
-	protected double getScreenHeight() {
-		return screenHeight;
-	}
-
-	protected boolean userIsDestroyed() {
-		return user.isDestroyed();
+		return enemyUnits.size() + shields.size();
 	}
 
 	private void updateNumberOfEnemies() {
@@ -341,33 +343,24 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void removeProjectilesOutOfBounds() {
-		double screenWidth = getScreenWidth();
-		double screenHeight = getScreenHeight();
+		removeOutOfBounds(userProjectiles, screenWidth, screenHeight);
+		removeOutOfBounds(enemyProjectiles, screenWidth, screenHeight);
+	}
 
-		Iterator<ActiveActor> userProjIterator = userProjectiles.iterator();
-		while (userProjIterator.hasNext()) {
-			ActiveActor projectile = userProjIterator.next();
-			double x = projectile.getCollisionComponent().getHitboxX();
-			double y = projectile.getCollisionComponent().getHitboxY();
-			if (x > screenWidth || x + projectile.getCollisionComponent().getHitboxWidth() < 0 ||
-					y > screenHeight || y + projectile.getCollisionComponent().getHitboxHeight() < 0) {
-				projectile.destroy();
-			}
-		}
-
-		Iterator<ActiveActor> enemyProjIterator = enemyProjectiles.iterator();
-		while (enemyProjIterator.hasNext()) {
-			ActiveActor projectile = enemyProjIterator.next();
-			double x = projectile.getCollisionComponent().getHitboxX();
-			double y = projectile.getCollisionComponent().getHitboxY();
-			if (x > screenWidth || x + projectile.getCollisionComponent().getHitboxWidth() < 0 ||
-					y > screenHeight || y + projectile.getCollisionComponent().getHitboxHeight() < 0) {
-				projectile.destroy();
+	private void removeOutOfBounds(List<ActiveActor> projectiles, double width, double height) {
+		Iterator<ActiveActor> iterator = projectiles.iterator();
+		while (iterator.hasNext()) {
+			ActiveActor proj = iterator.next();
+			CollisionComponent cc = proj.getCollisionComponent();
+			double x = cc.getHitboxX();
+			double y = cc.getHitboxY();
+			if (x > width || x + cc.getHitboxWidth() < 0 ||
+					y > height || y + cc.getHitboxHeight() < 0) {
+				proj.destroy();
 			}
 		}
 	}
 
-	// 添加以下方法，供 UserPlane 和敌人添加子弹
 	public void addProjectile(Projectile projectile, ActiveActor owner) {
 		if (owner instanceof UserPlane) {
 			userProjectiles.add(projectile);

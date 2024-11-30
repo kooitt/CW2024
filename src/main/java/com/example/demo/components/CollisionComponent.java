@@ -1,5 +1,4 @@
 // CollisionComponent.java
-
 package com.example.demo.components;
 
 import com.example.demo.actors.ActiveActor;
@@ -8,13 +7,22 @@ import com.example.demo.utils.GameSettings;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Handles collision detection and hitbox visualization.
+ */
 public class CollisionComponent implements Hitbox {
     private ActiveActor owner;
-
     private double hitboxWidth;
     private double hitboxHeight;
     private Rectangle hitboxVisualization;
 
+    /**
+     * Constructs a CollisionComponent with specified size.
+     *
+     * @param owner        the owning actor.
+     * @param hitboxWidth  width of the hitbox.
+     * @param hitboxHeight height of the hitbox.
+     */
     public CollisionComponent(ActiveActor owner, double hitboxWidth, double hitboxHeight) {
         this.owner = owner;
         this.hitboxWidth = hitboxWidth;
@@ -28,6 +36,12 @@ public class CollisionComponent implements Hitbox {
         }
     }
 
+    /**
+     * Sets the size of the hitbox.
+     *
+     * @param width  new width.
+     * @param height new height.
+     */
     public void setHitboxSize(double width, double height) {
         this.hitboxWidth = width;
         this.hitboxHeight = height;
@@ -37,28 +51,29 @@ public class CollisionComponent implements Hitbox {
         }
     }
 
+    /**
+     * Updates the position of the hitbox visualization.
+     */
     public void updateHitBoxPosition() {
         if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
             double offsetX = (owner.getImageView().getBoundsInLocal().getWidth() - hitboxWidth) / 2;
             double offsetY = (owner.getImageView().getBoundsInLocal().getHeight() - hitboxHeight) / 2;
-
-            hitboxVisualization.setWidth(hitboxWidth);
-            hitboxVisualization.setHeight(hitboxHeight);
             hitboxVisualization.setTranslateX(offsetX);
             hitboxVisualization.setTranslateY(offsetY);
         }
     }
 
+    /**
+     * Checks collision with another CollisionComponent.
+     *
+     * @param other the other CollisionComponent.
+     * @return true if colliding, false otherwise.
+     */
     public boolean checkCollision(CollisionComponent other) {
-        double thisX = this.getHitboxX();
-        double thisY = this.getHitboxY();
-        double otherX = other.getHitboxX();
-        double otherY = other.getHitboxY();
-
-        return thisX < otherX + other.getHitboxWidth() &&
-                thisX + this.getHitboxWidth() > otherX &&
-                thisY < otherY + other.getHitboxHeight() &&
-                thisY + this.getHitboxHeight() > otherY;
+        return this.getHitboxX() < other.getHitboxX() + other.getHitboxWidth()
+                && this.getHitboxX() + this.getHitboxWidth() > other.getHitboxX()
+                && this.getHitboxY() < other.getHitboxY() + other.getHitboxHeight()
+                && this.getHitboxY() + this.getHitboxHeight() > other.getHitboxY();
     }
 
     @Override

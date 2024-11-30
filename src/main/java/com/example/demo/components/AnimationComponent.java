@@ -1,6 +1,5 @@
+// AnimationComponent.java
 package com.example.demo.components;
-
-// 移除与盾牌相关的import和变量
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -14,69 +13,115 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles animations such as explosions.
+ */
 public class AnimationComponent {
 
     private static final String IMAGE_LOCATION = "/com/example/demo/images/";
     private static final int TOTAL_EXPLOSION_FRAMES = 13;
-    private static final double EXPLOSION_FRAME_DURATION = 50; // 毫秒
+    private static final double EXPLOSION_FRAME_DURATION = 50;
+    //添加了一个levelup动画特效
+    private static final int TOTAL_LEVELUP_FRAMES = 6;
+    private static final double LEVELUP_FRAME_DURATION = 50;
 
     private static final List<Image> explosionFrames = new ArrayList<>();
 
     static {
         for (int i = 1; i <= TOTAL_EXPLOSION_FRAMES; i++) {
-            String imageName = "explosion" + i + ".png";
-            URL imgUrl = AnimationComponent.class.getResource(IMAGE_LOCATION + imageName);
-            if (imgUrl == null) {
-                continue;
+            URL imgUrl = AnimationComponent.class.getResource(IMAGE_LOCATION + "explosion" + i + ".png");
+            if (imgUrl != null) {
+                explosionFrames.add(new Image(imgUrl.toExternalForm()));
             }
-            Image img = new Image(imgUrl.toExternalForm());
-            explosionFrames.add(img);
+        }
+    }
+
+    private static final List<Image> levelupFrames = new ArrayList<>();
+
+    static {
+        for (int i = 1; i <= TOTAL_LEVELUP_FRAMES; i++) {
+            URL imgUrl = AnimationComponent.class.getResource(IMAGE_LOCATION + "levelup" + i + ".png");
+            if (imgUrl != null) {
+                levelupFrames.add(new Image(imgUrl.toExternalForm()));
+            }
         }
     }
 
     private Group parentGroup;
 
+    /**
+     * Constructs an AnimationComponent with the specified parent group.
+     *
+     * @param parentGroup the parent group for animations.
+     */
     public AnimationComponent(Group parentGroup) {
         this.parentGroup = parentGroup;
-        // 初始化盾牌逻辑已移至 ShieldDisplay
     }
 
     /**
-     * 播放爆炸动画
+     * Plays a level-up animation at the specified position and scale.
      *
-     * @param x     爆炸中心的X坐标
-     * @param y     爆炸中心的Y坐标
-     * @param scale 爆炸动画的缩放比例
+     * @param x     X position.
+     * @param y     Y position.
+     * @param scale scaling factor.
+     */
+    public void playLevelUp(double x, double y, double scale) {
+        Platform.runLater(() -> {
+            ImageView levelupView = new ImageView();
+            levelupView.setPreserveRatio(true);
+            levelupView.setFitWidth(50 * scale);
+            levelupView.setFitHeight(50 * scale);
+            levelupView.setLayoutX(-25 * scale);
+            levelupView.setLayoutY(-25 * scale);
+            Group levelupGroup = new Group(levelupView);
+            levelupGroup.setLayoutX(x);
+            levelupGroup.setLayoutY(y);
+            parentGroup.getChildren().add(levelupGroup);
+
+            Timeline timeline = new Timeline();
+            for (int i = 0; i < levelupFrames.size(); i++) {
+                final int frame = i;
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis((frame + 1) * LEVELUP_FRAME_DURATION), e -> {
+                    levelupView.setImage(levelupFrames.get(frame));
+                }));
+            }
+
+            timeline.setOnFinished(e -> parentGroup.getChildren().remove(levelupGroup));
+            timeline.play();
+        });
+    }
+
+
+    /**
+     * Plays an explosion animation at the specified position and scale.
+     *
+     * @param x     X position.
+     * @param y     Y position.
+     * @param scale scaling factor.
      */
     public void playExplosion(double x, double y, double scale) {
         Platform.runLater(() -> {
-            ImageView explosionImageView = new ImageView();
-            explosionImageView.setPreserveRatio(true);
-            explosionImageView.setFitWidth(100 * scale);
-            explosionImageView.setFitHeight(100 * scale);
-            explosionImageView.setLayoutX(-50 * scale); // 使爆炸中心对齐
-            explosionImageView.setLayoutY(-50 * scale);
-            Group explosionGroup = new Group(explosionImageView);
+            ImageView explosionView = new ImageView();
+            explosionView.setPreserveRatio(true);
+            explosionView.setFitWidth(100 * scale);
+            explosionView.setFitHeight(100 * scale);
+            explosionView.setLayoutX(-50 * scale);
+            explosionView.setLayoutY(-50 * scale);
+            Group explosionGroup = new Group(explosionView);
             explosionGroup.setLayoutX(x);
             explosionGroup.setLayoutY(y);
             parentGroup.getChildren().add(explosionGroup);
 
-            Timeline explosionTimeline = new Timeline();
-            for (int i = 0; i < TOTAL_EXPLOSION_FRAMES && i < explosionFrames.size(); i++) {
+            Timeline timeline = new Timeline();
+            for (int i = 0; i < explosionFrames.size(); i++) {
                 final int frame = i;
-                KeyFrame keyFrame = new KeyFrame(Duration.millis((frame + 1) * EXPLOSION_FRAME_DURATION), e -> {
-                    explosionImageView.setImage(explosionFrames.get(frame));
-                });
-                explosionTimeline.getKeyFrames().add(keyFrame);
+                timeline.getKeyFrames().add(new KeyFrame(Duration.millis((frame + 1) * EXPLOSION_FRAME_DURATION), e -> {
+                    explosionView.setImage(explosionFrames.get(frame));
+                }));
             }
 
-            explosionTimeline.setOnFinished(e -> {
-                parentGroup.getChildren().remove(explosionGroup);
-            });
-
-            explosionTimeline.play();
+            timeline.setOnFinished(e -> parentGroup.getChildren().remove(explosionGroup));
+            timeline.play();
         });
     }
-
-    // 移除盾牌相关的方法
 }

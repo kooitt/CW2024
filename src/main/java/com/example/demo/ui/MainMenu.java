@@ -8,11 +8,19 @@ import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * Represents the main menu of the game.
+ */
 public class MainMenu {
 
     private Scene scene;
     private Controller controller;
 
+    /**
+     * Constructs a MainMenu with the specified controller.
+     *
+     * @param controller the game controller.
+     */
     public MainMenu(Controller controller) {
         this.controller = controller;
         initialize();
@@ -21,44 +29,33 @@ public class MainMenu {
     private void initialize() {
         StackPane root = new StackPane();
 
-        Image backgroundImage = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
-        ImageView backgroundImageView = new ImageView(backgroundImage);
-        backgroundImageView.setFitWidth(controller.getStage().getWidth());
-        backgroundImageView.setFitHeight(controller.getStage().getHeight());
-        backgroundImageView.setPreserveRatio(false);
+        Image background = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
+        ImageView bgView = new ImageView(background);
+        bgView.setFitWidth(controller.getStage().getWidth());
+        bgView.setFitHeight(controller.getStage().getHeight());
+        bgView.setPreserveRatio(false);
 
         VBox menuBox = new VBox(20);
         menuBox.setAlignment(Pos.CENTER);
 
-        Button startGameButton = new Button("Start Game");
-        Button settingsButton = new Button("Settings");
-        Button exitGameButton = new Button("Exit Game");
+        Button startBtn = createButton("Start Game", controller::launchGame);
+        Button settingsBtn = createButton("Settings", controller::showSettings);
+        Button exitBtn = createButton("Exit Game", controller::exitGame);
 
-        String buttonStyle = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-border-color: transparent;";
-        String hoverStyle = "-fx-background-color: transparent; -fx-text-fill: yellow; -fx-font-size: 24px; -fx-border-color: transparent;";
-
-        startGameButton.setStyle(buttonStyle);
-        settingsButton.setStyle(buttonStyle);
-        exitGameButton.setStyle(buttonStyle);
-
-        setHoverEffect(startGameButton, buttonStyle, hoverStyle);
-        setHoverEffect(settingsButton, buttonStyle, hoverStyle);
-        setHoverEffect(exitGameButton, buttonStyle, hoverStyle);
-
-        startGameButton.setOnAction(e -> controller.launchGame());
-        settingsButton.setOnAction(e -> controller.showSettings());
-        exitGameButton.setOnAction(e -> controller.exitGame());
-
-        menuBox.getChildren().addAll(startGameButton, settingsButton, exitGameButton);
-
-        root.getChildren().addAll(backgroundImageView, menuBox);
-
+        menuBox.getChildren().addAll(startBtn, settingsBtn, exitBtn);
+        root.getChildren().addAll(bgView, menuBox);
         scene = new Scene(root, controller.getStage().getWidth(), controller.getStage().getHeight());
     }
 
-    private void setHoverEffect(Button button, String normalStyle, String hoverStyle) {
+    private Button createButton(String text, Runnable action) {
+        Button button = new Button(text);
+        String style = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px;";
+        String hoverStyle = "-fx-background-color: transparent; -fx-text-fill: yellow; -fx-font-size: 24px;";
+        button.setStyle(style);
         button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
-        button.setOnMouseExited(e -> button.setStyle(normalStyle));
+        button.setOnMouseExited(e -> button.setStyle(style));
+        button.setOnAction(e -> action.run());
+        return button;
     }
 
     public Scene getScene() {
