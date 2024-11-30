@@ -10,14 +10,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import com.example.demo.LevelParent;
-import com.example.demo.Menu;
 
 //The Controller class implements the Observer interface, meaning it can observe changes in observable objects.
 public class Controller implements Observer {
 
 	// LEVEL_ONE_CLASS_NAME is a constant that holds the fully qualified name of the LevelOne class. stage is a final field that holds a reference to the JavaFX Stage object.
 
-	private static final String MENU = "com.example.demo.Menu";
+	private static final String LEVEL_ONE = "com.example.demo.LevelOne";
 	private final Stage stage;
 
 	public Controller(Stage stage) {
@@ -29,7 +28,7 @@ public class Controller implements Observer {
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
 
 			stage.show();
-			goToLevel(MENU);
+			goToLevel(LEVEL_ONE);
 	}
 
 	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
