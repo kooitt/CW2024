@@ -155,4 +155,9 @@ public class UserPlane extends FighterPlane {
 
         root.getChildren().add(hitbox);    // Add the hitbox rectangle to the game scene
     }
+    
+    public void resetKillCount() {
+        this.numberOfKills = 0;
+    }
+
 }

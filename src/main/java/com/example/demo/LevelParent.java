@@ -379,9 +379,12 @@ public abstract class LevelParent {
             timeline.getKeyFrames().clear();
 
             user.resetKillCount();
+            currentNumberOfEnemies = 0;
 
             Constructor<?> constructor = this.getClass().getConstructor(double.class, double.class, Stage.class);
             LevelParent newLevel = (LevelParent) constructor.newInstance(screenHeight, screenWidth, stage);
+
+            newLevel.addPropertyChangeListener(propertyChangeSupport.getPropertyChangeListeners()[0]);
 
             Scene newScene = newLevel.initializeScene();
             stage.setScene(newScene);

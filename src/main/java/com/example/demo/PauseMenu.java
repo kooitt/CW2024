@@ -10,50 +10,62 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * The PauseMenu class represents the user interface displayed when the game is paused.
+ * It provides options to resume the game, return to the main menu, or restart the current game level.
+ */
 public class PauseMenu {
 
-    private final StackPane root;
+    private final StackPane root; // Root container for the PauseMenu UI
 
-    public PauseMenu(Stage stage, Runnable resumeAction, Runnable menuAction, Runnable quitAction) {
+    /**
+     * Constructor for PauseMenu.
+     *
+     * @param stage        The Stage object representing the main game window.
+     * @param resumeAction The action to be performed when the "RESUME" button is clicked.
+     * @param menuAction   The action to be performed when the "MENU" button is clicked.
+     * @param restartAction The action to be performed when the "RESTART" button is clicked.
+     */
+    public PauseMenu(Stage stage, Runnable resumeAction, Runnable menuAction, Runnable restartAction) {
         root = new StackPane();
 
-        // Background overlay
+        // Create a semi-transparent black background overlay
         Rectangle backgroundOverlay = new Rectangle(1300, 750);
         backgroundOverlay.setFill(Color.BLACK);
         backgroundOverlay.setOpacity(0.8);
 
-        // Title text
+        // Create the title text for the pause menu
         Text title = new Text("PAUSED");
-        title.setFont(new Font("Arial", 50));
-        title.setFill(Color.WHITE);
+        title.setFont(new Font("Arial", 50)); // Set font size and type
+        title.setFill(Color.WHITE); // Set text color to white
 
-        // Resume button
+        // Create the "RESUME" button and configure its style and action
         Button resumeButton = new Button("RESUME");
         resumeButton.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-font-size: 20px;");
-        resumeButton.setOnAction(e -> resumeAction.run());
+        resumeButton.setOnAction(e -> resumeAction.run()); // Bind the resume action to the button click
 
-        // Menu button
+        // Create the "MENU" button and configure its style and action
         Button menuButton = new Button("MENU");
         menuButton.setStyle("-fx-background-color: orange; -fx-text-fill: white; -fx-font-size: 20px;");
-        menuButton.setOnAction(e -> menuAction.run()); // Navigate back to MainMenu
+        menuButton.setOnAction(e -> menuAction.run()); // Bind the menu action to the button click
 
-        // Quit button
-        Button quitButton = new Button("QUIT");
-        quitButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 20px;");
-        quitButton.setOnAction(e -> quitAction.run());
+        // Create the "RESTART" button and configure its style and action
+        Button restartButton = new Button("RESTART");
+        restartButton.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-font-size: 20px;");
+        restartButton.setOnAction(e -> restartAction.run()); // Bind the restart action to the button click
 
-        // VBox layout for buttons
-        VBox vbox = new VBox(20, title, resumeButton, menuButton, quitButton);
-        vbox.setAlignment(Pos.CENTER);
+        // Create a VBox layout to arrange the title and buttons vertically
+        VBox vbox = new VBox(20, title, resumeButton, menuButton, restartButton);
+        vbox.setAlignment(Pos.CENTER); // Center align all elements in the VBox
 
-        // Add components to root StackPane
+        // Add the background overlay and VBox to the root StackPane
         root.getChildren().addAll(backgroundOverlay, vbox);
     }
 
     /**
-     * Returns the root node for the pause menu.
+     * Returns the root node of the PauseMenu, which can be added to the game scene.
      *
-     * @return The StackPane containing the pause menu UI.
+     * @return The StackPane containing the PauseMenu UI components.
      */
     public StackPane getRoot() {
         return root;

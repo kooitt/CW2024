@@ -13,7 +13,7 @@ import com.example.demo.LevelParent;
 
 /**
  * The Controller class manages transitions between levels and handles errors during gameplay.
- * It listens for property changes to trigger level transitions.
+ * It listens for property change events to trigger level transitions.
  */
 public class Controller implements PropertyChangeListener {
 
