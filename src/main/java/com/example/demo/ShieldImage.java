@@ -20,10 +20,12 @@ public class ShieldImage extends ImageView {
 
 	public void showShield() {
 		this.setVisible(true);
+		System.out.println("Shield is now visible");
 	}
 	
 	public void hideShield() {
 		this.setVisible(false);
+		System.out.println("Shield is now hidden");
 	}
 
 }

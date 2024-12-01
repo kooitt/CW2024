@@ -86,14 +86,17 @@ public class Boss extends FighterPlane {
 	private void updateShield() {
 		if (isShielded) {
 			framesWithShieldActivated++;
+			System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
 		}
 		else if (shieldShouldBeActivated()) {
 			activateShield();
 			shieldImage.showShield(); // show shield when activated
+			System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
 		}
 		if (shieldExhausted()) {
 			deactivateShield();
 			shieldImage.hideShield(); // hide shield when exhausted
+			System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
 		}
 	}
 
