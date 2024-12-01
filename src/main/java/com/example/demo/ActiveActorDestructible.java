@@ -6,7 +6,7 @@ import javafx.scene.shape.Rectangle;
 public abstract class ActiveActorDestructible extends ActiveActor implements Destructible {
 
 	private boolean isDestroyed;
-	private Rectangle hitbox;
+	private final Rectangle hitbox;
 
 	public ActiveActorDestructible(String imageName, int imageHeight, double initialXPos, double initialYPos) {
 		super(imageName, imageHeight, initialXPos, initialYPos);
