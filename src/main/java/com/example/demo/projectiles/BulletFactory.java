@@ -13,7 +13,7 @@ public class BulletFactory implements ObjectFactory<Projectile> {
     /**
      * Constructs a BulletFactory with specified type.
      *
-     * @param type the type of projectile ("user", "enemy", "boss").
+     * @param type the type of projectile ("user", "enemy", "boss", "bossTwo").
      */
     public BulletFactory(String type) {
         this.type = type;
@@ -28,6 +28,8 @@ public class BulletFactory implements ObjectFactory<Projectile> {
                 return new EnemyProjectile(0, 0);
             case "boss":
                 return new BossProjectile(0);
+            case "bossTwo":
+                return new BossTwoProjectile(0);
             default:
                 return null;
         }

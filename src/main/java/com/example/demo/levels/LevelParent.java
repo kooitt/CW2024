@@ -51,6 +51,7 @@ public abstract class LevelParent extends Observable {
 	private ObjectPool<Projectile> userProjectilePool;
 	private ObjectPool<Projectile> enemyProjectilePool;
 	private ObjectPool<Projectile> bossProjectilePool;
+	private ObjectPool<Projectile> bossTwoProjectilePool;
 
 	private AnimationComponent animationComponent; // 新增字段
 
@@ -83,6 +84,7 @@ public abstract class LevelParent extends Observable {
 		userProjectilePool = new ObjectPool<>(new BulletFactory("user"));
 		enemyProjectilePool = new ObjectPool<>(new BulletFactory("enemy"));
 		bossProjectilePool = new ObjectPool<>(new BulletFactory("boss"));
+		bossTwoProjectilePool = new ObjectPool<>(new BulletFactory("bossTwo"));
 
 		lastUpdateTime = System.nanoTime();
 	}
@@ -113,7 +115,7 @@ public abstract class LevelParent extends Observable {
 		return screenWidth;
 	}
 
-	protected double getScreenHeight() {
+	public double getScreenHeight() {
 		return screenHeight;
 	}
 	public void addEnemyUnit(ActiveActor enemy) {
@@ -379,5 +381,9 @@ public abstract class LevelParent extends Observable {
 
 	public ObjectPool<Projectile> getBossProjectilePool() {
 		return bossProjectilePool;
+	}
+
+	public ObjectPool<Projectile> getBossTwoProjectilePool() {
+		return bossTwoProjectilePool;
 	}
 }
