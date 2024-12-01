@@ -1,8 +1,12 @@
-package com.example.demo;
+package com.example.demo.levelparent;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.demo.levels.LevelView;
+import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.FighterPlane;
+import com.example.demo.actors.UserPlane;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -29,9 +33,9 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyUnits;
 	private final List<ActiveActorDestructible> userProjectiles;
 	private final List<ActiveActorDestructible> enemyProjectiles;
-	
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
+	private Set<KeyCode> activeKeys = new HashSet<>(); //Creating a new hash-set which is basically a box that keeps track of all active keys being pressed by the player
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -105,6 +109,7 @@ public abstract class LevelParent extends Observable {
 		spawnEnemyUnits();
 		updateActors();
 		generateEnemyFire();
+		handlePlayerActions();
 		updateNumberOfEnemies();
 		handleEnemyPenetration();
 		handleUserProjectileCollisions();
@@ -129,6 +134,7 @@ public abstract class LevelParent extends Observable {
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
+				activeKeys.add(kc); //On key press, add that key to the hash set
 				if (kc == KeyCode.ESCAPE) pauseGame(); // Must be above isgameactive so it will work outside of an active game.
 				if (!isGameActive) return; //Void all inputs if the game is currently not active.
 				if (kc == KeyCode.UP) user.moveUp();
@@ -141,6 +147,7 @@ public abstract class LevelParent extends Observable {
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
+				activeKeys.remove(kc); //On key release, remove that key from the hash set
 				if (kc == KeyCode.UP || kc == KeyCode.DOWN) {
 					user.stopY();
 				}
@@ -150,6 +157,16 @@ public abstract class LevelParent extends Observable {
 			}
 		});
 		root.getChildren().add(background);
+	}
+
+	private void handlePlayerActions() {
+		if (activeKeys.contains(KeyCode.UP)) user.moveUp();
+		if (activeKeys.contains(KeyCode.DOWN)) user.moveDown();
+		if (activeKeys.contains(KeyCode.LEFT)) user.moveLeft();
+		if (activeKeys.contains(KeyCode.RIGHT)) user.moveRight();
+		if (activeKeys.contains(KeyCode.SPACE)) {
+				fireProjectile();
+		}
 	}
 
 	private void fireProjectile() {
@@ -219,6 +236,7 @@ public abstract class LevelParent extends Observable {
 			if (enemyHasPenetratedDefenses(enemy)) {
 				user.takeDamage();
 				enemy.destroy();
+				user.decrementKillCount();
 			}
 		}
 	}

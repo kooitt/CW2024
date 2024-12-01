@@ -1,8 +1,12 @@
-package com.example.demo;
+package com.example.demo.levels;
+
+import com.example.demo.actors.Boss;
+import com.example.demo.levelparent.LevelParent;
 
 public class LevelTwo extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
+	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelThree";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private final Boss boss;
 	private LevelViewLevelTwo levelView;
@@ -23,7 +27,8 @@ public class LevelTwo extends LevelParent {
 			loseGame();
 		}
 		else if (boss.isDestroyed()) {
-			winGame();
+			//winGame();
+			goToNextLevel(NEXT_LEVEL);
 		}
 	}
 

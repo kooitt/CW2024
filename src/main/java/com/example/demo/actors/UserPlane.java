@@ -1,9 +1,11 @@
-package com.example.demo;
+package com.example.demo.actors;
+
+import com.example.demo.projectile.UserProjectile;
 
 public class UserPlane extends FighterPlane {
 
 	private static final String IMAGE_NAME = "userplane.png";
-	private static final double Y_UPPER_BOUND = -40;
+	private static final double Y_UPPER_BOUND = 0;
 	private static final double Y_LOWER_BOUND = 600.0;
 	private static final double X_UPPER_BOUND = 5.0;
 	private static final double X_LOWER_BOUND = 1290.0;
@@ -14,8 +16,8 @@ public class UserPlane extends FighterPlane {
 	private static final int HORIZONTAL_VELOCITY = 8; //Added a horizontal constant
 	private static final int PROJECTILE_X_POSITION_OFFSET = 80;
 	private static final int PROJECTILE_Y_POSITION_OFFSET = -30;
-	private int HorizontalvelocityMultiplier;
-	private int VerticalvelocityMultiplier;
+	private double HorizontalvelocityMultiplier;
+	private double VerticalvelocityMultiplier;
 	private int numberOfKills;
 
 	public UserPlane(int initialHealth) {
@@ -70,19 +72,19 @@ public class UserPlane extends FighterPlane {
 		return VerticalvelocityMultiplier != 0;
 	}
 	public void moveUp() {
-		VerticalvelocityMultiplier = -1;
+		VerticalvelocityMultiplier = -1.5;
 	}
 
 	public void moveDown() {
-		VerticalvelocityMultiplier = 1;
+		VerticalvelocityMultiplier = 1.5;
 	}
 
 	public void moveLeft() {
-		HorizontalvelocityMultiplier = -1;
+		HorizontalvelocityMultiplier = -1.5;
 	}
 
 	public void moveRight() {
-		HorizontalvelocityMultiplier = 1;
+		HorizontalvelocityMultiplier = 1.5;
 	}
 
 	public void stop() {
@@ -97,4 +99,7 @@ public class UserPlane extends FighterPlane {
 		numberOfKills++;
 	}
 
+	public void decrementKillCount() {
+		numberOfKills--;
+	}
 }

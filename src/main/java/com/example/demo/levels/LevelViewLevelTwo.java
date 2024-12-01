@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.levels;
 
+import com.example.demo.images.ShieldImage;
 import javafx.scene.Group;
 
 public class LevelViewLevelTwo extends LevelView {

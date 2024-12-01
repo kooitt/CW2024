@@ -1,6 +1,7 @@
-package com.example.demo;
+package com.example.demo.actors;
 
-import com.example.demo.ShieldImage;
+import com.example.demo.projectile.BossProjectile;
+import com.example.demo.images.ShieldImage;
 
 import java.util.*;
 
