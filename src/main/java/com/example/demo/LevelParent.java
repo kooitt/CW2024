@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,13 @@ public abstract class LevelParent extends Observable {
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
 
-		this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
+		URL resource = getClass().getResource(backgroundImageName);
+		if (resource != null){
+			this.background = new ImageView(new Image(resource.toExternalForm()));
+		} else {
+			System.err.println("Background image not found: " + backgroundImageName);
+			this.background = new ImageView();
+		}
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import javafx.scene.image.*;
+import java.net.URL;
 
 public abstract class ActiveActor extends ImageView {
 	
@@ -8,7 +9,12 @@ public abstract class ActiveActor extends ImageView {
 
 	public ActiveActor(String imageName, int imageHeight, double initialXPos, double initialYPos) {
 		//this.setImage(new Image(IMAGE_LOCATION + imageName));
-		this.setImage(new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm()));
+		URL resource = getClass().getResource(IMAGE_LOCATION + imageName);
+		if (resource != null){
+			this.setImage(new Image(resource.toExternalForm()));
+		}else{
+			System.err.println("Background image not found: " + imageName);
+		}
 		this.setLayoutX(initialXPos);
 		this.setLayoutY(initialYPos);
 		this.setFitHeight(imageHeight);

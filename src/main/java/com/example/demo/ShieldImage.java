@@ -2,6 +2,7 @@ package com.example.demo;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import java.net.URL;
 
 public class ShieldImage extends ImageView {
 	
@@ -9,10 +10,15 @@ public class ShieldImage extends ImageView {
 	private static final int SHIELD_SIZE = 200;
 	
 	public ShieldImage(double xPosition, double yPosition) {
+		//this.setImage(new Image(IMAGE_NAME));
+		URL resource = getClass().getResource(IMAGE_NAME);
+		if (resource != null){
+			this.setImage(new Image(resource.toExternalForm()));
+		}else{
+			System.err.println("Background image not found: ");
+		}
 		this.setLayoutX(xPosition);
 		this.setLayoutY(yPosition);
-		//this.setImage(new Image(IMAGE_NAME));
-		this.setImage(new Image(getClass().getResource(IMAGE_NAME).toExternalForm()));
 		this.setVisible(false);
 		this.setFitHeight(SHIELD_SIZE);
 		this.setFitWidth(SHIELD_SIZE);
