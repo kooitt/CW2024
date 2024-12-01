@@ -18,7 +18,7 @@ public class Boss extends FighterPlane {
 	private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
 	private static final int Y_POSITION_UPPER_BOUND = -30;
 	private static final int Y_POSITION_LOWER_BOUND = 475;
-	private static final int MAX_FRAMES_WITH_SHIELD = 500;
+	private static final int MAX_FRAMES_WITH_SHIELD = 500; // active for ~8.33 seconds
 	private final List<Integer> movePattern;
 	private boolean isShielded;
 	private int consecutiveMovesInSameDirection;
@@ -37,14 +37,15 @@ public class Boss extends FighterPlane {
 		shieldImage = new ShieldImage(INITIAL_X_POSITION, INITIAL_Y_POSITION);
 	}
 
+	//applies next movement to Boss's position
 	@Override
 	public void updatePosition() {
 		double initialTranslateY = getTranslateY();
-		moveVertically(getNextMove());
+		moveVertically(getNextMove()); //change vertical position
 		double currentPosition = getLayoutY() + getTranslateY();
 
 		double shieldXOffset = -getImageWidth() * 0.1;
-		double shieldYOffset = getImageHeight() * 0.1;
+		double shieldYOffset = getImageHeight() * -0.3;
 
 		shieldImage.setLayoutX(getLayoutX() + shieldXOffset); //adjust shield horizontal position
 		shieldImage.setLayoutY(currentPosition + shieldYOffset); //adjust shield vertical position
@@ -69,16 +70,19 @@ public class Boss extends FighterPlane {
 	
 	@Override
 	public void takeDamage() {
+		//only takes damage if not shielded
 		if (!isShielded) {
 			super.takeDamage();
 		}
 	}
 
+	//initializes move pattern for Boss, creates a list of vertical movements Boss can follow
 	private void initializeMovePattern() {
 		for (int i = 0; i < MOVE_FREQUENCY_PER_CYCLE; i++) {
-			movePattern.add(VERTICAL_VELOCITY);
-			movePattern.add(-VERTICAL_VELOCITY);
-			movePattern.add(ZERO);
+			//movePattern list stores different vertical velocity values
+			movePattern.add(VERTICAL_VELOCITY); //downward movement
+			movePattern.add(-VERTICAL_VELOCITY); //upward movement
+			movePattern.add(ZERO); //stationary
 		}
 		Collections.shuffle(movePattern);
 	}
@@ -86,20 +90,24 @@ public class Boss extends FighterPlane {
 	private void updateShield() {
 		if (isShielded) {
 			framesWithShieldActivated++;
+			System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
 		}
 		else if (shieldShouldBeActivated()) {
 			activateShield();
 			shieldImage.showShield(); // show shield when activated
+			System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
 		}
 		if (shieldExhausted()) {
 			deactivateShield();
 			shieldImage.hideShield(); // hide shield when exhausted
+			System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
 		}
 	}
 
+	//determines next vertical movement for Boss based on movePattern
 	private int getNextMove() {
-		int currentMove = movePattern.get(indexOfCurrentMove);
-		consecutiveMovesInSameDirection++;
+		int currentMove = movePattern.get(indexOfCurrentMove); //fetches current move from movePattern list
+		consecutiveMovesInSameDirection++; //increments counter to track how long Boss moving in same direction
 		if (consecutiveMovesInSameDirection == MAX_FRAMES_WITH_SAME_MOVE) {
 			Collections.shuffle(movePattern);
 			consecutiveMovesInSameDirection = 0;
