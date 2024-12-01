@@ -2,14 +2,13 @@ package com.example.demo.controller;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Observable;
-import java.util.Observer;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import com.example.demo.LevelParent;
+import com.example.demo.Observer;
 
 public class Controller implements Observer {
 
@@ -40,9 +39,9 @@ public class Controller implements Observer {
 	}
 
 	@Override
-	public void update(Observable arg0, Object arg1) {
+	public void update(String levelName) {
 		try {
-			goToLevel((String) arg1);
+			goToLevel(levelName);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			Alert alert = new Alert(AlertType.ERROR);
@@ -50,5 +49,4 @@ public class Controller implements Observer {
 			alert.show();
 		}
 	}
-
 }

@@ -12,7 +12,7 @@ import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
 
-public abstract class LevelParent extends Observable {
+public abstract class LevelParent extends ObservableHelper{
 
 	private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
 	private static final int MILLISECOND_DELAY = 50;
@@ -43,7 +43,6 @@ public abstract class LevelParent extends Observable {
 		this.enemyUnits = new ArrayList<>();
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
-
 		URL resource = getClass().getResource(backgroundImageName);
 		if (resource != null){
 			this.background = new ImageView(new Image(resource.toExternalForm()));
@@ -82,7 +81,6 @@ public abstract class LevelParent extends Observable {
 
 	public void goToNextLevel(String levelName) {
 		endGame();
-		setChanged();
 		notifyObservers(levelName);
 	}
 
