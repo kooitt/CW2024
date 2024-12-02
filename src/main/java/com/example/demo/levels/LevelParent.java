@@ -13,6 +13,7 @@ import com.example.demo.utils.KeyBindings;
 import com.example.demo.views.LevelView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -62,7 +63,7 @@ public abstract class LevelParent extends Observable {
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
 		this.animationComponent = new AnimationComponent(root); // 初始化 AnimationComponent
-		this.user = new UserPlane();
+		this.user = new UserPlane(5);
 		this.friendlyUnits = new ArrayList<>();
 		this.enemyUnits = new ArrayList<>();
 		this.shields = new ArrayList<>(); // 初始化 Shields 列表

@@ -42,4 +42,10 @@ public class LevelView {
 			heartDisplay.removeHeart();
 		}
 	}
+
+	public void addHearts(int heartsToAdd) {
+		for(int i = 0; i < heartsToAdd; i++) {
+			heartDisplay.addHeart();
+		}
+	}
 }

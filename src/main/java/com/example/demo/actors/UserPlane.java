@@ -36,12 +36,7 @@ public class UserPlane extends ActiveActor {
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
         shootingComponent.startFiring();
     }
-
-    // 保留无参构造以防需要
-    public UserPlane() {
-        this(5); // 默认健康值为5
-    }
-
+    
     public void setAnimationComponent(AnimationComponent animationComponent) {
         this.animationComponent = animationComponent;
     }

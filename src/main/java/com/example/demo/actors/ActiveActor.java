@@ -9,7 +9,6 @@ import com.example.demo.levels.LevelParent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-
 public abstract class ActiveActor extends Actor implements Destructible {
 
 	public static final String IMAGE_LOCATION = "/com/example/demo/images/";
