@@ -106,23 +106,35 @@ public abstract class LevelParent extends ObservableHelper{
 	}
 
 	private void initializeBackground() {
+		configureBackgroundProperties();
+		setUpKeyHandlers();
+		addBackgroundToScene();
+	}
+
+	private void configureBackgroundProperties(){
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
-		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP) user.moveUp();
-				if (kc == KeyCode.DOWN) user.moveDown();
-				if (kc == KeyCode.SPACE) fireProjectile();
-			}
-		});
-		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
-			}
-		});
+	}
+
+	private void setUpKeyHandlers(){
+		background.setOnKeyPressed(this::handleKeyPress);
+		background.setOnKeyReleased(this::handleKeyRelease);
+	}
+
+	private void handleKeyPress(KeyEvent e){
+		KeyCode kc = e.getCode();
+		if (kc == KeyCode.UP) user.moveUp();
+		if (kc == KeyCode.DOWN) user.moveDown();
+		if (kc == KeyCode.SPACE) fireProjectile();
+	}
+
+	private void handleKeyRelease(KeyEvent e){
+		KeyCode kc = e.getCode();
+		if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.stop();
+	}
+
+	private void addBackgroundToScene(){
 		root.getChildren().add(background);
 	}
 
