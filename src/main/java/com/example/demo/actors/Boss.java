@@ -19,6 +19,7 @@ public class Boss extends ActiveActor {
     private static final String IMAGE_NAME = "bossplane.png";
     private static final double INITIAL_X_POSITION = 1000.0;
     private static final double INITIAL_Y_POSITION = 400.0;
+    private static final double PROJECTILE_X_POSITION_OFFSET = -100.0;
     private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
     private static final double FIRE_RATE = 1.0;
     private static final int IMAGE_HEIGHT = 200;
@@ -46,7 +47,7 @@ public class Boss extends ActiveActor {
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT);
         initializeHealthBar();
         getMovementComponent().setVelocity(0, 0);
-        shootingComponent = new ShootingComponent(this, FIRE_RATE, null, 0, PROJECTILE_Y_POSITION_OFFSET);
+        shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_POSITION_OFFSET, PROJECTILE_Y_POSITION_OFFSET);
         animationComponent = new AnimationComponent(root);
         shootingComponent.startFiring();
         initializeShieldCheck();
