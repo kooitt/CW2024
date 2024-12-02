@@ -53,17 +53,17 @@ public class Boss extends ActiveActor {
         initializeShieldCheck();
     }
 
-    private void initializeHealthBar() {
-        healthBar = new ProgressBar(1.0);
-        healthBar.setPrefSize(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-        healthBar.setStyle("-fx-accent: red;");
-        this.getChildren().add(healthBar);
-        healthBar.toFront();
-        double imageWidth = getCollisionComponent().getHitboxWidth();
-        healthBar.setLayoutX((imageWidth - HEALTH_BAR_WIDTH) / 2);
-        healthBar.setLayoutY(-HEALTH_BAR_HEIGHT);
-        healthBar.setVisible(getCurrentHealth() > 0);
-    }
+private void initializeHealthBar() {
+    healthBar = new ProgressBar(1.0);
+    healthBar.setPrefSize(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
+    healthBar.setStyle("-fx-accent: red; -fx-background-color: black; -fx-border-color: white; -fx-border-width: 2;");
+    this.getChildren().add(healthBar);
+    healthBar.toFront();
+    double imageWidth = getCollisionComponent().getHitboxWidth();
+    healthBar.setLayoutX((imageWidth - HEALTH_BAR_WIDTH) / 2);
+    healthBar.setLayoutY(-HEALTH_BAR_HEIGHT - 10);
+    healthBar.setVisible(getCurrentHealth() > 0);
+}
 
     @Override
     public void updateActor(double deltaTime, LevelParent level) {

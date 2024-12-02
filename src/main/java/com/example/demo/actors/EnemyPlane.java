@@ -6,10 +6,7 @@ import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
 import javafx.scene.Group;
 
-/**
- * Represents an enemy plane in the game.
- * Can shoot projectiles and has collision detection.
- */
+
 public class EnemyPlane extends ActiveActor {
 
     private static final String IMAGE_NAME = "enemyplane.png";
@@ -22,13 +19,7 @@ public class EnemyPlane extends ActiveActor {
     private ShootingComponent shootingComponent;
     private AnimationComponent animationComponent;
 
-    /**
-     * Constructs an EnemyPlane with specified position and root group.
-     *
-     * @param initialXPos initial X position.
-     * @param initialYPos initial Y position.
-     * @param root        root group.
-     */
+
     public EnemyPlane(double initialXPos, double initialYPos, Group root) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT*0.75, IMAGE_HEIGHT);
