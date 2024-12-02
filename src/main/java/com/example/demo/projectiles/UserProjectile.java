@@ -7,7 +7,7 @@ package com.example.demo.projectiles;
 public class UserProjectile extends Projectile {
 
 	private static final String IMAGE_NAME = "userfire.png";
-	private static final int IMAGE_HEIGHT = 125;
+	private static final int IMAGE_HEIGHT = 25;
 	private static final int HORIZONTAL_VELOCITY = 15;
 
 	/**
@@ -18,7 +18,7 @@ public class UserProjectile extends Projectile {
 	 */
 	public UserProjectile(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
-		getCollisionComponent().setHitboxSize(30.0, 30.0);
+		getCollisionComponent().setHitboxSize(IMAGE_HEIGHT*2, IMAGE_HEIGHT);
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class EnemyProjectile extends Projectile {
 	 */
 	public EnemyProjectile(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
-		getCollisionComponent().setHitboxSize(80.0, 25.0);
+		getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT);
 	}
 
 	@Override

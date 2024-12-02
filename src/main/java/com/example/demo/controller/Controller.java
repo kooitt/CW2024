@@ -20,7 +20,7 @@ import com.example.demo.ui.SettingsPage;
  */
 public class Controller implements Observer {
 
-	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
+	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelTwo";
 	private final Stage stage;
 	private LevelParent currentLevel;
 	private MainMenu mainMenu;

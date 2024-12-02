@@ -31,7 +31,7 @@ public class EnemyPlane extends ActiveActor {
      */
     public EnemyPlane(double initialXPos, double initialYPos, Group root) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
-        getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.35);
+        getCollisionComponent().setHitboxSize(IMAGE_HEIGHT*0.75, IMAGE_HEIGHT);
         getCollisionComponent().updateHitBoxPosition();
         getMovementComponent().setVelocity(-6, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_POSITION_OFFSET, PROJECTILE_Y_POSITION_OFFSET);

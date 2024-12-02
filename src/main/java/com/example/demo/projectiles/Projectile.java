@@ -24,7 +24,9 @@ public abstract class Projectile extends ActiveActor {
 		getMovementComponent().setVelocity(0, 0);
 		double hitboxWidth = imageView.getFitWidth();
 		double hitboxHeight = imageView.getFitHeight();
-		CollisionComponent collision = new CollisionComponent(this, hitboxWidth, hitboxHeight);
+		double offsetX = 0;
+		double offsetY = 0;
+		CollisionComponent collision = new CollisionComponent(this, hitboxWidth, hitboxHeight, offsetX, offsetY);
 		setCollisionComponent(collision);
 	}
 

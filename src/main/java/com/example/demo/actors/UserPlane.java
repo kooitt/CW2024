@@ -18,12 +18,12 @@ public class UserPlane extends ActiveActor {
     private static final double X_RIGHT_BOUND = 800.0;
     private static final double INITIAL_X_POSITION = 5.0;
     private static final double INITIAL_Y_POSITION = 300.0;
-    private static final int IMAGE_HEIGHT = 150;
+    private static final int IMAGE_HEIGHT = 100;
     private static final int VERTICAL_VELOCITY = 8;
     private static final int HORIZONTAL_VELOCITY = 8;
     private static final double PROJECTILE_X_OFFSET = 110;
-    private static final double PROJECTILE_Y_OFFSET = 20;
-    private static final double FIRE_RATE = 10.0;
+    private static final double PROJECTILE_Y_OFFSET = 45;
+    private static final double FIRE_RATE = 5.0;
     private static final int INITIAL_HEALTH = 5;
     private static final int POWER_UP_THRESHOLD = 5; // 每5个道具增加一排子弹
 
@@ -46,8 +46,8 @@ public class UserPlane extends ActiveActor {
         this.extraBulletRows = 0;
         verticalVelocityMultiplier = 0;
         horizontalVelocityMultiplier = 0;
-        getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT * 0.3);
-        getCollisionComponent().updateHitBoxPosition();
+        getCollisionComponent().setHitboxSize(IMAGE_HEIGHT*0.8, IMAGE_HEIGHT);
+
         getMovementComponent().setVelocity(0, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
         shootingComponent.startFiring();

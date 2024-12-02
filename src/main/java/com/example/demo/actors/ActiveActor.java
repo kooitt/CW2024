@@ -1,4 +1,4 @@
-// ActiveActor.java
+
 package com.example.demo.actors;
 
 import com.example.demo.components.CollisionComponent;
@@ -9,10 +9,7 @@ import com.example.demo.levels.LevelParent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * Abstract class representing an active actor in the game.
- * Handles image display, movement, collision, and health.
- */
+
 public abstract class ActiveActor extends Actor implements Destructible {
 
 	private static final String IMAGE_LOCATION = "/com/example/demo/images/";
@@ -23,15 +20,6 @@ public abstract class ActiveActor extends Actor implements Destructible {
 	private HealthComponent healthComponent;
 	protected boolean isDestroyed;
 
-	/**
-	 * Constructs an ActiveActor with specified image, position, and health.
-	 *
-	 * @param imageName   the name of the image file.
-	 * @param imageHeight the height of the image.
-	 * @param initialXPos initial X position.
-	 * @param initialYPos initial Y position.
-	 * @param maxHealth   maximum health.
-	 */
 	public ActiveActor(String imageName, int imageHeight, double initialXPos, double initialYPos, int maxHealth) {
 		super();
 		imageView = new ImageView(new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm()));
@@ -47,25 +35,18 @@ public abstract class ActiveActor extends Actor implements Destructible {
 
 		double hitboxWidth = imageView.getFitWidth();
 		double hitboxHeight = imageView.getFitHeight();
-		collisionComponent = new CollisionComponent(this, hitboxWidth, hitboxHeight);
+		double offsetX = 0;
+		double offsetY = 0;
+		collisionComponent = new CollisionComponent(this, hitboxWidth, hitboxHeight, offsetX, offsetY);
 		setCollisionComponent(collisionComponent);
 
 		isDestroyed = false;
 	}
 
-	/**
-	 * Updates the position based on movement component.
-	 */
 	public void updatePosition() {
 		movementComponent.update(this);
 	}
 
-	/**
-	 * Abstract method to update actor's state.
-	 *
-	 * @param deltaTime time since last update.
-	 * @param level     current game level.
-	 */
 	public abstract void updateActor(double deltaTime, LevelParent level);
 
 	public MovementComponent getMovementComponent() {
@@ -121,22 +102,12 @@ public abstract class ActiveActor extends Actor implements Destructible {
 		this.collisionComponent = collisionComponent;
 	}
 
-	/**
-	 * Gets the X position for projectile spawning.
-	 *
-	 * @param offset offset from the actor's position.
-	 * @return X position.
-	 */
+
 	public double getProjectileXPosition(double offset) {
 		return getLayoutX() + getTranslateX() + offset;
 	}
 
-	/**
-	 * Gets the Y position for projectile spawning.
-	 *
-	 * @param offset offset from the actor's position.
-	 * @return Y position.
-	 */
+
 	public double getProjectileYPosition(double offset) {
 		return getLayoutY() + getTranslateY() + offset;
 	}
