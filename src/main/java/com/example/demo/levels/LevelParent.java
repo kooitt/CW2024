@@ -308,6 +308,7 @@ public abstract class LevelParent extends Observable {
 		levelView.showGameOverImage();
 	}
 
+
 	public void cleanUp() {
 		timeline.stop();
 		root.getChildren().clear();

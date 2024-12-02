@@ -26,7 +26,7 @@ public class ShootingComponent {
         this.timeSinceLastShot = 0;
         this.isFiring = false;
         this.bulletRows = 1; // 默认一排
-        this.rowSpacing = 20; // 每排之间的间距，可以根据需要调整
+        this.rowSpacing = 30; // 每排之间的间距，可以根据需要调整
     }
 
     public void update(double deltaTime, LevelParent level) {

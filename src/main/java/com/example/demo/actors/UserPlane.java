@@ -3,17 +3,20 @@ package com.example.demo.actors;
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
+import javafx.scene.Group;
 
 public class UserPlane extends ActiveActor {
 
-    private static final String IMAGE_NAME = "userplane.png";
     private static final double Y_UPPER_BOUND = -40, Y_LOWER_BOUND = 600.0;
     private static final double X_LEFT_BOUND = 0.0, X_RIGHT_BOUND = 800.0;
     private static final double INITIAL_X_POSITION = 5.0, INITIAL_Y_POSITION = 300.0;
     private static final int IMAGE_HEIGHT = 100, VERTICAL_VELOCITY = 8, HORIZONTAL_VELOCITY = 8;
     private static final double PROJECTILE_X_OFFSET = 110, PROJECTILE_Y_OFFSET = 45;
     private static final double FIRE_RATE = 5.0;
-    private static final int INITIAL_HEALTH = 5, POWER_UP_THRESHOLD = 5;
+    private static final int POWER_UP_THRESHOLD = 5;
+
+    private int planeImageIndex = 0; // 初始为0，对应userplane.png
+    private static final String[] PLANE_IMAGES = {"userplane.png", "userplane2.png", "userplane3.png"};
 
     private int verticalVelocityMultiplier = 0, horizontalVelocityMultiplier = 0;
     private int numberOfKills = 0, powerUpCount = 0, extraBulletRows = 0;
@@ -21,12 +24,22 @@ public class UserPlane extends ActiveActor {
     private ShootingComponent shootingComponent;
     private AnimationComponent animationComponent;
 
-    public UserPlane() {
-        super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, INITIAL_HEALTH);
+    // 移除静态 INITIAL_HEALTH，改为实例变量
+    private int initialHealth;
+
+    // 修改构造函数以接受初始健康值
+    public UserPlane(int initialHealth) {
+        super(PLANE_IMAGES[0], IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
+        this.initialHealth = initialHealth;
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT * 0.8, IMAGE_HEIGHT);
         getMovementComponent().setVelocity(0, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
         shootingComponent.startFiring();
+    }
+
+    // 保留无参构造以防需要
+    public UserPlane() {
+        this(5); // 默认健康值为5
     }
 
     public void setAnimationComponent(AnimationComponent animationComponent) {
@@ -56,14 +69,17 @@ public class UserPlane extends ActiveActor {
 
     public void incrementPowerUpCount() {
         powerUpCount++;
-        if (animationComponent != null) {
-            double x = getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth() * 1.5;
-            double y = getCollisionComponent().getHitboxY() + getCollisionComponent().getHitboxHeight();
-            animationComponent.playLevelUp(x, y, 5.0);
-        }
         System.out.println("Power-ups collected: " + powerUpCount);
         if (powerUpCount % POWER_UP_THRESHOLD == 0) {
+            if (animationComponent != null) {
+                double x = getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth() * 1.5;
+                double y = getCollisionComponent().getHitboxY() + getCollisionComponent().getHitboxHeight();
+                animationComponent.playLevelUp(x, y, 5.0);
+            }
             addExtraBulletRow();
+            planeImageIndex = Math.min(planeImageIndex + 1, PLANE_IMAGES.length - 1);
+            String newImage = PLANE_IMAGES[planeImageIndex];
+            setImageViewImage(newImage);
         }
     }
 

@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 
 public abstract class ActiveActor extends Actor implements Destructible {
 
-	private static final String IMAGE_LOCATION = "/com/example/demo/images/";
+	public static final String IMAGE_LOCATION = "/com/example/demo/images/";
 
 	protected ImageView imageView;
 	protected MovementComponent movementComponent;
@@ -55,6 +55,11 @@ public abstract class ActiveActor extends Actor implements Destructible {
 
 	public void setMovementComponent(MovementComponent movementComponent) {
 		this.movementComponent = movementComponent;
+	}
+
+	protected void setImageViewImage(String imageName) {
+		Image newImage = new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm());
+		imageView.setImage(newImage);
 	}
 
 	@Override
