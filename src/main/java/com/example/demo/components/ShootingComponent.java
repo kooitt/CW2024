@@ -80,13 +80,11 @@ public class ShootingComponent {
 
     public void addBulletRow() {
         bulletRows++;
-        System.out.println("Added a bullet row! Total rows: " + bulletRows);
     }
 
     public void setBulletRows(int rows) {
         if (rows > 0) {
             bulletRows = rows;
-            System.out.println("Bullet rows set to: " + bulletRows);
         }
     }
 

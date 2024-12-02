@@ -43,13 +43,11 @@ public class UserPlane extends ActiveActor {
 
     public void doubleFireRate() {
         shootingComponent.setFireRate(shootingComponent.getFireRate() + 1);
-        System.out.println("Fire rate doubled!");
     }
 
     public void addExtraBulletRow() {
         shootingComponent.addBulletRow();
         extraBulletRows++;
-        System.out.println("Extra bullet row added! Total rows: " + shootingComponent.getBulletRows());
     }
 
     @Override
@@ -64,7 +62,6 @@ public class UserPlane extends ActiveActor {
 
     public void incrementPowerUpCount() {
         powerUpCount++;
-        System.out.println("Power-ups collected: " + powerUpCount);
         if (powerUpCount % POWER_UP_THRESHOLD == 0) {
             if (animationComponent != null) {
                 double x = getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth() * 1.5;

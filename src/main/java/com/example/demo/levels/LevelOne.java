@@ -3,6 +3,7 @@ package com.example.demo.levels;
 import com.example.demo.actors.ActiveActor;
 import com.example.demo.actors.ActorLevelUp;
 import com.example.demo.actors.EnemyPlane;
+import com.example.demo.actors.HeartItem;
 import com.example.demo.views.LevelView;
 
 public class LevelOne extends LevelParent {
@@ -13,6 +14,7 @@ public class LevelOne extends LevelParent {
 	private static final int KILLS_TO_ADVANCE = 10;
 	private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
 	private static final double POWER_UP_SPAWN_PROBABILITY = 0.01; // 新增道具生成概率
+	private static final double HEART_SPAWN_PROBABILITY = 0.005; // 新增爱心道具生成概率
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 
 	public LevelOne(double screenHeight, double screenWidth) {
@@ -52,6 +54,15 @@ public class LevelOne extends LevelParent {
 			powerUps.add(powerUp);
 			getRoot().getChildren().add(powerUp);
 		}
+
+		if (Math.random() < HEART_SPAWN_PROBABILITY) { // 定义一个合适的生成概率，例如 0.02
+			double x = getScreenWidth(); // 从屏幕右侧生成
+			double y = Math.random() * getEnemyMaximumYPosition(); // 随机Y坐标
+			HeartItem heart = new HeartItem(x, y);
+			powerUps.add(heart); // 如果已有 powerUps 列表用于存放道具
+			getRoot().getChildren().add(heart);
+		}
+
 	}
 
 	@Override

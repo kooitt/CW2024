@@ -1,9 +1,6 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.ActiveActor;
-import com.example.demo.actors.ActorLevelUp;
-import com.example.demo.actors.Shield;
-import com.example.demo.actors.UserPlane;
+import com.example.demo.actors.*;
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.CollisionComponent;
 import com.example.demo.projectiles.Projectile;
@@ -251,16 +248,19 @@ public abstract class LevelParent extends Observable {
 		for (ActiveActor actor1 : actors1) {
 			for (ActiveActor powerUp : powerUps) {
 				if (actor1.isDestroyed() || powerUp.isDestroyed()) {
-					continue; // Ignore destroyed actors
+					continue; // 忽略已销毁的演员
 				}
 				if (actor1.getCollisionComponent().checkCollision(powerUp.getCollisionComponent())) {
 					if (powerUp instanceof ActorLevelUp) {
-						((ActorLevelUp) powerUp).onPickup(this); // Handle pickup logic
+						((ActorLevelUp) powerUp).onPickup(this); // 处理等级提升道具
+					} else if (powerUp instanceof HeartItem) {
+						((HeartItem) powerUp).onPickup(this); // 处理爱心道具
 					}
 				}
 			}
 		}
 	}
+
 
 	private void handleCollisions(List<ActiveActor> actors1, List<ActiveActor> actors2) {
 		for (ActiveActor actor1 : actors1) {
@@ -378,5 +378,9 @@ public abstract class LevelParent extends Observable {
 
 	public ObjectPool<Projectile> getBossTwoProjectilePool() {
 		return bossTwoProjectilePool;
+	}
+
+	public LevelView getLevelView() {
+		return levelView;
 	}
 }
