@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
  */
 public class ShieldImage extends ImageView {
 
+    // Constants for shield properties
     private static final int SHIELD_SIZE = 200; // Size of the shield (both width and height)
     private static final String IMAGE_NAME = "/com/example/demo/images/shield.png"; // Path to the shield image resource
 
@@ -27,7 +28,7 @@ public class ShieldImage extends ImageView {
         // Load and set the shield image
         this.setImage(new Image(getClass().getResource(IMAGE_NAME).toExternalForm()));
 
-        // Set the shield's size
+        // Set the shield's size (width and height)
         this.setFitHeight(SHIELD_SIZE);
         this.setFitWidth(SHIELD_SIZE);
 

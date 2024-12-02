@@ -14,14 +14,19 @@ import javafx.scene.shape.Rectangle;
  */
 public class EnemyPlane extends FighterPlane {
 
+    // Image file name for the enemy plane
     private static final String IMAGE_NAME = "enemyplane.png";
+
+    // Visual and gameplay constants for the enemy plane
     private static final int IMAGE_HEIGHT = 150; // Height of the enemy plane's image
     private static final int HORIZONTAL_VELOCITY = -6; // Speed of horizontal movement
     private static final double PROJECTILE_X_POSITION_OFFSET = -100.0; // X offset for projectile spawn
-    private static final double PROJECTILE_Y_POSITION_OFFSET = 50.0; // Y offset for projectile spawn
+    private static final double PROJECTILE_Y_POSITION_OFFSET = 50.0;   // Y offset for projectile spawn
     private static final int INITIAL_HEALTH = 1; // Default health of the enemy plane
     private static final double FIRE_RATE = 0.04; // Probability of firing a projectile per frame
-    private static final boolean DEBUG_HITBOXES = true; // Enable or disable hitbox visualization
+
+    // Debugging toggle for hitbox visualization
+    private static final boolean DEBUG_HITBOXES = true;
 
     /**
      * Constructor for EnemyPlane.
@@ -35,10 +40,11 @@ public class EnemyPlane extends FighterPlane {
 
     /**
      * Updates the position of the enemy plane by moving it horizontally.
+     * Called in each game loop iteration to simulate the plane's movement.
      */
     @Override
     public void updatePosition() {
-        moveHorizontally(HORIZONTAL_VELOCITY);
+        moveHorizontally(HORIZONTAL_VELOCITY); // Move the enemy plane to the left
     }
 
     /**
@@ -48,20 +54,22 @@ public class EnemyPlane extends FighterPlane {
      */
     @Override
     public ActiveActorDestructible fireProjectile() {
-        if (Math.random() < FIRE_RATE) {
+        if (Math.random() < FIRE_RATE) { // Random chance to fire a projectile
+            // Calculate the projectile's spawn position
             double projectileXPosition = getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET);
             double projectileYPosition = getProjectileYPosition(PROJECTILE_Y_POSITION_OFFSET);
-            return new EnemyProjectile(projectileXPosition, projectileYPosition);
+            return new EnemyProjectile(projectileXPosition, projectileYPosition); // Create and return a new projectile
         }
-        return null;
+        return null; // No projectile fired
     }
 
     /**
-     * Updates the state of the enemy plane. Called in each game loop iteration.
+     * Updates the state of the enemy plane. This method is called in each game loop iteration.
+     * Handles movement and other logic updates for the enemy plane.
      */
     @Override
     public void updateActor() {
-        updatePosition();
+        updatePosition(); // Update the position of the enemy plane
     }
 
     /**
@@ -72,35 +80,40 @@ public class EnemyPlane extends FighterPlane {
      */
     @Override
     public Bounds getReducedBounds() {
+        // Get the original bounds of the enemy plane
         Bounds originalBounds = this.getBoundsInLocal();
         double margin = 25; // Adjust the margin to shrink the hitbox
         return new BoundingBox(
-            originalBounds.getMinX() + margin,
-            originalBounds.getMinY() + margin,
-            originalBounds.getWidth() - 2 * margin,
-            originalBounds.getHeight() - 2 * margin
+            originalBounds.getMinX() + margin,  // Adjust left margin
+            originalBounds.getMinY() + margin,  // Adjust top margin
+            originalBounds.getWidth() - 2 * margin, // Reduce width by margin
+            originalBounds.getHeight() - 2 * margin // Reduce height by margin
         );
     }
 
     /**
-     * Renders the hitbox for debugging purposes. Adds a rectangle to the game scene to visualize the reduced hitbox.
+     * Renders the hitbox for debugging purposes.
+     * Adds a rectangle to the game scene to visualize the reduced hitbox.
      *
      * @param root The Group object representing the game scene's root node.
      */
     public void renderHitbox(Group root) {
         if (!DEBUG_HITBOXES) return; // Skip rendering if debugging is disabled
 
+        // Get the reduced hitbox bounds
         Bounds bounds = getReducedBounds();
+        
+        // Create a rectangle to represent the hitbox
         Rectangle hitbox = new Rectangle(
             bounds.getMinX(),
             bounds.getMinY(),
             bounds.getWidth(),
             bounds.getHeight()
         );
-        hitbox.setFill(Color.TRANSPARENT); // Transparent fill
-        hitbox.setStroke(Color.RED);       // Red outline for the hitbox
-        hitbox.setStrokeWidth(2);          // Optional: Adjust stroke width for better visibility
+        hitbox.setFill(Color.TRANSPARENT); // Transparent fill for the hitbox
+        hitbox.setStroke(Color.RED);       // Red outline for visibility
+        hitbox.setStrokeWidth(2);          // Optional: Adjust stroke width
 
-        root.getChildren().add(hitbox);    // Add the hitbox rectangle to the game scene
+        root.getChildren().add(hitbox); // Add the hitbox rectangle to the game scene
     }
 }

@@ -11,13 +11,17 @@ import javafx.scene.text.Text;
  */
 public class LevelViewBoss extends LevelView {
 
+    // Constants for positioning UI elements specific to the boss level
     private static final double BOSS_HEALTH_X_POSITION = 1100; // X position for the boss health display
     private static final double BOSS_HEALTH_Y_POSITION = 50;   // Y position for the boss health display
     private static final int SHIELD_X_POSITION = 1150;         // X position for the shield image
     private static final int SHIELD_Y_POSITION = 500;          // Y position for the shield image
 
-    private final Text bossHealthDisplay; // Text element for displaying the boss's health
-    private final ShieldImage shieldImage; // Visual representation of the boss's shield
+    // Text element for displaying the boss's health
+    private final Text bossHealthDisplay;
+
+    // Visual representation of the boss's shield
+    private final ShieldImage shieldImage;
 
     /**
      * Constructor for LevelViewBoss.
@@ -26,13 +30,13 @@ public class LevelViewBoss extends LevelView {
      * @param heartsToDisplay Number of hearts to display for the player.
      */
     public LevelViewBoss(Group root, int heartsToDisplay) {
-        super(root, heartsToDisplay);
+        super(root, heartsToDisplay); // Call the constructor of the parent LevelView class
 
-        // Initialize boss health display
+        // Initialize the boss health display text
         bossHealthDisplay = new Text(BOSS_HEALTH_X_POSITION, BOSS_HEALTH_Y_POSITION, "Boss Health: 100");
-        bossHealthDisplay.setStyle("-fx-font-size: 24px; -fx-fill: white;");
+        bossHealthDisplay.setStyle("-fx-font-size: 24px; -fx-fill: white;"); // Set font size and color
 
-        // Initialize the shield image
+        // Initialize the shield image with specific coordinates
         shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
 
         // Add the shield image to the root group
@@ -43,21 +47,22 @@ public class LevelViewBoss extends LevelView {
     }
 
     /**
-     * Updates the boss's health display.
+     * Updates the boss's health display on the screen.
      *
      * @param health The current health of the boss.
      */
     public void updateBossHealth(int health) {
-        bossHealthDisplay.setText("Boss Health: " + health);
+        bossHealthDisplay.setText("Boss Health: " + health); // Update the health text
         bossHealthDisplay.toFront(); // Ensure the health display is always on top of other elements
     }
 
     /**
-     * Shows the boss's shield by making the ShieldImage visible and bringing it to the front.
+     * Displays the boss's shield by making the ShieldImage visible.
+     * The shield image is brought to the front to render above other elements.
      */
     public void showShield() {
         shieldImage.showShield(); // Make the shield visible
-        shieldImage.toFront(); // Ensure the shield is rendered above other game elements
+        shieldImage.toFront(); // Bring the shield to the front of the scene
     }
 
     /**
@@ -68,11 +73,11 @@ public class LevelViewBoss extends LevelView {
     }
 
     /**
-     * Retrieves the ShieldImage instance for the boss's shield.
+     * Retrieves the ShieldImage instance representing the boss's shield.
      *
      * @return The ShieldImage instance.
      */
     public ShieldImage getShieldImage() {
-        return shieldImage;
+        return shieldImage; // Return the shield image instance
     }
 }

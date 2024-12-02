@@ -11,11 +11,17 @@ import javafx.stage.Stage;
  */
 public class LevelBoss extends LevelParent {
 
-    private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/space3.jpg"; // Background image for the level
-    private static final int PLAYER_INITIAL_HEALTH = 5; // Initial health of the player's plane
+    // Background image for the level
+    private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/space3.jpg";
 
-    private final Boss boss; // Instance of the boss plane
-    private LevelViewBoss levelView; // Specialized view for the boss level
+    // Initial health of the player's plane
+    private static final int PLAYER_INITIAL_HEALTH = 5;
+
+    // Instance of the boss plane
+    private final Boss boss;
+
+    // Specialized view for the boss level
+    private LevelViewBoss levelView;
 
     /**
      * Constructor for LevelBoss.
@@ -32,7 +38,7 @@ public class LevelBoss extends LevelParent {
     }
 
     /**
-     * Initializes the friendly units for the level (e.g., the player plane).
+     * Initializes the friendly units for the level (e.g., the player's plane).
      */
     @Override
     protected void initializeFriendlyUnits() {
@@ -41,17 +47,17 @@ public class LevelBoss extends LevelParent {
     }
 
     /**
-     * Checks if the game is over, based on the player's or boss's destruction.
+     * Checks if the game is over based on the destruction of the player or the boss.
      */
     @Override
     protected void checkIfGameOver() {
         // Check if the user is destroyed
         if (userIsDestroyed()) {
-            loseGame();
+            loseGame(); // End the game with a loss
         }
         // Check if the boss is destroyed to declare victory
         else if (boss.isDestroyed()) {
-            winGame();
+            winGame(); // End the game with a win
         }
     }
 
@@ -60,7 +66,7 @@ public class LevelBoss extends LevelParent {
      */
     @Override
     protected void spawnEnemyUnits() {
-        // Ensure only one boss is added as the enemy
+        // Add the boss to the game root if no enemies are currently present
         if (getCurrentNumberOfEnemies() == 0) {
             addEnemyUnit(boss);
         }
@@ -80,23 +86,24 @@ public class LevelBoss extends LevelParent {
 
     /**
      * Updates the scene during each frame of the game.
-     * This includes updating the shield state and other level-specific logic.
+     * This includes calling the parent class's update logic and additional boss-specific updates.
      */
     @Override
     protected void updateScene() {
-        super.updateScene(); // Call the parent class's updateScene method
-        updateShieldState(); // Update the shield state of the boss
+        super.updateScene(); // Call the parent class's update logic
+        updateShieldState(); // Update the shield state for the boss
     }
 
     /**
      * Updates the shield display for the boss.
+     * Displays the shield if active, otherwise hides it.
      */
     public void updateShieldState() {
-        if (boss.isDestroyed()) return; // Skip if the boss is already destroyed
+        if (boss.isDestroyed()) return; // Do nothing if the boss is already destroyed
         if (boss.isShielded()) {
-            levelView.showShield();
+            levelView.showShield(); // Display the shield
         } else {
-            levelView.hideShield();
+            levelView.hideShield(); // Hide the shield
         }
     }
 
@@ -106,12 +113,11 @@ public class LevelBoss extends LevelParent {
      * @param health The current health of the boss.
      */
     public void updateBossHealthDisplay(int health) {
+        // Update the boss's health in the view if levelView is a LevelViewBoss
         if (levelView instanceof LevelViewBoss) {
             ((LevelViewBoss) levelView).updateBossHealth(health);
         }
     }
-
-    
 
     /**
      * Retrieves the specialized LevelViewBoss instance for this level.
@@ -119,6 +125,7 @@ public class LevelBoss extends LevelParent {
      * @return The LevelViewBoss instance.
      */
     public LevelViewBoss getLevelViewBoss() {
-        return (LevelViewBoss) levelView; // Cast and return the LevelViewBoss instance
+        // Cast and return the level view as a LevelViewBoss
+        return (LevelViewBoss) levelView;
     }
 }
