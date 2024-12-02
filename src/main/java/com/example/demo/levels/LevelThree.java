@@ -1,15 +1,11 @@
 // LevelThree.java
 package com.example.demo.levels;
 
-import com.example.demo.actors.ActiveActor;
 import com.example.demo.actors.ActorLevelUp;
 import com.example.demo.actors.BossTwo;
 import com.example.demo.views.LevelView;
 import com.example.demo.views.LevelViewLevelThree;
 
-/**
- * Represents the third level of the game with a new boss fight.
- */
 public class LevelThree extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background3.jpg";
@@ -18,12 +14,6 @@ public class LevelThree extends LevelParent {
     private BossTwo boss;
     private LevelViewLevelThree levelView;
 
-    /**
-     * Constructs LevelThree with specified screen dimensions.
-     *
-     * @param screenHeight screen height.
-     * @param screenWidth  screen width.
-     */
     public LevelThree(double screenHeight, double screenWidth) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
         boss = new BossTwo(getRoot(), this);

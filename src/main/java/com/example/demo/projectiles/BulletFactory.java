@@ -3,18 +3,10 @@ package com.example.demo.projectiles;
 
 import com.example.demo.interfaces.ObjectFactory;
 
-/**
- * Factory for creating different types of projectiles.
- */
 public class BulletFactory implements ObjectFactory<Projectile> {
 
     private String type;
 
-    /**
-     * Constructs a BulletFactory with specified type.
-     *
-     * @param type the type of projectile ("user", "enemy", "boss", "bossTwo").
-     */
     public BulletFactory(String type) {
         this.type = type;
     }

@@ -2,9 +2,6 @@ package com.example.demo.utils;
 
 import javafx.scene.input.KeyCode;
 
-/**
- * Singleton class managing key bindings.
- */
 public class KeyBindings {
     private static KeyBindings instance;
 

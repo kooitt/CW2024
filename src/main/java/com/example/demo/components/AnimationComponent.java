@@ -13,9 +13,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles animations such as explosions.
- */
 public class AnimationComponent {
 
     private static final String IMAGE_LOCATION = "/com/example/demo/images/";
@@ -49,22 +46,12 @@ public class AnimationComponent {
 
     private Group parentGroup;
 
-    /**
-     * Constructs an AnimationComponent with the specified parent group.
-     *
-     * @param parentGroup the parent group for animations.
-     */
+
     public AnimationComponent(Group parentGroup) {
         this.parentGroup = parentGroup;
     }
 
-    /**
-     * Plays a level-up animation at the specified position and scale.
-     *
-     * @param x     X position.
-     * @param y     Y position.
-     * @param scale scaling factor.
-     */
+
     public void playLevelUp(double x, double y, double scale) {
         Platform.runLater(() -> {
             ImageView levelupView = new ImageView();
@@ -92,13 +79,6 @@ public class AnimationComponent {
     }
 
 
-    /**
-     * Plays an explosion animation at the specified position and scale.
-     *
-     * @param x     X position.
-     * @param y     Y position.
-     * @param scale scaling factor.
-     */
     public void playExplosion(double x, double y, double scale) {
         Platform.runLater(() -> {
             ImageView explosionView = new ImageView();

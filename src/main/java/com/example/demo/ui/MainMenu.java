@@ -8,19 +8,11 @@ import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * Represents the main menu of the game.
- */
 public class MainMenu {
 
     private StackPane root; // 使用 StackPane 作为根布局
     private Controller controller;
 
-    /**
-     * Constructs a MainMenu with the specified controller.
-     *
-     * @param controller the game controller.
-     */
     public MainMenu(Controller controller) {
         this.controller = controller;
         initialize();
@@ -61,11 +53,6 @@ public class MainMenu {
         return button;
     }
 
-    /**
-     * Returns the root layout of the MainMenu.
-     *
-     * @return the StackPane root.
-     */
     public StackPane getRoot() {
         return root;
     }

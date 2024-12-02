@@ -21,7 +21,6 @@ public class HealthComponent {
         if (currentHealth == 0) owner.destroy();
     }
 
-
     public void heal(int amount) {
         currentHealth = Math.min(currentHealth + amount, maxHealth);
     }

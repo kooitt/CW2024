@@ -246,12 +246,6 @@ public abstract class LevelParent extends Observable {
 		handleCollisions(enemyProjectiles, friendlyUnits);
 	}
 
-	/**
-	 * Handles collisions for pickup items (e.g., power-ups).
-	 *
-	 * @param actors1  List of actors that can pick up items.
-	 * @param powerUps List of power-ups in the level.
-	 */
 	private void handlePickupCollisions(List<ActiveActor> actors1, List<ActiveActor> powerUps) {
 		for (ActiveActor actor1 : actors1) {
 			for (ActiveActor powerUp : powerUps) {
@@ -314,9 +308,6 @@ public abstract class LevelParent extends Observable {
 		levelView.showGameOverImage();
 	}
 
-	/**
-	 * Cleans up the level by stopping the timeline and clearing actors.
-	 */
 	public void cleanUp() {
 		timeline.stop();
 		root.getChildren().clear();

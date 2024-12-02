@@ -4,21 +4,12 @@ package com.example.demo.ui;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * Displays the win image.
- */
 public class WinImage extends ImageView {
 
 	private static final String IMAGE_NAME = "/com/example/demo/images/youwin.png";
 	private static final int HEIGHT = 500;
 	private static final int WIDTH = 600;
 
-	/**
-	 * Constructs a WinImage at specified position.
-	 *
-	 * @param xPosition X position.
-	 * @param yPosition Y position.
-	 */
 	public WinImage(double xPosition, double yPosition) {
 		setImage(new Image(getClass().getResource(IMAGE_NAME).toExternalForm()));
 		setFitHeight(HEIGHT);
@@ -28,9 +19,6 @@ public class WinImage extends ImageView {
 		setVisible(false);
 	}
 
-	/**
-	 * Makes the win image visible.
-	 */
 	public void showWinImage() {
 		setVisible(true);
 	}

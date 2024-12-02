@@ -4,9 +4,6 @@ package com.example.demo.ui;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * Displays the game over image.
- */
 public class GameOverImage extends ImageView {
 
 	private static final String IMAGE_NAME = "/com/example/demo/images/gameover.png";

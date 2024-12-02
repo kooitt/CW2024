@@ -10,7 +10,6 @@ public class Main extends Application {
 	private static final int SCREEN_HEIGHT = 750;
 	private static final String TITLE = "Sky Battle";
 
-
 	@Override
 	public void start(Stage stage) {
 		stage.setTitle(TITLE);

@@ -13,20 +13,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-/**
- * Represents the settings page where users can configure key bindings.
- */
 public class SettingsPage {
 
     private StackPane root; // 使用 StackPane 作为根布局
     private Controller controller;
     private KeyBindings keyBindings;
 
-    /**
-     * Constructs a SettingsPage with the specified controller.
-     *
-     * @param controller the game controller.
-     */
     public SettingsPage(Controller controller) {
         this.controller = controller;
         this.keyBindings = KeyBindings.getInstance();
@@ -110,11 +102,6 @@ public class SettingsPage {
         return button;
     }
 
-    /**
-     * Returns the root layout of the SettingsPage.
-     *
-     * @return the StackPane root.
-     */
     public StackPane getRoot() {
         return root;
     }

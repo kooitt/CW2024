@@ -5,9 +5,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-/**
- * Manages the display of hearts representing player health.
- */
 public class HeartDisplay {
 
 	private static final String HEART_IMAGE_NAME = "/com/example/demo/images/heart.png";
@@ -18,13 +15,6 @@ public class HeartDisplay {
 	private double containerY;
 	private int heartsToDisplay;
 
-	/**
-	 * Constructs a HeartDisplay at specified position with given number of hearts.
-	 *
-	 * @param xPosition      X position.
-	 * @param yPosition      Y position.
-	 * @param heartsToDisplay number of hearts.
-	 */
 	public HeartDisplay(double xPosition, double yPosition, int heartsToDisplay) {
 		this.containerX = xPosition;
 		this.containerY = yPosition;
@@ -44,9 +34,6 @@ public class HeartDisplay {
 		}
 	}
 
-	/**
-	 * Removes a heart from the display.
-	 */
 	public void removeHeart() {
 		if (!container.getChildren().isEmpty()) {
 			container.getChildren().remove(INDEX_OF_FIRST_ITEM);

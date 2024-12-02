@@ -5,9 +5,6 @@ import com.example.demo.actors.ActorLevelUp;
 import com.example.demo.actors.EnemyPlane;
 import com.example.demo.views.LevelView;
 
-/**
- * Represents the first level of the game.
- */
 public class LevelOne extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
@@ -18,12 +15,6 @@ public class LevelOne extends LevelParent {
 	private static final double POWER_UP_SPAWN_PROBABILITY = 0.01; // 新增道具生成概率
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 
-	/**
-	 * Constructs LevelOne with specified screen dimensions.
-	 *
-	 * @param screenHeight screen height.
-	 * @param screenWidth  screen width.
-	 */
 	public LevelOne(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
 	}

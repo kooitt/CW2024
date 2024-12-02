@@ -6,9 +6,7 @@ import com.example.demo.actors.Boss;
 import com.example.demo.views.LevelView;
 import com.example.demo.views.LevelViewLevelTwo;
 
-/**
- * Represents the second level of the game with a boss fight.
- */
+
 public class LevelTwo extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
@@ -17,12 +15,6 @@ public class LevelTwo extends LevelParent {
 	private final Boss boss;
 	private LevelViewLevelTwo levelView;
 
-	/**
-	 * Constructs LevelTwo with specified screen dimensions.
-	 *
-	 * @param screenHeight screen height.
-	 * @param screenWidth  screen width.
-	 */
 	public LevelTwo(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
 		boss = new Boss(getRoot(), this);
