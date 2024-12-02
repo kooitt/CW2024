@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.ui.MainMenu;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 

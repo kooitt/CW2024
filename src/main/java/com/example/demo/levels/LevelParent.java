@@ -1,6 +1,11 @@
-package com.example.demo;
+package com.example.demo.levels;
 
-import com.example.demo.controller.MainMenu;
+import com.example.demo.actors.ActiveActorDestructible;
+import com.example.demo.actors.FighterPlane;
+import com.example.demo.actors.UserPlane;
+import com.example.demo.ui.MainMenu;
+import com.example.demo.ui.PauseMenu;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Group;

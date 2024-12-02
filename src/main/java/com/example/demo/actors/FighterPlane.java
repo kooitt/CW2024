@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.actors;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;

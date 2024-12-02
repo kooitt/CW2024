@@ -5,11 +5,12 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import com.example.demo.levels.LevelParent;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import com.example.demo.LevelParent;
 
 /**
  * The Controller class manages transitions between levels and handles errors during gameplay.
@@ -17,7 +18,7 @@ import com.example.demo.LevelParent;
  */
 public class Controller implements PropertyChangeListener {
 
-    private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
+    private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
     private final Stage stage;
 
     /**

@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.projectiles;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;

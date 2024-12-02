@@ -1,4 +1,6 @@
-package com.example.demo;
+package com.example.demo.levels;
+
+import com.example.demo.ui.ShieldImage;
 
 import javafx.scene.Group;
 import javafx.scene.text.Text;

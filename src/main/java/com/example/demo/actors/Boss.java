@@ -1,8 +1,12 @@
-package com.example.demo;
+package com.example.demo.actors;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.example.demo.levels.LevelBoss;
+import com.example.demo.projectiles.BossProjectile;
+import com.example.demo.ui.ShieldImage;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
