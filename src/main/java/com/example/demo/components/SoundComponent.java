@@ -14,7 +14,6 @@ public class SoundComponent {
     private static final String MAINMENU_SOUND_LOCATION = "/com/example/demo/sounds/mainmenu.wav";
     private static final String UPGRADE_SOUND_LOCATION = "/com/example/demo/sounds/upgrade.wav";
     private static final String GAMEOVER_SOUND_LOCATION = "/com/example/demo/sounds/gameover.wav";
-    //getbullet.wav gethealth.wav
     private static final String GETBULLET_SOUND_LOCATION = "/com/example/demo/sounds/getbullet.wav";
     private static final String GETHEALTH_SOUND_LOCATION = "/com/example/demo/sounds/gethealth.wav";
 
