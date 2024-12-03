@@ -15,13 +15,15 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		stage.setTitle(TITLE);
+		try {stage.setTitle(TITLE);
 		stage.setResizable(false);
 		stage.setHeight(SCREEN_HEIGHT);
 		stage.setWidth(SCREEN_WIDTH);
 		myController = new Controller(stage);
 		myController.launchGame();
-	}
+	}catch (Exception e) {
+			e.printStackTrace(); // TEST TRACK INFO
+		}}
 
 	public static void main(String[] args) {
 		launch();

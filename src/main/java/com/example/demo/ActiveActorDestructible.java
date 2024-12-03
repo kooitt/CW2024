@@ -11,11 +11,14 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 
 	@Override
 	public abstract void updatePosition();
+	//move logic
 
 	public abstract void updateActor();
+	//renew object status
 
 	@Override
 	public abstract void takeDamage();
+	//from api:Destructible window
 
 	@Override
 	public void destroy() {

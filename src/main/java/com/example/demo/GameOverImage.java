@@ -15,3 +15,4 @@ public class GameOverImage extends ImageView {
 	}
 
 }
+//can add win胜利 in here
