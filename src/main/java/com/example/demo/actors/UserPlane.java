@@ -3,7 +3,7 @@ package com.example.demo.actors;
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
-import javafx.scene.Group;
+import com.example.demo.components.SoundComponent;
 
 public class UserPlane extends ActiveActor {
 
@@ -16,7 +16,7 @@ public class UserPlane extends ActiveActor {
     private static final int POWER_UP_THRESHOLD = 5;
 
     private int planeImageIndex = 0; // 初始为0，对应userplane.png
-    private static final String[] PLANE_IMAGES = {"userplane.png", "userplane2.png", "userplane3.png"};
+    private static final String[] PLANE_IMAGES = {"userplane.png", "userplane2.png", "userplane3.png", "userplane4.png"};
 
     private int verticalVelocityMultiplier = 0, horizontalVelocityMultiplier = 0;
     private int numberOfKills = 0, powerUpCount = 0, extraBulletRows = 0;
@@ -68,6 +68,7 @@ public class UserPlane extends ActiveActor {
                 double y = getCollisionComponent().getHitboxY() + getCollisionComponent().getHitboxHeight();
                 animationComponent.playLevelUp(x, y, 5.0);
             }
+            SoundComponent.playUpgradeSound();
             addExtraBulletRow();
             planeImageIndex = Math.min(planeImageIndex + 1, PLANE_IMAGES.length - 1);
             String newImage = PLANE_IMAGES[planeImageIndex];

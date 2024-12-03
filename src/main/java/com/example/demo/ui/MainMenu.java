@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import com.example.demo.components.SoundComponent;
 
 public class MainMenu {
 
@@ -16,6 +17,7 @@ public class MainMenu {
     public MainMenu(Controller controller) {
         this.controller = controller;
         initialize();
+        SoundComponent.playMainmenuSound();
     }
 
     private void initialize() {

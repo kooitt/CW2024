@@ -3,6 +3,7 @@ package com.example.demo.levels;
 import com.example.demo.actors.*;
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.CollisionComponent;
+import com.example.demo.components.SoundComponent;
 import com.example.demo.projectiles.Projectile;
 import com.example.demo.utils.ObjectPool;
 import com.example.demo.projectiles.BulletFactory;
@@ -10,7 +11,6 @@ import com.example.demo.utils.KeyBindings;
 import com.example.demo.views.LevelView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -23,7 +23,7 @@ import java.util.*;
 public abstract class LevelParent extends Observable {
 
 	private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
-	private static final int MILLISECOND_DELAY = 40;
+	private static final int MILLISECOND_DELAY = 30;
 	private final double screenHeight;
 	private final double screenWidth;
 	private final double enemyMaximumYPosition;
@@ -307,6 +307,8 @@ public abstract class LevelParent extends Observable {
 	protected void loseGame() {
 		timeline.stop();
 		levelView.showGameOverImage();
+		SoundComponent.stopAllSound();
+		SoundComponent.playGameoverSound();
 	}
 
 

@@ -1,12 +1,8 @@
 // HeartItem.java
 package com.example.demo.actors;
 
-import com.example.demo.components.CollisionComponent;
 import com.example.demo.levels.LevelParent;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
-import java.net.URL;
+import com.example.demo.components.SoundComponent;
 
 /**
  * HeartItem 类表示一个爱心道具，当玩家拾取时会恢复生命值。
@@ -44,10 +40,8 @@ public class HeartItem extends ActiveActor {
     public void onPickup(LevelParent level) {
         UserPlane user = level.getUser();
         user.getHealthComponent().heal(MAX_HEALTH_RESTORE);
-
-        // 更新 HeartDisplay
         level.getLevelView().addHearts(MAX_HEALTH_RESTORE);
-
         destroy();
+        SoundComponent.playGethealthSound();
     }
 }

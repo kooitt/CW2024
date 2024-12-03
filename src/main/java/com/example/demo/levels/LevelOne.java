@@ -5,6 +5,7 @@ import com.example.demo.actors.ActorLevelUp;
 import com.example.demo.actors.EnemyPlane;
 import com.example.demo.actors.HeartItem;
 import com.example.demo.views.LevelView;
+import com.example.demo.components.SoundComponent;
 
 public class LevelOne extends LevelParent {
 
@@ -19,6 +20,8 @@ public class LevelOne extends LevelParent {
 
 	public LevelOne(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
+		SoundComponent.stopAllSound();;
+		SoundComponent.playLevel1Sound();
 	}
 
 	@Override

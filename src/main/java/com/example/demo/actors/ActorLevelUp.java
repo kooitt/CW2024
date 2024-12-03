@@ -1,6 +1,7 @@
 package com.example.demo.actors;
 
 import com.example.demo.levels.LevelParent;
+import com.example.demo.components.SoundComponent;
 
 public class ActorLevelUp extends ActiveActor {
 
@@ -39,5 +40,6 @@ public class ActorLevelUp extends ActiveActor {
         user.incrementPowerUpCount();
         user.doubleFireRate();
         destroy();
+        SoundComponent.playGetbulletSound();
     }
 }

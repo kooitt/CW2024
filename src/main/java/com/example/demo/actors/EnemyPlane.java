@@ -3,9 +3,9 @@ package com.example.demo.actors;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
+import com.example.demo.components.SoundComponent; // 引入 SoundComponent
 import com.example.demo.levels.LevelParent;
 import javafx.scene.Group;
-
 
 public class EnemyPlane extends ActiveActor {
 
@@ -19,10 +19,9 @@ public class EnemyPlane extends ActiveActor {
     private ShootingComponent shootingComponent;
     private AnimationComponent animationComponent;
 
-
     public EnemyPlane(double initialXPos, double initialYPos, Group root) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
-        getCollisionComponent().setHitboxSize(IMAGE_HEIGHT*0.75, IMAGE_HEIGHT);
+        getCollisionComponent().setHitboxSize(IMAGE_HEIGHT * 0.75, IMAGE_HEIGHT);
         getCollisionComponent().updateHitBoxPosition();
         getMovementComponent().setVelocity(-6, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_POSITION_OFFSET, PROJECTILE_Y_POSITION_OFFSET);
@@ -51,6 +50,7 @@ public class EnemyPlane extends ActiveActor {
             double x = getCollisionComponent().getHitboxX();
             double y = getCollisionComponent().getHitboxY();
             animationComponent.playExplosion(x + planeWidth, y + planeHeight, 1.5);
+            SoundComponent.playExplosionSound(); // 播放爆炸声音
         }
     }
 }

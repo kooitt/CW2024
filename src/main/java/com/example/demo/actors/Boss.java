@@ -2,6 +2,7 @@ package com.example.demo.actors;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
+import com.example.demo.components.SoundComponent;
 import com.example.demo.levels.LevelParent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -143,6 +144,7 @@ private void initializeHealthBar() {
             if (shieldCheckTimeline != null) shieldCheckTimeline.stop();
             if (shield != null && !shield.isDestroyed()) shield.destroy();
             animationComponent.playExplosion(getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth(), getCollisionComponent().getHitboxY(), 2.5);
+            SoundComponent.playBossdownSound();
         }
     }
 

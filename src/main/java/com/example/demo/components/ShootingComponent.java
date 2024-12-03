@@ -1,9 +1,11 @@
+// ShootingComponent.java
 package com.example.demo.components;
 
 import com.example.demo.actors.ActiveActor;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.projectiles.Projectile;
 import com.example.demo.utils.ObjectPool;
+import com.example.demo.actors.UserPlane;
 
 public class ShootingComponent {
     private double fireRate;
@@ -49,6 +51,11 @@ public class ShootingComponent {
                 projectile.resetPosition(x, y);
                 level.getRoot().getChildren().add(projectile);
                 level.addProjectile(projectile, owner);
+
+                // 播放射击声音（仅当所有者是 UserPlane 时）
+                if (owner instanceof UserPlane) {
+                    SoundComponent.playShootingSound();
+                }
             }
         }
     }
