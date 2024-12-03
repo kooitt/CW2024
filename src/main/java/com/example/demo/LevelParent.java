@@ -45,13 +45,7 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 		this.enemyProjectiles = new ArrayList<>();
 		this.collisionHandler = new CollisionHandler();
 		this.actorManager = new ActorManager(root);
-		URL resource = getClass().getResource(backgroundImageName);
-		if (resource != null){
-			this.background = new ImageView(new Image(resource.toExternalForm()));
-		} else {
-			System.err.println("Background image not found: " + backgroundImageName);
-			this.background = new ImageView();
-		}
+		this.background = loadBackgroundImage(backgroundImageName);
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
@@ -61,6 +55,15 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 		initializeTimeline();
 		friendlyUnits.add(user);
     }
+
+	public ImageView loadBackgroundImage(String backgroundImageName){
+		Image backgroundImage = ImageLoader.loadImage(backgroundImageName);
+		ImageView background = new ImageView();
+		if (backgroundImage != null) {
+			background.setImage(backgroundImage);
+		}
+		return background;
+	}
 
 	// INITIALIZE
 	public Scene initializeScene() {
