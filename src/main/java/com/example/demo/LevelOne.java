@@ -23,12 +23,12 @@ public class LevelOne extends LevelParent {
 	}
 
 	@Override
-	protected void initializeFriendlyUnits() {
+	public void initializeFriendlyUnits() {
 		getRoot().getChildren().add(getUser());
 	}
 
 	@Override
-	protected void spawnEnemyUnits() {
+	public void spawnEnemyUnits() {
 		int currentNumberOfEnemies = getCurrentNumberOfEnemies();
 		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
 			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
@@ -41,8 +41,8 @@ public class LevelOne extends LevelParent {
 	}
 
 	@Override
-	protected LevelView instantiateLevelView() {
-		return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+	public LevelParentView instantiateLevelView() {
+		return new LevelParentView(getRoot(), PLAYER_INITIAL_HEALTH);
 	}
 
 	private boolean userHasReachedKillTarget() {

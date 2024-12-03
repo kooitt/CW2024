@@ -9,7 +9,7 @@ public class LevelTwoView extends LevelParentView {
 	private final Group root;
 	private final ShieldImage shieldImage;
 	
-	public LevelViewLevelTwo(Group root, int heartsToDisplay) {
+	public LevelTwoView(Group root, int heartsToDisplay) {
 		super(root, heartsToDisplay);
 		this.root = root;
 		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
