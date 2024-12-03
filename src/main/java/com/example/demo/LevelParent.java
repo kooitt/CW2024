@@ -177,27 +177,15 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 	}
 
 	private void handlePlaneCollisions() {
-		handleCollisions(friendlyUnits, enemyUnits);
+		collisionHandler.handleCollisions(friendlyUnits, enemyUnits);
 	}
 
 	private void handleUserProjectileCollisions() {
-		handleCollisions(userProjectiles, enemyUnits);
+		collisionHandler.handleCollisions(userProjectiles, enemyUnits);
 	}
 
 	private void handleEnemyProjectileCollisions() {
-		handleCollisions(enemyProjectiles, friendlyUnits);
-	}
-
-	private void handleCollisions(List<ActiveActorDestructible> actors1,
-			List<ActiveActorDestructible> actors2) {
-		for (ActiveActorDestructible actor : actors2) {
-			for (ActiveActorDestructible otherActor : actors1) {
-				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					actor.takeDamage();
-					otherActor.takeDamage();
-				}
-			}
-		}
+		collisionHandler.handleCollisions(enemyProjectiles, friendlyUnits);
 	}
 
 	private void handleEnemyPenetration() {
