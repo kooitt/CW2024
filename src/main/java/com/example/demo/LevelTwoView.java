@@ -2,7 +2,7 @@ package com.example.demo;
 
 import javafx.scene.Group;
 
-public class LevelViewLevelTwo extends LevelView {
+public class LevelTwoView extends LevelParentView {
 
 	private static final int SHIELD_X_POSITION = 1150;
 	private static final int SHIELD_Y_POSITION = 500;

@@ -2,7 +2,7 @@ package com.example.demo;
 
 import javafx.scene.Group;
 
-public class LevelView {
+public class LevelParentView {
 	
 	private static final double HEART_DISPLAY_X_POSITION = 5;
 	private static final double HEART_DISPLAY_Y_POSITION = 25;
