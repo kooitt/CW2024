@@ -59,7 +59,8 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 		friendlyUnits.add(user);
 	}
 
-	protected abstract void initializeFriendlyUnits();
+		this.actorManager = new ActorManager(root);
+    }
 
 	protected abstract void checkIfGameOver();
 
@@ -155,18 +156,11 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 		}
 	}
 
-	private void updateActors() {
-		friendlyUnits.forEach(plane -> plane.updateActor());
-		enemyUnits.forEach(enemy -> enemy.updateActor());
-		userProjectiles.forEach(projectile -> projectile.updateActor());
-		enemyProjectiles.forEach(projectile -> projectile.updateActor());
-	}
-
 	private void removeAllDestroyedActors() {
-		removeDestroyedActors(friendlyUnits);
-		removeDestroyedActors(enemyUnits);
-		removeDestroyedActors(userProjectiles);
-		removeDestroyedActors(enemyProjectiles);
+		actorManager.removeDestroyedActors(friendlyUnits);
+		actorManager.removeDestroyedActors(enemyUnits);
+		actorManager.removeDestroyedActors(userProjectiles);
+		actorManager.removeDestroyedActors(enemyProjectiles);
 	}
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
