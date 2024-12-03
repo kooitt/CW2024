@@ -2,7 +2,6 @@ package com.example.demo;
 
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javafx.animation.*;
 import javafx.scene.Group;
@@ -31,9 +30,9 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 	
 	private int currentNumberOfEnemies;
 	private final LevelParentView levelView;
-	private LevelParentController controller;
-	private CollisionHandler collisionHandler;
-	private ActorManager actorManager;
+	private final LevelParentController controller;
+	private final CollisionHandler collisionHandler;
+	private final ActorManager actorManager;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
         this.root = new Group();
