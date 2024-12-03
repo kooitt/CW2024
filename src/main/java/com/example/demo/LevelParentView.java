@@ -26,6 +26,10 @@ public class LevelParentView {
 		root.getChildren().add(heartDisplay.getContainer());
 	}
 
+	public void updateHeartCount(int heartsRemaining) {
+		heartDisplay.removeHearts(heartsRemaining);
+	}
+
 	public void showWinImage() {
 		root.getChildren().add(winImage);
 		winImage.showWinImage();
@@ -34,12 +38,4 @@ public class LevelParentView {
 	public void showGameOverImage() {
 		root.getChildren().add(gameOverImage);
 	}
-	
-	public void removeHearts(int heartsRemaining) {
-		int currentNumberOfHearts = heartDisplay.getContainer().getChildren().size();
-		for (int i = 0; i < currentNumberOfHearts - heartsRemaining; i++) {
-			heartDisplay.removeHeart();
-		}
-	}
-
 }

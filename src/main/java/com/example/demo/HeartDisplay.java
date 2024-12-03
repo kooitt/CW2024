@@ -43,7 +43,15 @@ public class HeartDisplay {
 			container.getChildren().add(heart);
 		}
 	}
-	
+
+	public void removeHearts(int heartsRemaining) {
+		int numberOfHearts = getContainer().getChildren().size();
+		int heartsToRemove = numberOfHearts - heartsRemaining;
+		for (int i = 0; i < heartsToRemove; i++) {
+			removeHeart();
+		}
+	}
+
 	public void removeHeart() {
 		if (!container.getChildren().isEmpty())
 			container.getChildren().remove(INDEX_OF_FIRST_ITEM);
