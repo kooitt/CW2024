@@ -20,12 +20,12 @@ public class LevelTwo extends LevelParent {
 	}
 
 	@Override
-	protected void checkIfGameOver() {
+	public void checkIfGameOver() {
 		if (userIsDestroyed()) {
-			loseGame();
+			getController().loseGame();
 		}
 		else if (boss.isDestroyed()) {
-			winGame();
+			getController().winGame();
 		}
 	}
 

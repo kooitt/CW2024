@@ -14,9 +14,9 @@ public class LevelOne extends LevelParent {
 	}
 
 	@Override
-	protected void checkIfGameOver() {
+	public void checkIfGameOver() {
 		if (userIsDestroyed()) {
-			loseGame();
+			getController().loseGame();
 		}
 		else if (userHasReachedKillTarget())
 			goToNextLevel(NEXT_LEVEL);
