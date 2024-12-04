@@ -2,7 +2,7 @@ package com.example.demo;
 
 import javafx.scene.shape.Rectangle;
 
-public abstract class ActiveActorDestructible extends ActiveActor implements Destructible {
+public abstract class ActiveActorDestructible extends ActiveActor implements Destructible, ActorBehaviour {
 
 	private boolean isDestroyed;
 	private final Hitbox hitbox;
@@ -13,14 +13,6 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 		int imageWidth = (int) this.getImage().getWidth();
 		hitbox = new Hitbox(initialXPos, initialYPos, imageWidth, imageHeight);
 	}
-
-	@Override
-	public abstract void updatePosition();
-
-	public abstract void updateActor();
-
-	@Override
-	public abstract void takeDamage();
 
 	@Override
 	public void destroy() {

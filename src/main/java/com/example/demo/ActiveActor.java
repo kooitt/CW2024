@@ -3,7 +3,7 @@ package com.example.demo;
 import javafx.scene.image.*;
 import java.net.URL;
 
-public abstract class ActiveActor extends ImageView {
+public abstract class ActiveActor extends ImageView implements ActorBehaviour{
 
 	public ActiveActor(String imageName, int imageHeight, double initialXPos, double initialYPos) {
 		this.loadActiveActorImage(imageName);
@@ -19,8 +19,6 @@ public abstract class ActiveActor extends ImageView {
 			this.setImage(image);
 		}
 	}
-
-	public abstract void updatePosition();
 
 	protected void moveHorizontally(double horizontalMove) {
 		this.setTranslateX(getTranslateX() + horizontalMove);
