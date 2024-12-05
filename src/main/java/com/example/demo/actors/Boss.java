@@ -2,6 +2,7 @@ package com.example.demo.actors;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
+import com.example.demo.components.SoundComponent;
 import com.example.demo.levels.LevelParent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -24,7 +25,7 @@ public class Boss extends ActiveActor {
     private static final double FIRE_RATE = 1.0;
     private static final int IMAGE_HEIGHT = 200;
     private static final int VERTICAL_VELOCITY = 8;
-    private static final int MAX_HEALTH = 10;
+    private static final int MAX_HEALTH = 800;
     private static final int HEALTH_BAR_WIDTH = 150;
     private static final int HEALTH_BAR_HEIGHT = 15;
 
@@ -145,6 +146,7 @@ public class Boss extends ActiveActor {
     @Override
     public void destroy() {
         if (!isDestroyed) {
+            SoundComponent.stopLevel2Sound();
             super.destroy();
             if (shieldCheckTimeline != null) shieldCheckTimeline.stop();
             if (shield != null && !shield.isDestroyed()) shield.destroy();
