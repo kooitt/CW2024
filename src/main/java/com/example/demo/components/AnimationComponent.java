@@ -79,7 +79,7 @@ public class AnimationComponent {
     }
 
 
-    public void playExplosion(double x, double y, double scale) {
+    public void playExplosion(double x, double y, double scale, Runnable onFinished) {
         Platform.runLater(() -> {
             ImageView explosionView = new ImageView();
             explosionView.setPreserveRatio(true);
@@ -100,8 +100,18 @@ public class AnimationComponent {
                 }));
             }
 
-            timeline.setOnFinished(e -> parentGroup.getChildren().remove(explosionGroup));
+            timeline.setOnFinished(e -> {
+                parentGroup.getChildren().remove(explosionGroup);
+                if (onFinished != null) {
+                    onFinished.run(); // 调用回调函数
+                }
+            });
             timeline.play();
         });
+    }
+
+    // 保留原有的方法，兼容不需要回调的调用
+    public void playExplosion(double x, double y, double scale) {
+        playExplosion(x, y, scale, null);
     }
 }

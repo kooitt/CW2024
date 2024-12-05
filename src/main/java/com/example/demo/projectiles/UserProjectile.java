@@ -6,7 +6,7 @@ package com.example.demo.projectiles;
  */
 public class UserProjectile extends Projectile {
 
-	private static final String IMAGE_NAME = "userfire.png";
+	private static String currentImageName = "userfire.png";
 	private static final int IMAGE_HEIGHT = 25;
 	private static final int HORIZONTAL_VELOCITY = 15;
 
@@ -17,8 +17,23 @@ public class UserProjectile extends Projectile {
 	 * @param initialYPos initial Y position.
 	 */
 	public UserProjectile(double initialXPos, double initialYPos) {
-		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
+		super(currentImageName, IMAGE_HEIGHT, initialXPos, initialYPos);
 		getCollisionComponent().setHitboxSize(IMAGE_HEIGHT*2, IMAGE_HEIGHT);
+	}
+
+	public static void setCurrentImageName(String imageName) {
+		currentImageName = imageName;
+	}
+
+	public static String getCurrentImageName() {
+		return currentImageName;
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		// 重置时更新子弹的图片
+		setImageViewImage(currentImageName);
 	}
 
 	@Override

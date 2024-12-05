@@ -49,7 +49,7 @@ public class EnemyPlane extends ActiveActor {
             double planeHeight = getCollisionComponent().getHitboxHeight();
             double x = getCollisionComponent().getHitboxX();
             double y = getCollisionComponent().getHitboxY();
-            animationComponent.playExplosion(x + planeWidth, y + planeHeight, 1.5);
+            animationComponent.playExplosion(x + planeWidth / 2, y + planeHeight / 2, 1.5);
             SoundComponent.playExplosionSound(); // 播放爆炸声音
         }
     }

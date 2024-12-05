@@ -30,7 +30,7 @@ public abstract class LevelParent extends Observable {
 
 	private final Group root;
 	private final Timeline timeline;
-	private final UserPlane user;
+	protected final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
 
@@ -40,6 +40,7 @@ public abstract class LevelParent extends Observable {
 	protected final List<ActiveActor> enemyProjectiles;
 	protected final List<ActiveActor> shields; // 新增 Shields 列表
 	protected final List<ActiveActor> powerUps;
+	protected boolean isInputEnabled = true; // 添加此变量
 
 	private int currentNumberOfEnemies;
 	private LevelView levelView;
@@ -168,6 +169,13 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void processInput() {
+		if (!isInputEnabled) {
+			// 如果输入被禁用，不处理任何输入
+			user.stopVerticalMovement();
+			user.stopHorizontalMovement();
+			return;
+		}
+
 		KeyBindings keys = KeyBindings.getInstance();
 		boolean up = activeKeys.contains(keys.getUpKey());
 		boolean down = activeKeys.contains(keys.getDownKey());
@@ -183,8 +191,13 @@ public abstract class LevelParent extends Observable {
 		else user.stopHorizontalMovement();
 	}
 
+
 	private void updateActors(double deltaTime) {
 		friendlyUnits.forEach(actor -> actor.updateActor(deltaTime, this));
+		if (!isInputEnabled) {
+			// 如果输入被禁用，只更新友军单位（例如玩家飞机的动画）
+			return;
+		}
 		enemyUnits.forEach(actor -> actor.updateActor(deltaTime, this));
 		shields.forEach(shield -> shield.updateActor(deltaTime, this));
 		userProjectiles.forEach(projectile -> projectile.updateActor(deltaTime, this));
@@ -206,8 +219,17 @@ public abstract class LevelParent extends Observable {
 		while (iterator.hasNext()) {
 			ActiveActor actor = iterator.next();
 			if (actor.isDestroyed()) {
+				// 检查是否是 Boss 对象
+				if (actor instanceof Boss) {
+					Boss bossActor = (Boss) actor;
+					if (!bossActor.isReadyToRemove) {
+						continue; // 如果爆炸动画未播放完毕，跳过移除
+					}
+				}
+
 				root.getChildren().remove(actor);
 				iterator.remove();
+
 				if (actor instanceof Projectile) {
 					for (ObjectPool<Projectile> pool : pools) {
 						pool.release((Projectile) actor);
@@ -216,6 +238,7 @@ public abstract class LevelParent extends Observable {
 			}
 		}
 	}
+
 
 	private void removeDestroyedActors(List<ActiveActor> actors) {
 		Iterator<ActiveActor> iterator = actors.iterator();
@@ -300,16 +323,28 @@ public abstract class LevelParent extends Observable {
 	}
 
 	protected void winGame() {
+		// 停止处理玩家输入
+		isInputEnabled = false;
+
+		// 停止游戏循环
 		timeline.stop();
+
 		levelView.showWinImage();
 	}
 
+
 	protected void loseGame() {
+		// 停止处理玩家输入
+		isInputEnabled = false;
+
+		// 停止游戏循环
 		timeline.stop();
+
 		levelView.showGameOverImage();
 		SoundComponent.stopAllSound();
 		SoundComponent.playGameoverSound();
 	}
+
 
 
 	public void cleanUp() {

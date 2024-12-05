@@ -2,7 +2,6 @@ package com.example.demo.actors;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
-import com.example.demo.components.SoundComponent;
 import com.example.demo.levels.LevelParent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -25,7 +24,7 @@ public class Boss extends ActiveActor {
     private static final double FIRE_RATE = 1.0;
     private static final int IMAGE_HEIGHT = 200;
     private static final int VERTICAL_VELOCITY = 8;
-    private static final int MAX_HEALTH = 500;
+    private static final int MAX_HEALTH = 10;
     private static final int HEALTH_BAR_WIDTH = 150;
     private static final int HEALTH_BAR_HEIGHT = 15;
 
@@ -40,6 +39,8 @@ public class Boss extends ActiveActor {
     private Timeline shieldCheckTimeline;
     private LevelParent level;
     private boolean isSummoningShield = false;
+    public boolean isReadyToRemove = false;
+    private Runnable onExplosionFinished;
 
     public Boss(Group root, LevelParent level) {
         super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, MAX_HEALTH);
@@ -54,17 +55,17 @@ public class Boss extends ActiveActor {
         initializeShieldCheck();
     }
 
-private void initializeHealthBar() {
-    healthBar = new ProgressBar(1.0);
-    healthBar.setPrefSize(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
-    healthBar.setStyle("-fx-accent: red; -fx-background-color: black; -fx-border-color: white; -fx-border-width: 2;");
-    this.getChildren().add(healthBar);
-    healthBar.toFront();
-    double imageWidth = getCollisionComponent().getHitboxWidth();
-    healthBar.setLayoutX((imageWidth - HEALTH_BAR_WIDTH) / 2);
-    healthBar.setLayoutY(-HEALTH_BAR_HEIGHT - 10);
-    healthBar.setVisible(getCurrentHealth() > 0);
-}
+    private void initializeHealthBar() {
+        healthBar = new ProgressBar(1.0);
+        healthBar.setPrefSize(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
+        healthBar.setStyle("-fx-accent: red; -fx-background-color: black; -fx-border-color: white; -fx-border-width: 2;");
+        this.getChildren().add(healthBar);
+        healthBar.toFront();
+        double imageWidth = getCollisionComponent().getHitboxWidth();
+        healthBar.setLayoutX((imageWidth - HEALTH_BAR_WIDTH) / 2);
+        healthBar.setLayoutY(-HEALTH_BAR_HEIGHT - 10);
+        healthBar.setVisible(getCurrentHealth() > 0);
+    }
 
     @Override
     public void updateActor(double deltaTime, LevelParent level) {
@@ -86,6 +87,10 @@ private void initializeHealthBar() {
             super.takeDamage(damage);
             updateHealthBar();
         }
+    }
+
+    public void setOnExplosionFinished(Runnable onExplosionFinished) {
+        this.onExplosionFinished = onExplosionFinished;
     }
 
     private void updateHealthBar() {
@@ -143,8 +148,17 @@ private void initializeHealthBar() {
             super.destroy();
             if (shieldCheckTimeline != null) shieldCheckTimeline.stop();
             if (shield != null && !shield.isDestroyed()) shield.destroy();
-            animationComponent.playExplosion(getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth(), getCollisionComponent().getHitboxY(), 2.5);
-            SoundComponent.playBossdownSound();
+            animationComponent.playExplosion(
+                    getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth() / 2,
+                    getCollisionComponent().getHitboxY() + getCollisionComponent().getHitboxHeight() / 2,
+                    2.5,
+                    () -> {
+                        isReadyToRemove = true;
+                        if (onExplosionFinished != null) {
+                            onExplosionFinished.run();
+                        }
+                    }
+            );
         }
     }
 

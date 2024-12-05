@@ -4,6 +4,7 @@ import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.components.SoundComponent;
+import com.example.demo.projectiles.UserProjectile;
 
 public class UserPlane extends ActiveActor {
 
@@ -17,6 +18,7 @@ public class UserPlane extends ActiveActor {
 
     private int planeImageIndex = 0; // 初始为0，对应userplane.png
     private static final String[] PLANE_IMAGES = {"userplane.png", "userplane2.png", "userplane3.png", "userplane4.png"};
+    private static final String[] BULLET_IMAGES = {"userfire.png", "userfire2.png", "userfire3.png", "userfire4.png"};
 
     private int verticalVelocityMultiplier = 0, horizontalVelocityMultiplier = 0;
     private int numberOfKills = 0, powerUpCount = 0, extraBulletRows = 0;
@@ -31,6 +33,10 @@ public class UserPlane extends ActiveActor {
     public UserPlane(int initialHealth) {
         super(PLANE_IMAGES[0], IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
         this.initialHealth = initialHealth;
+        // 重置飞机图片索引
+        planeImageIndex = 0;
+        UserProjectile.setCurrentImageName(BULLET_IMAGES[0]);
+
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT * 0.8, IMAGE_HEIGHT);
         getMovementComponent().setVelocity(0, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
@@ -73,6 +79,8 @@ public class UserPlane extends ActiveActor {
             planeImageIndex = Math.min(planeImageIndex + 1, PLANE_IMAGES.length - 1);
             String newImage = PLANE_IMAGES[planeImageIndex];
             setImageViewImage(newImage);
+            String newBulletImage = BULLET_IMAGES[planeImageIndex];
+            UserProjectile.setCurrentImageName(newBulletImage);
         }
     }
 
@@ -116,6 +124,10 @@ public class UserPlane extends ActiveActor {
 
     public void incrementKillCount() {
         numberOfKills++;
+    }
+
+    public void stopShooting() {
+        shootingComponent.stopFiring();
     }
 
     @Override

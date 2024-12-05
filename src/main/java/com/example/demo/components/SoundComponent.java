@@ -121,12 +121,27 @@ public class SoundComponent {
     /**
      * 播放bossdown声音
      */
-    public static void playBossdownSound() {
+    public static void playBossdownSound(Runnable onFinished) {
         if (bossdownPlayer != null) {
             bossdownPlayer.stop(); // 重置播放器以便重复播放
+            bossdownPlayer.setOnEndOfMedia(() -> {
+                bossdownPlayer.setOnEndOfMedia(null); // 重置事件处理器
+                if (onFinished != null) {
+                    onFinished.run();
+                }
+            });
             bossdownPlayer.play();
+        } else if (onFinished != null) {
+            onFinished.run(); // 如果播放器不可用，立即执行回调
         }
     }
+
+    // 不带参数的重载方法，兼容其他调用
+    public static void playBossdownSound() {
+        playBossdownSound(null);
+    }
+
+
 
     public static void stopBossdownSound() {
         if (bossdownPlayer != null) {
