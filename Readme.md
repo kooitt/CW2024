@@ -1,115 +1,42 @@
 # Plane Shooter Game
 
-A feature-rich 2D side-scrolling plane shooter game developed in Java using JavaFX. Fly through challenging levels, upgrade your plane and weapons, and defeat powerful bosses to achieve victory.
+A 2D side-scrolling plane shooter game developed in Java using JavaFX. Control your plane, defeat enemies and bosses across multiple levels, collect power-ups, and upgrade your plane to achieve victory.
 
 ---
 
 ## Table of Contents
 
-- [Plane Shooter Game](#plane-shooter-game)
-  - [Table of Contents](#table-of-contents)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Gameplay](#gameplay)
-    - [Controls](#controls)
-    - [Levels](#levels)
-    - [Upgrades](#upgrades)
-  - [Installation](#installation)
-    - [Prerequisites](#prerequisites)
-    - [Steps to Install](#steps-to-install)
-  - [Running the Game](#running-the-game)
-    - [From IDE](#from-ide)
-    - [From Command Line](#from-command-line)
-  - [Project Structure](#project-structure)
-    - [Core Classes](#core-classes)
-    - [Assets](#assets)
-  - [Development Roadmap](#development-roadmap)
-  - [Contributing](#contributing)
-    - [Contribution Guidelines](#contribution-guidelines)
-  - [License](#license)
+- [GitHub Repository](#github-repository)
+- [Compilation and Dependencies](#compilation-and-dependencies)
+- [Implemented Features](#implemented-features)
+- [Features with Issues](#features-with-issues)
+- [Unimplemented Features](#unimplemented-features)
+- [New Java Classes](#new-java-classes)
+- [Modified Java Classes](#modified-java-classes)
+- [Unexpected Issues and Solutions](#unexpected-issues-and-solutions)
 
 ---
 
-## Introduction
+## GitHub Repository
 
-**Plane Shooter Game** is a classic arcade-style shooter where you control a plane to combat enemy waves and powerful bosses across multiple levels. Designed to be fun and engaging, the game offers a mix of strategic upgrades, fast-paced automatic shooting, and exciting challenges for players of all ages. Customize your controls to suit your playstyle and dive into the action!
+The source code for the Plane Shooter Game can be found at:
 
----
-
-## Features
-
-- 🎮 **Dynamic Gameplay**: Battle diverse enemy types with unique attack patterns.
-- 🚀 **Upgradable Planes**: Enhance your plane with collectible power-ups and unlock special weapons.
-- 💥 **Challenging Boss Fights**: Test your skills with epic boss battles featuring advanced mechanics.
-- 🎶 **Immersive Audio**: Background music and sound effects tailored for an exciting experience.
-- 🖼️ **Custom Graphics**: Handcrafted visuals, including planes, backgrounds, and animations.
-- 🛠️ **Optimized Performance**: Object pooling ensures smooth gameplay even during intense scenes.
-- 🎛️ **Customizable Controls**: Default controls are set to arrow keys but can be customized to your preference.
-- 🔫 **Automatic Shooting**: Focus on maneuvering your plane while it fires automatically.
+[https://github.com/fsfuzhu/CW2024](https://github.com/fsfuzhu/CW2024)
 
 ---
 
-## Gameplay
-
-### Controls
-
-- **Movement**:
-  - **Default Keys**:
-    - Move Up: `Up Arrow`
-    - Move Down: `Down Arrow`
-    - Move Left: `Left Arrow`
-    - Move Right: `Right Arrow`
-  - **Customizable**: You can change the key bindings to your preferred keys.
-
-- **Shooting**:
-  - **Automatic Shooting**: Your plane fires continuously without the need to press any buttons.
-
-### Levels
-
-1. **Level One**:
-   - **Objective**: Eliminate 10 enemy planes.
-   - **Boss**: None.
-   - **Rewards**: Weapon upgrades and health items.
-   - **Enemies**: Standard enemy planes with basic attack patterns.
-
-2. **Level Two**:
-   - **Objective**: Defeat the first boss with shielding mechanics.
-   - **Boss**: A shielded enemy plane with advanced attacks.
-   - **Rewards**: Advanced power-ups.
-   - **Enemies**: Increased difficulty with more aggressive behavior.
-
-3. **Level Three**:
-   - **Objective**: Face off against the final boss.
-   - **Boss**: A highly challenging enemy with dynamic attack patterns.
-   - **Rewards**: Game completion bonus.
-   - **Enemies**: Most challenging enemy planes and obstacles.
-
-### Upgrades
-
-- **Weapon Power-Ups**:
-  - **Increase Fire Rate**: Collect power-ups to fire bullets faster.
-  - **Extra Bullet Rows**: Upgrade to shoot multiple rows of bullets simultaneously.
-
-- **Plane Enhancements**:
-  - **Visual Upgrades**: Your plane's appearance changes with upgrades, reflecting its enhanced capabilities.
-  - **Speed Boosts**: Enhance your plane's movement speed.
-
-- **Health Items**:
-  - **Heart Collectibles**: Restore your plane's health by picking up hearts.
-
----
-
-## Installation
+## Compilation and Dependencies
 
 ### Prerequisites
 
 - **Java Development Kit (JDK)**: Version **19.0.2** or higher is required.
-- **JavaFX SDK**: (if not bundled with your JDK).
-- **Development Environment**: IntelliJ IDEA, or other IDEs.
+- **JavaFX SDK**: Ensure JavaFX is properly set up, as it is not bundled with JDK 19.
+- **Development Environment**: IntelliJ IDEA.
 
-### Steps to Install
+### Steps to Compile and Run
 
 1. **Clone the Repository**:
+
    ```bash
    git clone https://github.com/fsfuzhu/CW2024.git
    cd CW2024
@@ -117,133 +44,223 @@ A feature-rich 2D side-scrolling plane shooter game developed in Java using Java
    ```
 
 2. **Configure JavaFX**:
+
    - **For IDEs**:
      - Add the JavaFX library to your project settings.
      - In **VM options**, include:
+
        ```
-       --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml
+       --module-path /path/to/javafx-sdk-19/lib --add-modules javafx.controls,javafx.fxml
        ```
-     - Replace `/path/to/javafx-sdk/lib` with the actual path to your JavaFX SDK `lib` directory.
+
+     - Replace `/path/to/javafx-sdk-19/lib` with the actual path to your JavaFX SDK `lib` directory.
 
    - **For Command Line**:
      - Ensure the JavaFX SDK `lib` directory is included in your classpath.
+     - Compile and run the game using the following commands:
 
-3. **Build and Run**:
-   - Open the project in your IDE.
-   - Locate the `Main` class in the `com.example.demo` package.
-   - Run the `Main` class to start the game.
+       ```bash
+       javac --module-path /path/to/javafx-sdk-19/lib --add-modules javafx.controls,javafx.fxml -d out $(find ./src -name "*.java")
+       java --module-path /path/to/javafx-sdk-19/lib --add-modules javafx.controls,javafx.fxml -cp out com.example.demo.Main
+       ```
 
----
+3. **Run the Game**:
 
-## Running the Game
+   - **From IDE**:
+     - Locate the `Main` class in the `com.example.demo` package.
+     - Run the `Main` class.
 
-### From IDE
-
-- **Step 1**: Open `Main.java` in the `com.example.demo` package.
-- **Step 2**: Run the `Main` class.
-
-### From Command Line
-
-Compile and run the game using the following commands (ensure you replace `/path/to/javafx-sdk/lib` with the actual path):
-
-```bash
-javac -cp .:/path/to/javafx-sdk/lib/* com/example/demo/Main.java
-java -cp .:/path/to/javafx-sdk/lib/* --module-path /path/to/javafx-sdk/lib --add-modules javafx.controls,javafx.fxml com.example.demo.Main
-```
+   - **From Command Line**:
+     - Use the commands provided above to compile and run.
 
 ---
 
-## Project Structure
+## Implemented Features
 
-### Core Classes
+The following features have been correctly implemented:
 
-| Class Name            | Description                                                                 |
-|-----------------------|-----------------------------------------------------------------------------|
-| `Main`                | Entry point of the application.                                             |
-| `LevelParent`         | Abstract class containing shared level logic.                               |
-| `LevelOne`, `LevelTwo`, `LevelThree` | Concrete classes representing each level in the game.         |
-| `UserPlane`           | Represents the player's plane with movement and shooting capabilities.      |
-| `EnemyPlane`          | Standard enemy units with basic behaviors.                                  |
-| `Boss`, `BossTwo`     | Boss enemies with unique behaviors and attack patterns.                     |
-| `ActiveActor`         | Base class for all game actors with health and movement components.         |
-| `Projectile`          | Represents bullets fired by planes.                                         |
-| `ShootingComponent`   | Manages shooting behavior for actors, including automatic firing.           |
-| `CollisionComponent`  | Handles collision detection between game objects.                           |
-| `SoundComponent`      | Manages background music and sound effects.                                 |
-| `AnimationComponent`  | Manages animations such as explosions and power-up effects.                 |
-| `KeyBindings`         | Allows customization of key bindings for player controls.                   |
+### 1. Multiple Levels
 
-### Assets
+- **Level One**: Basic enemies spawn, and the player must eliminate 10 enemies to advance.
+- **Level Two**: Introduces the first boss with shielding mechanics.
+- **Level Three**: Final boss with advanced attack patterns.
 
-- **Images**: Stored in `resources/com/example/demo/images/`.
-  - **Planes**: Player and enemy plane images (`userplane.png`, `enemyplane.png`, etc.).
-  - **Bullets**: Images for different bullet types.
-  - **Backgrounds**: Unique background images for each level.
-  - **Animations**: Frames for explosion and level-up animations.
+### 2. Player Plane Controls
 
-- **Audio**: Stored in `resources/com/example/demo/sounds/`.
-  - **Background Music**: `level1.wav`, `level2.mp3`, etc.
-  - **Sound Effects**: `bullet.wav`, `explosion.wav`, `bossdown.wav`, etc.
+- **Movement**: Player can move up, down, left, and right using default arrow keys.
+- **Customizable Controls**: Players can customize key bindings via the `KeyBindings` class.
+- **Automatic Shooting**: The player's plane fires bullets automatically at a set fire rate.
 
----
+### 3. Enemies and Bosses
 
-## Development Roadmap
+- **Enemy Planes**: Standard enemies with basic behaviors.
+- **Bosses**: Bosses have unique behaviors, health bars, and special attacks.
 
-- ✅ **Current Features**:
-  - Basic gameplay mechanics with three levels.
-  - Automatic shooting and customizable controls.
-  - Power-ups and plane upgrades.
-  - Collision detection and health system.
-  - Sound effects and background music.
+### 4. Power-Ups and Upgrades
 
-- 🛠️ **Planned Features**:
-  - **New Enemy Types**: Introduce enemies with different behaviors and attack patterns.
-  - **Additional Levels**: Expand the game with more challenging levels and environments.
-  - **Multiplayer Mode**: Implement local co-op or competitive modes.
-  - **Enhanced UI**: Improve game menus and in-game HUD for better user experience.
-  - **Graphics Improvements**: Add more detailed sprites and animations.
-  - **Settings Menu**: Provide an interface for players to customize controls and game settings.
+- **Weapon Power-Ups**: Collectibles that increase fire rate and add extra bullet rows.
+- **Health Items**: Collectible hearts that restore player's health.
+- **Plane Upgrades**: Visual changes to the player's plane upon collecting power-ups.
 
-- 📢 **Feedback Request**:
-  - If you have any suggestions or feature ideas, please create an issue on GitHub or reach out to the maintainers.
+### 5. Sound and Animation
+
+- **Sound Effects**: Includes shooting sounds, explosion sounds, and background music for each level.
+- **Animations**: Explosion animations for enemies and bosses, level-up effects for the player.
+
+### 6. Collision Detection
+
+- **CollisionComponent**: Handles detection between player, enemies, bullets, and power-ups.
+
+### 7. Object Pooling
+
+- **Efficient Resource Management**: Uses object pools for projectiles to optimize performance.
 
 ---
 
-## Contributing
+## Features with Issues
 
-We welcome contributions from the community! Please follow the guidelines below:
+The following feature has been implemented but encountered issues:
 
-1. **Fork the Repository** and create a new branch:
-   ```bash
-   git checkout -b feature/your-feature
-   ```
-2. **Implement your feature or bug fix**.
-3. **Test your changes thoroughly** to ensure they do not break existing functionality.
-4. **Commit your changes** with clear and descriptive messages.
-5. **Submit a Pull Request** with detailed information about your changes.
+### Boss Explosion Animation in Level Two
 
-### Contribution Guidelines
-
-- **Code Style**: Follow Java naming conventions and maintain consistent formatting.
-- **Comments and Documentation**:
-  - Use **Javadoc** comments for classes, methods, and significant code blocks.
-  - Update the README or other documentation if your changes affect them.
-- **Testing**:
-  - Ensure existing tests pass.
-  - Write new tests for any new functionality.
+- **Issue**: Upon defeating the boss in Level Two, the explosion animation does not play completely; it stops midway.
+- **Effect**: The game proceeds to Level Three after the boss defeat sound finishes, even though the animation hasn't completed.
+- **Current Status**: Adjustments were made to ensure the boss is not removed from the scene until the explosion animation finishes. However, the issue persists where the animation stops prematurely.
 
 ---
 
-## License
+## Unimplemented Features
 
-This project is a coursework assignment for our institution. **Copying or plagiarizing any part of this project is strictly prohibited.**
-
-- You are welcome to **view the code** to learn and understand how the game is implemented.
-- Feel free to **download and play** the game for personal enjoyment.
-- **Unauthorized distribution** of the code or claiming it as your own work is not allowed.
+All required features have been implemented. No features remain unimplemented at this time.
 
 ---
 
-> **Contact**: For any questions or feedback, please open an issue or reach out to the maintainers.
+## New Java Classes
+
+The following Java classes were added to enhance functionality:
+
+### 1. `AnimationComponent`
+
+- **Function**: Manages animations such as explosions and level-up effects.
+- **Details**:
+  - Plays explosion animations for enemies and bosses.
+  - Supports callback functions to execute code after animations finish.
+
+### 2. `SoundComponent`
+
+- **Function**: Manages all sound effects and music in the game.
+- **Details**:
+  - Plays background music for each level.
+  - Plays sound effects for shooting, explosions, boss defeats, power-up pickups, etc.
+  - Allows stopping all sounds when needed (e.g., game over).
+
+### 3. `LevelOne`, `LevelTwo`, `LevelThree`
+
+- **Function**: Concrete implementations of levels with specific mechanics.
+- **Details**:
+  - Each level class defines enemy spawning logic, power-up probabilities, and level-specific behaviors.
+
+### 4. `Boss`, `BossTwo`
+
+- **Function**: Represent boss enemies with unique behaviors.
+- **Details**:
+  - Have health bars displayed above them.
+  - Use special attacks and can summon shields.
+
+### 5. `ActorLevelUp`, `HeartItem`
+
+- **Function**: Represent collectible items for the player.
+- **Details**:
+  - `ActorLevelUp`: Power-up that upgrades the player's weapon.
+  - `HeartItem`: Restores player's health upon collection.
+
+### 6. `KeyBindings`
+
+- **Function**: Allows customization of player control keys.
+- **Details**:
+  - Stores key bindings for movement controls.
+  - Can be extended to include more customizable actions.
 
 ---
+
+## Modified Java Classes
+
+The following Java classes were modified, along with reasons for modification:
+
+### 1. `LevelParent`
+
+- **Modifications**:
+  - Added logic to handle explosion animations and ensure actors are not removed before animations complete.
+  - Implemented methods to manage game state transitions (e.g., `winGame`, `loseGame`).
+  - Adjusted collision handling to include new power-up items.
+
+- **Reason**: To support new features like explosion animations, power-ups, and smooth transitions between levels.
+
+### 2. `UserPlane`
+
+- **Modifications**:
+  - Integrated `AnimationComponent` to play level-up animations.
+  - Adjusted shooting logic to include power-up effects (e.g., extra bullet rows).
+  - Updated movement methods to use customizable key bindings.
+
+- **Reason**: To enhance the player's upgrade experience and allow control customization.
+
+### 3. `ShootingComponent`
+
+- **Modifications**:
+  - Added support for firing multiple bullet rows.
+  - Modified to include automatic shooting without player input.
+
+- **Reason**: To implement the weapon upgrade feature and automatic shooting mechanics.
+
+### 4. `Boss`
+
+- **Modifications**:
+  - Implemented health bar display and shielding mechanics.
+  - Adjusted destruction logic to handle explosion animations with callbacks.
+  - Added `isReadyToRemove` flag to prevent premature removal from the scene.
+
+- **Reason**: To create a more challenging and engaging boss fight with proper visual feedback.
+
+---
+
+## Unexpected Issues and Solutions
+
+### Issue: Boss Explosion Animation Not Completing
+
+- **Problem**: The boss's explosion animation stops midway, and the game proceeds to the next level before the animation finishes.
+- **Analysis**:
+  - The boss object was being removed from the scene before the animation could complete.
+  - The game loop's actor removal logic did not account for ongoing animations.
+
+- **Solution Attempted**:
+  - Introduced an `isReadyToRemove` flag in the `Boss` class.
+  - Modified the `removeDestroyedActors` method in `LevelParent` to check this flag before removing the boss.
+  - Ensured the explosion animation has a callback that sets `isReadyToRemove` to `true` upon completion.
+
+- **Outcome**:
+  - Despite these changes, the animation still does not play completely.
+  - The issue may be due to other factors such as threading, timing discrepancies, or interference from the game loop.
+
+- **Next Steps**:
+  - Investigate if the game loop is affecting the animation timeline.
+  - Ensure that the animation is running on the JavaFX Application Thread.
+  - Check for any potential conflicts in updating UI elements during the game loop.
+
+---
+
+### Issue: Sound Overlapping and Playback
+
+- **Problem**: Sometimes, sound effects overlap or do not play as expected.
+- **Solution**:
+  - Modified `SoundComponent` to stop and reset media players before playing sounds.
+  - Ensured that media players are managed properly to prevent resource leaks.
+
+---
+
+### Issue: Control Customization Not Reflecting Immediately
+
+- **Problem**: Changes in key bindings do not take effect until the game restarts.
+- **Solution**:
+  - Implemented methods to refresh input listeners when key bindings are updated.
+  - Ensured that the game reads the latest key bindings from the `KeyBindings` class.
