@@ -34,8 +34,10 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> userProjectiles;
 	private final List<ActiveActorDestructible> enemyProjectiles;
 	private int currentNumberOfEnemies;
-	private LevelView levelView;
-	private Set<KeyCode> activeKeys = new HashSet<>(); //Creating a new hash-set which is basically a box that keeps track of all active keys being pressed by the player
+	private final LevelView levelView;
+	private final Set<KeyCode> activeKeys = new HashSet<>(); //Creating a new hash-set which is basically a box that keeps track of all active keys being pressed by the player
+	private long lastFiredProjectile = 0;
+	private static final long PROJECTILE_COOLDOWN = 50; // Cooldown in milliseconds
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -47,7 +49,7 @@ public abstract class LevelParent extends Observable {
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
 
-		this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
+		this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
@@ -137,21 +139,16 @@ public abstract class LevelParent extends Observable {
 				activeKeys.add(kc); //On key press, add that key to the hash set
 				if (kc == KeyCode.ESCAPE) pauseGame(); // Must be above isgameactive so it will work outside of an active game.
 				if (!isGameActive) return; //Void all inputs if the game is currently not active.
-				if (kc == KeyCode.UP) user.moveUp();
-				if (kc == KeyCode.DOWN) user.moveDown();
-				if (kc == KeyCode.LEFT) user.moveLeft();
-				if (kc == KeyCode.RIGHT) user.moveRight();
-				if (kc == KeyCode.SPACE) fireProjectile();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
 				activeKeys.remove(kc); //On key release, remove that key from the hash set
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) {
+				if (kc == KeyCode.UP || kc == KeyCode.DOWN || kc == KeyCode.W || kc == KeyCode.S) {
 					user.stopY();
 				}
-				else if (kc == KeyCode.LEFT || kc == KeyCode.RIGHT) {
+				else if (kc == KeyCode.LEFT || kc == KeyCode.RIGHT || kc == KeyCode.A || kc == KeyCode.D) {
 					user.stopX();
 				}
 			}
@@ -160,15 +157,18 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void handlePlayerActions() {
-		if (activeKeys.contains(KeyCode.UP)) user.moveUp();
-		if (activeKeys.contains(KeyCode.DOWN)) user.moveDown();
-		if (activeKeys.contains(KeyCode.LEFT)) user.moveLeft();
-		if (activeKeys.contains(KeyCode.RIGHT)) user.moveRight();
+		if (activeKeys.contains(KeyCode.UP) || (activeKeys.contains(KeyCode.W))) user.moveUp();
+		if (activeKeys.contains(KeyCode.DOWN) || (activeKeys.contains(KeyCode.S))) user.moveDown();
+		if (activeKeys.contains(KeyCode.LEFT) || (activeKeys.contains(KeyCode.A))) user.moveLeft();
+		if (activeKeys.contains(KeyCode.RIGHT) || (activeKeys.contains(KeyCode.D))) user.moveRight();
 		if (activeKeys.contains(KeyCode.SPACE)) {
+			long currentTime = System.currentTimeMillis();
+			if (currentTime - lastFiredProjectile> PROJECTILE_COOLDOWN) {
 				fireProjectile();
-		}
+				lastFiredProjectile = currentTime;
+			}
+		} //Makes sure that the active keys don't make any weird combinations when the user is inputting as it can effectively separate the processing of keys
 	}
-
 	private void fireProjectile() {
 		ActiveActorDestructible projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
@@ -187,10 +187,10 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateActors() {
-		friendlyUnits.forEach(plane -> plane.updateActor());
-		enemyUnits.forEach(enemy -> enemy.updateActor());
-		userProjectiles.forEach(projectile -> projectile.updateActor());
-		enemyProjectiles.forEach(projectile -> projectile.updateActor());
+		friendlyUnits.forEach(ActiveActorDestructible::updateActor);
+		enemyUnits.forEach(ActiveActorDestructible::updateActor);
+		userProjectiles.forEach(ActiveActorDestructible::updateActor);
+		enemyProjectiles.forEach(ActiveActorDestructible::updateActor);
 	}
 
 	private void removeAllDestroyedActors() {
@@ -201,7 +201,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(actor -> actor.isDestroyed())
+		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(ActiveActorDestructible::isDestroyed)
 				.collect(Collectors.toList());
 		root.getChildren().removeAll(destroyedActors);
 		actors.removeAll(destroyedActors);
