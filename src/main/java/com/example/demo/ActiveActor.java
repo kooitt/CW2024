@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import javafx.scene.image.*;
-import java.net.URL;
 
 public abstract class ActiveActor extends ImageView implements ActorBehaviour{
 
