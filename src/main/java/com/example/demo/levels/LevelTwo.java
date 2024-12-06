@@ -1,12 +1,18 @@
 package com.example.demo.levels;
 
+import com.example.demo.actors.ActiveActor;
 import com.example.demo.actors.ActorLevelUp;
 import com.example.demo.actors.Boss;
 import com.example.demo.actors.HeartItem;
 import com.example.demo.views.LevelView;
 import com.example.demo.views.LevelViewLevelTwo;
 import com.example.demo.components.SoundComponent;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.util.Duration;
 
 public class LevelTwo extends LevelParent {
 
@@ -31,7 +37,7 @@ public class LevelTwo extends LevelParent {
             checkIfReadyToProceed();
         });
         getUser().getHealthComponent().setMaxHealth(PLAYER_MAX_HEALTH);
-        getUser().getHealthComponent().setCurrentHealth(PLAYER_INITIAL_HEALTH);
+//        getUser().getHealthComponent().setCurrentHealth(PLAYER_INITIAL_HEALTH);
     }
 
     @Override
@@ -46,8 +52,7 @@ public class LevelTwo extends LevelParent {
         } else if (boss.isDestroyed() && !transitioningToNextLevel) {
             transitioningToNextLevel = true;
             isInputEnabled = false;
-            user.stopShooting();
-            bossdownSoundFinished = false;
+            getUser().stopShooting();
             SoundComponent.playBossdownSound(() -> {
                 bossdownSoundFinished = true;
                 checkIfReadyToProceed();
@@ -57,28 +62,64 @@ public class LevelTwo extends LevelParent {
 
     private void checkIfReadyToProceed() {
         if (bossdownSoundFinished && bossExplosionFinished) {
-            Platform.runLater(() -> goToNextLevel("com.example.demo.levels.LevelThree"));
+            Platform.runLater(() -> {
+                clearAllProjectiles();
+                double offScreenX = getScreenWidth() + 100;
+                Timeline exitTimeline = new Timeline(
+                    new KeyFrame(Duration.ZERO, new KeyValue(getUser().layoutXProperty(), getUser().layoutXProperty().getValue())),
+                    new KeyFrame(Duration.millis(1000), event -> goToNextLevel("com.example.demo.levels.LevelThree"), new KeyValue(getUser().layoutXProperty(), offScreenX, Interpolator.EASE_IN))
+                );
+                exitTimeline.play();
+            });
         }
     }
 
     @Override
     protected void spawnEnemyUnits() {
-        if (!isInputEnabled) return;
-        if (getCurrentNumberOfEnemies() == 0) addEnemyUnit(boss);
+        if (!isInputEnabled) return; // 如果输入被禁用，则暂时不生成敌人
+        if (getCurrentNumberOfEnemies() == 0) {
+            // 创建并添加Boss
+            addEnemyUnit(boss); // 此时boss已加入root
+
+            // 记录Boss最终的X位置（假设Boss构造中使用了固定的INITIAL_X_POSITION = 1000.0）
+            double bossFinalX = boss.getLayoutX();
+            // 将Boss初始位置设在屏幕右侧外部
+            double offScreenStartX = getScreenWidth() + 100;
+            boss.setLayoutX(offScreenStartX);
+
+            // 创建KeyValue，让Boss从offScreenStartX移动到bossFinalX
+            KeyValue kv = new KeyValue(boss.layoutXProperty(), bossFinalX, Interpolator.EASE_IN);
+
+            // 创建KeyFrame，在1秒内完成移动（1000毫秒）
+            KeyFrame kf = new KeyFrame(Duration.millis(800), event -> {
+                // 动画结束后可执行回调，例如开始Boss的射击或移动逻辑
+                // 例如:
+                // boss.startShooting();
+                // 当然如果boss默认就会射击，可以在Boss类构造中暂时stopFiring()，此处再startFiring()
+            }, kv);
+
+            // 创建Timeline并播放动画
+            Timeline bossIntroTimeline = new Timeline(
+                    new KeyFrame(Duration.ZERO, new KeyValue(boss.layoutXProperty(), offScreenStartX)),
+                    kf
+            );
+            bossIntroTimeline.play();
+        }
+        spawnPowerUps();
+    }
+
+    private void spawnPowerUps() {
         if (Math.random() < POWER_UP_SPAWN_PROBABILITY) {
-            double x = getScreenWidth();
-            double y = Math.random() * getEnemyMaximumYPosition();
-            ActorLevelUp powerUp = new ActorLevelUp(x, y);
-            powerUps.add(powerUp);
-            getRoot().getChildren().add(powerUp);
+            addPowerUp(new ActorLevelUp(getScreenWidth(), Math.random() * getEnemyMaximumYPosition()));
         }
         if (Math.random() < HEART_SPAWN_PROBABILITY) {
-            double x = getScreenWidth();
-            double y = Math.random() * getEnemyMaximumYPosition();
-            HeartItem heart = new HeartItem(x, y);
-            powerUps.add(heart);
-            getRoot().getChildren().add(heart);
+            addPowerUp(new HeartItem(getScreenWidth(), Math.random() * getEnemyMaximumYPosition()));
         }
+    }
+
+    private void addPowerUp(ActiveActor powerUp) {
+        powerUps.add(powerUp);
+        getRoot().getChildren().add(powerUp);
     }
 
     @Override

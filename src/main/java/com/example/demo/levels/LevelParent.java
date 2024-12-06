@@ -124,6 +124,31 @@ public abstract class LevelParent extends Observable {
         }
         root.getChildren().add(enemy);
     }
+	protected void clearAllProjectiles() {
+		// 销毁所有玩家子弹
+		for (ActiveActor p : new ArrayList<>(userProjectiles)) {
+			p.destroy();
+		}
+		// 销毁所有敌人子弹
+		for (ActiveActor p : new ArrayList<>(enemyProjectiles)) {
+			p.destroy();
+		}
+		//销毁所有Item
+		for (ActiveActor p : new ArrayList<>(powerUps)) {
+			p.destroy();
+		}
+		//销毁所有敌人
+		for (ActiveActor p : new ArrayList<>(enemyUnits)) {
+			p.destroy();
+		}
+
+		// 从root中移除所有子弹
+		removeDestroyedActors(userProjectiles, userProjectilePool);
+		removeDestroyedActors(enemyProjectiles, enemyProjectilePool, bossProjectilePool);
+		removeDestroyedActors(powerUps);
+		removeDestroyedActors(enemyUnits);
+
+	}
 
     public void startGame() {
         isInputEnabled = false;

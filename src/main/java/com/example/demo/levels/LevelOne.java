@@ -1,79 +1,94 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.ActiveActor;
-import com.example.demo.actors.ActorLevelUp;
-import com.example.demo.actors.EnemyPlane;
-import com.example.demo.actors.HeartItem;
+import com.example.demo.actors.*;
 import com.example.demo.views.LevelView;
 import com.example.demo.components.SoundComponent;
+import javafx.animation.*;
+import javafx.application.Platform;
+import javafx.util.Duration;
+import javafx.animation.Interpolator;
 
 public class LevelOne extends LevelParent {
 
-	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
-	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
-	private static final int TOTAL_ENEMIES = 5;
-	private static final int KILLS_TO_ADVANCE = 10;
-	private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
-	private static final double POWER_UP_SPAWN_PROBABILITY = 0.01; // 新增道具生成概率
-	private static final double HEART_SPAWN_PROBABILITY = 0.005; // 新增爱心道具生成概率
-	private static final int PLAYER_INITIAL_HEALTH = 5;
+    private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
+    private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
+    private static final int TOTAL_ENEMIES = 5;
+    private static final int KILLS_TO_ADVANCE = 10;
+    private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
+    private static final double POWER_UP_SPAWN_PROBABILITY = 0.01;
+    private static final double HEART_SPAWN_PROBABILITY = 0.005;
+    private static final int PLAYER_INITIAL_HEALTH = 5;
 
-	public LevelOne(double screenHeight, double screenWidth) {
-		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
-		SoundComponent.stopAllSound();;
-		SoundComponent.playLevel1Sound();
-	}
+    private boolean transitioningToNextLevel = false;
 
-	@Override
-	protected void checkIfGameOver() {
-		if (userIsDestroyed()) {
-			loseGame();
-		} else if (userHasReachedKillTarget()) {
-			goToNextLevel(NEXT_LEVEL);
-		}
-	}
+    public LevelOne(double screenHeight, double screenWidth) {
+        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
+        SoundComponent.stopAllSound();
+        SoundComponent.playLevel1Sound();
+    }
 
-	@Override
-	protected void initializeFriendlyUnits() {
-		getRoot().getChildren().add(getUser());
-	}
+    @Override
+    protected void checkIfGameOver() {
+        if (userIsDestroyed()) {
+            loseGame();
+        } else if (userHasReachedKillTarget() && !transitioningToNextLevel) {
+            transitioningToNextLevel = true;
+            isInputEnabled = false;
+            getUser().stopShooting();
+            SoundComponent.stopLevel1Sound();
+            checkIfReadyToProceed();
+        }
+    }
 
-	@Override
-	protected void spawnEnemyUnits() {
-		int currentEnemies = getCurrentNumberOfEnemies();
-		for (int i = 0; i < TOTAL_ENEMIES - currentEnemies; i++) {
-			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-				double yPos = Math.random() * getEnemyMaximumYPosition();
-				ActiveActor enemy = new EnemyPlane(getScreenWidth(), yPos, getRoot());
-				addEnemyUnit(enemy);
-			}
-		}
+    private void checkIfReadyToProceed() {
+        Platform.runLater(() -> {
+            clearAllProjectiles();
+            double offScreenX = getScreenWidth() + 100;
+            Timeline exitTimeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(getUser().layoutXProperty(), getUser().layoutXProperty().getValue())),
+                new KeyFrame(Duration.millis(1000), event -> goToNextLevel(NEXT_LEVEL), new KeyValue(getUser().layoutXProperty(), offScreenX, Interpolator.EASE_IN))
+            );
+            exitTimeline.play();
+        });
+    }
 
-		// 随机生成 ActorLevelUp
-		if (Math.random() < POWER_UP_SPAWN_PROBABILITY) {
-			double x = getScreenWidth(); // 从屏幕右侧生成
-			double y = Math.random() * getEnemyMaximumYPosition(); // 随机Y坐标
-			ActorLevelUp powerUp = new ActorLevelUp(x, y);
-			powerUps.add(powerUp);
-			getRoot().getChildren().add(powerUp);
-		}
+    @Override
+    protected void initializeFriendlyUnits() {
+        getRoot().getChildren().add(getUser());
+    }
 
-		if (Math.random() < HEART_SPAWN_PROBABILITY) { // 定义一个合适的生成概率，例如 0.02
-			double x = getScreenWidth(); // 从屏幕右侧生成
-			double y = Math.random() * getEnemyMaximumYPosition(); // 随机Y坐标
-			HeartItem heart = new HeartItem(x, y);
-			powerUps.add(heart); // 如果已有 powerUps 列表用于存放道具
-			getRoot().getChildren().add(heart);
-		}
+    @Override
+    protected void spawnEnemyUnits() {
+        if (!isInputEnabled) return;
+        int currentEnemies = getCurrentNumberOfEnemies();
+        for (int i = 0; i < TOTAL_ENEMIES - currentEnemies; i++) {
+            if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
+                addEnemyUnit(new EnemyPlane(getScreenWidth(), Math.random() * getEnemyMaximumYPosition(), getRoot()));
+            }
+        }
+        spawnPowerUps();
+    }
 
-	}
+    private void spawnPowerUps() {
+        if (Math.random() < POWER_UP_SPAWN_PROBABILITY) {
+            addPowerUp(new ActorLevelUp(getScreenWidth(), Math.random() * getEnemyMaximumYPosition()));
+        }
+        if (Math.random() < HEART_SPAWN_PROBABILITY) {
+            addPowerUp(new HeartItem(getScreenWidth(), Math.random() * getEnemyMaximumYPosition()));
+        }
+    }
 
-	@Override
-	protected LevelView instantiateLevelView() {
-		return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
-	}
+    private void addPowerUp(ActiveActor powerUp) {
+        powerUps.add(powerUp);
+        getRoot().getChildren().add(powerUp);
+    }
 
-	private boolean userHasReachedKillTarget() {
-		return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
-	}
+    @Override
+    protected LevelView instantiateLevelView() {
+        return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+    }
+
+    private boolean userHasReachedKillTarget() {
+        return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
+    }
 }
