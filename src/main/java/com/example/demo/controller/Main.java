@@ -21,6 +21,8 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) {
+		System.setProperty("javafx.allowHiDPI", "true"); // 启用高DPI支持
 		launch();
 	}
+
 }

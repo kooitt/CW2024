@@ -339,23 +339,29 @@ The following Java classes were modified, along with reasons for modification:
 
 ## Unexpected Issues and Solutions
 
-### Issue: Boss Explosion Animation Not Completing
+### Issue: Main Menu Interface Offset (Scaling Issue on Windows with 125% DPI)
 
-- **Problem**: The boss's explosion animation stops midway, and the game proceeds to the next level before the animation finishes.
+- **Problem**: When returning to the main menu after playing a level, the main menu interface would sometimes appear offset or misaligned on systems with Windows scaling set to 125%. Initially, the first time loading the main menu had no issues, but subsequent returns caused the interface to shift. Also, attempts to reuse the same root node for the main menu scene triggered exceptions like `is already set as root of another scene`.
+
 - **Analysis**:
-  - The boss object was being removed from the scene before the animation could complete.
-  - The game loop's actor removal logic did not account for ongoing animations.
-- **Solution Attempted**:
-  - Introduced an `isReadyToRemove` flag in the `Boss` class.
-  - Modified the `removeDestroyedActors` method in `LevelParent` to check this flag before removing the boss.
-  - Ensured the explosion animation has a callback that sets `isReadyToRemove` to `true` upon completion.
+  - The root node of the main menu scene was being reused across multiple scene transitions, which caused layout and scaling inconsistencies.
+  - JavaFX does not allow the same node to be the root of multiple scenes. Reusing the same `StackPane` or root layout node caused `IllegalArgumentException` when setting it to a new scene.
+  - Even after trying to recreate scenes dynamically, the offset issue persisted if the same main menu root node was reused.
+
+- **Solution**:
+  - To solve both the offset and node reuse issues, we unified the main menu display logic with the levels' approach.
+  - Instead of using a fixed `MainMenu` root node and toggling visibility, we introduced a `MainMenuParent` class similar to a `LevelParent`-like structure.
+  - Each time we return to the main menu, we create a new `MainMenuParent` instance and get a fresh `Scene`. This ensures a clean layout pass and avoids node reuse conflicts.
+  
+- **Implementation Details**:
+  - Created a `MainMenuParent` class (similar to how levels are structured) that handles its own `Scene`.
+  - In `Controller.showMainMenu()`, we now instantiate a new `MainMenuParent` each time and set its scene to the stage. This approach mirrors the process of loading a new level scene, ensuring consistency and preventing layout shifts.
+  - The `SettingsPage` is still integrated, but added and removed from the new main menu root each time as needed. This ensures no conflict in root node usage.
+
 - **Outcome**:
-  - Despite these changes, the animation still does not play completely.
-  - The issue may be due to other factors such as threading, timing discrepancies, or interference from the game loop.
-- **Next Steps**:
-  - Investigate if the game loop is affecting the animation timeline.
-  - Ensure that the animation is running on the JavaFX Application Thread.
-  - Check for any potential conflicts in updating UI elements during the game loop.
+  - After implementing `MainMenuParent` and creating a new scene for the main menu each time, the offset and scaling issues no longer occur.
+  - The `is already set as root of another scene` exception is resolved since each main menu display uses a brand-new root node and scene.
+  - This unified approach to scene management for both the main menu and levels led to a consistent and stable user interface across DPI scaling settings.
 
 ---
 

@@ -17,12 +17,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import com.example.demo.interfaces.LevelChangeListener;
 import javafx.util.Duration;
 
 import java.util.*;
 
-public abstract class LevelParent extends Observable {
+public abstract class LevelParent {
 
     private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
     private static final int MILLISECOND_DELAY = 30;
@@ -33,8 +33,8 @@ public abstract class LevelParent extends Observable {
     private final Group root;
     private final Timeline timeline;
     protected final UserPlane user;
-    private final Scene scene;
-    private final ImageView background;
+    private Scene scene;
+    private ImageView background;
 
     protected final List<Actor> friendlyUnits = new ArrayList<>();
     protected final List<Actor> enemyUnits = new ArrayList<>();
@@ -42,8 +42,9 @@ public abstract class LevelParent extends Observable {
     protected final List<Actor> enemyProjectiles = new ArrayList<>();
     protected final List<Actor> shields = new ArrayList<>();
     protected final List<Actor> powerUps = new ArrayList<>();
-    protected Controller controller;
+    private List<LevelChangeListener> levelChangeListeners = new ArrayList<>();
     private List<Timeline> additionalTimelines = new ArrayList<>();
+    protected Controller controller;
     protected boolean isInputEnabled = true;
 
     private int currentNumberOfEnemies;
@@ -123,6 +124,22 @@ public abstract class LevelParent extends Observable {
         SoundComponent.resumeCurrentLevelSound();
     }
 
+    public void addLevelChangeListener(LevelChangeListener listener) {
+        if (listener != null && !levelChangeListeners.contains(listener)) {
+            levelChangeListeners.add(listener);
+        }
+    }
+
+    public void removeLevelChangeListener(LevelChangeListener listener) {
+        levelChangeListeners.remove(listener);
+    }
+
+    protected void notifyLevelChange(String nextLevelName) {
+        for (LevelChangeListener listener : new ArrayList<>(levelChangeListeners)) {
+            listener.onLevelChange(nextLevelName);
+        }
+    }
+
     public void setSettingsPageForPause(SettingsPage sp) {
         this.settingsPageForPause = sp;
     }
@@ -134,20 +151,26 @@ public abstract class LevelParent extends Observable {
         isInputEnabled = false;
         isGamePaused = true;
 
-        settingsPageForPause.setBackAction(this::hidePauseMenu);
+        // 显示前刷新
+        getController().getSettingsPage().refresh();
+        getController().getSettingsPage().setBackAction(this::hidePauseMenu);
 
-        if (settingsPageForPause.getRoot().getParent() != null) {
-            ((Pane) settingsPageForPause.getRoot().getParent()).getChildren().remove(settingsPageForPause.getRoot());
+        if (getController().getSettingsPage().getRoot().getParent() != null) {
+            ((Pane) getController().getSettingsPage().getRoot().getParent()).getChildren().remove(getController().getSettingsPage().getRoot());
         }
 
-        getRoot().getChildren().add(settingsPageForPause.getRoot());
-        settingsPageForPause.getRoot().setVisible(true);
-        settingsPageForPause.getRoot().toFront();
+        getRoot().getChildren().add(getController().getSettingsPage().getRoot());
+        getController().getSettingsPage().getRoot().setVisible(true);
+        getController().getSettingsPage().getRoot().toFront();
     }
+
 
     private void hidePauseMenu() {
         if (!isGamePaused) return;
 
+        if (background != null) {
+            background.requestFocus();
+        }
         getRoot().getChildren().remove(settingsPageForPause.getRoot());
 
         isGamePaused = false;
@@ -239,8 +262,7 @@ public abstract class LevelParent extends Observable {
     }
 
     public void goToNextLevel(String levelName) {
-        setChanged();
-        notifyObservers(levelName);
+        notifyLevelChange(levelName);
     }
 
     private void updateScene() {
@@ -407,6 +429,10 @@ public abstract class LevelParent extends Observable {
         if (getRoot().getChildren().contains(pauseButton)) {
             getRoot().getChildren().remove(pauseButton);
         }
+        Button returnButton = createStyledButton("Return to Main Menu", () -> getController().returnToMainMenu());
+        returnButton.setLayoutX(getScreenWidth() / 2 - 150);
+        returnButton.setLayoutY(getScreenHeight() / 2 + 100);
+        getRoot().getChildren().add(returnButton);
     }
 
     protected void loseGame() {
@@ -420,14 +446,12 @@ public abstract class LevelParent extends Observable {
             getRoot().getChildren().remove(pauseButton);
         }
 
-        // 创建一个返回主菜单的按钮
         Button returnButton = createStyledButton("Return to Main Menu", () -> getController().returnToMainMenu());
-        returnButton.setLayoutX(getScreenWidth() / 2 - 150); // 设置按钮的X位置
-        returnButton.setLayoutY(getScreenHeight() / 2 + 100); // 设置按钮的Y位置
+        returnButton.setLayoutX(getScreenWidth() / 2 - 150);
+        returnButton.setLayoutY(getScreenHeight() / 2 + 100);
         getRoot().getChildren().add(returnButton);
     }
 
-    // 创建风格化按钮的方法
     private Button createStyledButton(String text, Runnable action) {
         Button button = new Button(text);
         String style = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-border-color: white; -fx-border-width: 2;";
@@ -442,16 +466,18 @@ public abstract class LevelParent extends Observable {
     public Controller getController() {
         return controller;
     }
+
     public void cleanUp() {
-        // 停止所有时间线
         if (timeline != null) {
             timeline.stop();
             timeline.getKeyFrames().clear();
         }
-        additionalTimelines.forEach(Timeline::stop);
-        additionalTimelines.clear();
+        for (Timeline t : additionalTimelines) {
+            t.stop();
+            t.getKeyFrames().clear();
+        }
 
-        // 清理根节点和所有子节点
+        additionalTimelines.clear();
         root.getChildren().clear();
         friendlyUnits.clear();
         enemyUnits.clear();
@@ -459,17 +485,22 @@ public abstract class LevelParent extends Observable {
         enemyProjectiles.clear();
         shields.clear();
         powerUps.clear();
-
-        // 释放音效和其他资源
-        SoundComponent.stopAllSound();
-
-        // 清理用户和其他对象的引用
         if (user != null) {
             user.stopShooting();
             user.setHealthComponent(null);
         }
+        SoundComponent.stopAllSound();
+        userProjectilePool = null;
+        enemyProjectilePool = null;
+        bossProjectilePool = null;
+        bossTwoProjectilePool = null;
+        animationComponent = null;
+        levelView = null;
+        controller = null;
+        scene = null;
+        background = null;
+        System.gc();
     }
-
 
     public UserPlane getUser() {
         return user;

@@ -11,11 +11,16 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class SettingsPage {
-
     private StackPane root;
     private Controller controller;
     private KeyBindings keyBindings;
     private Runnable backAction;
+
+    // 假设这四个按钮是用来显示当前按键的
+    private Button upKeyBtn;
+    private Button downKeyBtn;
+    private Button leftKeyBtn;
+    private Button rightKeyBtn;
 
     public SettingsPage(Controller controller) {
         this.controller = controller;
@@ -38,11 +43,13 @@ public class SettingsPage {
         VBox keyBox = new VBox(10);
         keyBox.setAlignment(Pos.CENTER);
 
+        // createKeySetting 返回HBox，其中包含用于显示按键的按钮引用
+        // 这里我们需要在 createKeySetting 时保存按钮引用以便 refresh 时更新文本
         keyBox.getChildren().addAll(
-                createKeySetting("Up Key:", keyBindings.getUpKey(), keyBindings::setUpKey),
-                createKeySetting("Down Key:", keyBindings.getDownKey(), keyBindings::setDownKey),
-                createKeySetting("Left Key:", keyBindings.getLeftKey(), keyBindings::setLeftKey),
-                createKeySetting("Right Key:", keyBindings.getRightKey(), keyBindings::setRightKey)
+                createKeySetting("Up Key:", keyBindings.getUpKey(), keyBindings::setUpKey, (btn)-> upKeyBtn = btn),
+                createKeySetting("Down Key:", keyBindings.getDownKey(), keyBindings::setDownKey, (btn)-> downKeyBtn = btn),
+                createKeySetting("Left Key:", keyBindings.getLeftKey(), keyBindings::setLeftKey, (btn)-> leftKeyBtn = btn),
+                createKeySetting("Right Key:", keyBindings.getRightKey(), keyBindings::setRightKey, (btn)-> rightKeyBtn = btn)
         );
 
         Button backBtn = createStyledButton("Back", () -> {
@@ -57,7 +64,16 @@ public class SettingsPage {
         root.getChildren().add(contentBox);
     }
 
-    private HBox createKeySetting(String labelText, KeyCode currentKey, java.util.function.Consumer<KeyCode> setter) {
+    // 添加 refresh() 方法，在显示前调用
+    public void refresh() {
+        upKeyBtn.setText(keyBindings.getUpKey().getName());
+        downKeyBtn.setText(keyBindings.getDownKey().getName());
+        leftKeyBtn.setText(keyBindings.getLeftKey().getName());
+        rightKeyBtn.setText(keyBindings.getRightKey().getName());
+    }
+
+    private HBox createKeySetting(String labelText, KeyCode currentKey,
+                                  java.util.function.Consumer<KeyCode> setter, java.util.function.Consumer<Button> buttonReference) {
         Label label = new Label(labelText);
         label.setStyle("-fx-text-fill: white; -fx-font-size: 18px;");
 
@@ -65,6 +81,8 @@ public class SettingsPage {
         keyBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 18px; -fx-border-color: white;");
         keyBtn.setOnMouseEntered(e -> keyBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: yellow; -fx-font-size: 18px; -fx-border-color: yellow;"));
         keyBtn.setOnMouseExited(e -> keyBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 18px; -fx-border-color: white;"));
+
+        buttonReference.accept(keyBtn);
 
         keyBtn.setOnAction(e -> {
             Stage keyStage = new Stage();

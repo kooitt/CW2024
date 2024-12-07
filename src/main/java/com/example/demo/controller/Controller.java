@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import java.lang.reflect.Constructor;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.ui.MainMenu;
@@ -14,25 +11,13 @@ public class Controller {
     private LevelParent currentLevel;
     private MainMenu mainMenu;
     private SettingsPage settingsPage;
-    private StackPane rootPane;
-    private Scene mainMenuScene; // 保存主菜单场景的引用
 
     public Controller(Stage stage) {
         this.stage = stage;
-        initialize();
-    }
-
-    private void initialize() {
-        rootPane = new StackPane();
-        mainMenu = new MainMenu(this);
         settingsPage = new SettingsPage(this);
 
-        rootPane.getChildren().add(mainMenu.getRoot());
-        mainMenu.getRoot().setVisible(true);
-
-        mainMenuScene = new Scene(rootPane, stage.getWidth(), stage.getHeight());
-        stage.setScene(mainMenuScene);
-        stage.show();
+        // 初始化后直接显示主菜单
+        showMainMenu();
     }
 
     public SettingsPage getSettingsPage() {
@@ -44,8 +29,11 @@ public class Controller {
     }
 
     public void showMainMenu() {
-        mainMenu.getRoot().setVisible(true);
-        stage.setScene(mainMenuScene);
+        // 每次显示主菜单都创建新的 MainMenuParent，从而拥有全新场景
+        mainMenu = new MainMenu(this);
+        stage.setScene(mainMenu.getScene());
+        mainMenu.startMenu();
+        stage.show();
     }
 
     public void launchGame() {
@@ -56,12 +44,14 @@ public class Controller {
         try {
             if (currentLevel != null) {
                 currentLevel.cleanUp();
+                currentLevel = null;
             }
             Class<?> myClass = Class.forName(className);
-            Constructor<?> constructor = myClass.getConstructor(double.class, double.class, Controller.class);
-            currentLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth(), this);
-            currentLevel.addObserver((o, arg) -> goToLevel((String) arg));
-            currentLevel.setSettingsPageForPause(settingsPage);
+            currentLevel = (LevelParent) myClass.getConstructor(double.class, double.class, Controller.class)
+                    .newInstance(stage.getHeight(), stage.getWidth(), this);
+
+            currentLevel.setSettingsPageForPause(this.getSettingsPage());
+            currentLevel.addLevelChangeListener(nextLevelName -> goToLevel(nextLevelName));
 
             Scene levelScene = currentLevel.initializeScene();
             stage.setScene(levelScene);
@@ -71,22 +61,11 @@ public class Controller {
         }
     }
 
-    private void clearScene(Scene scene) {
-        if (scene != null) {
-            if (scene.getRoot() instanceof Pane) {
-                Pane rootPane = (Pane) scene.getRoot();
-                rootPane.getChildren().clear();
-            }
-        }
-    }
-
     public void returnToMainMenu() {
-        // 在切换回主菜单前清理当前关卡
         if (currentLevel != null) {
             currentLevel.cleanUp();
             currentLevel = null;
         }
-        clearScene(stage.getScene());
         showMainMenu();
     }
 
@@ -95,6 +74,6 @@ public class Controller {
     }
 
     private void handleException(Exception e) {
-        // 错误处理逻辑
+        e.printStackTrace();
     }
 }
