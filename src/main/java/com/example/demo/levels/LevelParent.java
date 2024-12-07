@@ -9,21 +9,29 @@ import com.example.demo.utils.ObjectPool;
 import com.example.demo.projectiles.BulletFactory;
 import com.example.demo.utils.KeyBindings;
 import com.example.demo.views.LevelView;
+import com.example.demo.ui.SettingsPage;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import javafx.scene.control.Button;
 import java.util.*;
+import java.util.List;
 
 public abstract class LevelParent extends Observable {
 
@@ -45,6 +53,7 @@ public abstract class LevelParent extends Observable {
     protected final List<ActiveActor> enemyProjectiles = new ArrayList<>();
     protected final List<ActiveActor> shields = new ArrayList<>();
     protected final List<ActiveActor> powerUps = new ArrayList<>();
+    private List<Timeline> additionalTimelines = new ArrayList<>();
     protected boolean isInputEnabled = true;
 
     private int currentNumberOfEnemies;
@@ -58,8 +67,11 @@ public abstract class LevelParent extends Observable {
     private ObjectPool<Projectile> bossTwoProjectilePool;
 
     private AnimationComponent animationComponent;
-
     private long lastUpdateTime;
+    public Button pauseButton;
+    private StackPane pauseOverlay;
+    private boolean isGamePaused = false;
+    private SettingsPage settingsPageForPause;
 
     public LevelParent(String backgroundImageName, double screenHeight, double screenWidth) {
         this.root = new Group();
@@ -97,8 +109,73 @@ public abstract class LevelParent extends Observable {
         initializeFriendlyUnits();
         levelView.showHeartDisplay();
         user.setAnimationComponent(animationComponent);
+        // 添加暂停按钮到场景
+        pauseButton = new Button("Pause");
+        pauseButton.setStyle("-fx-font-size: 18px; -fx-background-color: transparent; -fx-text-fill: white;");
+        pauseButton.setOnAction(e -> showPauseMenu());
+
         return scene;
     }
+    public void addTimeline(Timeline timeline) {
+        additionalTimelines.add(timeline);
+    }
+
+    private void pauseAllGameTimelines() {
+        timeline.pause();
+        for (Timeline tl : additionalTimelines) {
+            tl.pause();
+        }
+        SoundComponent.pauseCurrentLevelSound(); // 暂停BGM
+    }
+
+    private void resumeAllGameTimelines() {
+        timeline.play();
+        for (Timeline tl : additionalTimelines) {
+            tl.play();
+        }
+        SoundComponent.resumeCurrentLevelSound(); // 恢复BGM
+    }
+
+    public void setSettingsPageForPause(SettingsPage sp) {
+        this.settingsPageForPause = sp;
+    }
+
+    private void showPauseMenu() {
+        if (isGamePaused) return;
+
+        pauseAllGameTimelines();
+        isInputEnabled = false;
+        isGamePaused = true;
+
+        settingsPageForPause.setBackAction(this::hidePauseMenu);
+
+        // 确保 settingsPageForPause无父节点
+        if (settingsPageForPause.getRoot().getParent() != null) {
+            ((Pane)settingsPageForPause.getRoot().getParent()).getChildren().remove(settingsPageForPause.getRoot());
+        }
+
+        // 添加到当前关卡root
+        getRoot().getChildren().add(settingsPageForPause.getRoot());
+        settingsPageForPause.getRoot().setVisible(true);
+        settingsPageForPause.getRoot().toFront();
+    }
+
+    private void hidePauseMenu() {
+        if (!isGamePaused) return;
+
+        getRoot().getChildren().remove(settingsPageForPause.getRoot());
+
+        isGamePaused = false;
+        isInputEnabled = true;
+        resumeAllGameTimelines();
+
+        background.requestFocus();
+        activeKeys.clear();
+        user.stopVerticalMovement();
+        user.stopHorizontalMovement();
+    }
+
+
 
     protected boolean userIsDestroyed() {
         return user.isDestroyed();
@@ -167,6 +244,14 @@ public abstract class LevelParent extends Observable {
             isInputEnabled = true;
             background.requestFocus();
             timeline.play();
+
+            // 玩家入场动画结束后再添加暂停按钮
+            pauseButton.setLayoutX(getScreenWidth() - 100);
+            pauseButton.setLayoutY(20);
+            if (!userIsDestroyed()) { // 确保玩家没死时才添加
+                getRoot().getChildren().add(pauseButton);
+            }
+
         }, kv2);
 
         Timeline introTimeline = new Timeline(
@@ -177,6 +262,7 @@ public abstract class LevelParent extends Observable {
 
         introTimeline.play();
     }
+
 
     public void goToNextLevel(String levelName) {
         setChanged();

@@ -8,6 +8,7 @@ import java.util.Observable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
@@ -15,9 +16,7 @@ import com.example.demo.ui.MainMenu;
 import com.example.demo.ui.SettingsPage;
 
 public class Controller implements Observer {
-
- private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
- private final Stage stage;
+ private Stage stage;
  private LevelParent currentLevel;
  private MainMenu mainMenu;
  private SettingsPage settingsPage;
@@ -32,12 +31,18 @@ public class Controller implements Observer {
   rootPane = new StackPane();
   mainMenu = new MainMenu(this);
   settingsPage = new SettingsPage(this);
-  rootPane.getChildren().addAll(mainMenu.getRoot(), settingsPage.getRoot());
+
+  // 只添加 mainMenu 的 root 到 rootPane
+  rootPane.getChildren().add(mainMenu.getRoot());
   mainMenu.getRoot().setVisible(true);
-  settingsPage.getRoot().setVisible(false);
+
   Scene scene = new Scene(rootPane, stage.getWidth(), stage.getHeight());
   stage.setScene(scene);
   stage.show();
+ }
+
+ public SettingsPage getSettingsPage() {
+  return settingsPage;
  }
 
  public Stage getStage() {
@@ -46,24 +51,14 @@ public class Controller implements Observer {
 
  public void showMainMenu() {
   mainMenu.getRoot().setVisible(true);
-  settingsPage.getRoot().setVisible(false);
  }
 
  public void launchGame() {
   try {
-   goToLevel(LEVEL_ONE_CLASS_NAME);
+   goToLevel("com.example.demo.levels.LevelOne");
   } catch (Exception e) {
    handleException(e);
   }
- }
-
- public void showSettings() {
-  mainMenu.getRoot().setVisible(false);
-  settingsPage.getRoot().setVisible(true);
- }
-
- public void exitGame() {
-  stage.close();
  }
 
  private void goToLevel(String className) {
@@ -73,12 +68,24 @@ public class Controller implements Observer {
    Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
    currentLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
    currentLevel.addObserver(this);
+
+   // 确保 settingsPage 不在别的父节点中
+   if (settingsPage.getRoot().getParent() != null) {
+    ((Pane)settingsPage.getRoot().getParent()).getChildren().remove(settingsPage.getRoot());
+   }
+
+   currentLevel.setSettingsPageForPause(settingsPage);
+
    Scene levelScene = currentLevel.initializeScene();
    stage.setScene(levelScene);
    currentLevel.startGame();
   } catch (Exception e) {
    handleException(e);
   }
+ }
+ 
+ public void exitGame() {
+  stage.close();
  }
 
  @Override
@@ -100,7 +107,7 @@ public class Controller implements Observer {
   } else {
    e.printStackTrace();
   }
-  Alert alert = new Alert(AlertType.ERROR, e.getClass().toString());
+  Alert alert = new Alert(Alert.AlertType.ERROR, e.getClass().toString());
   alert.show();
  }
 }

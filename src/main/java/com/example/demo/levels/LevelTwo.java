@@ -48,6 +48,9 @@ public class LevelTwo extends LevelParent {
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
+            if (getRoot().getChildren().contains(pauseButton)) {
+                getRoot().getChildren().remove(pauseButton);
+            }
             loseGame();
         } else if (boss.isDestroyed() && !transitioningToNextLevel) {
             transitioningToNextLevel = true;
@@ -63,6 +66,9 @@ public class LevelTwo extends LevelParent {
     private void checkIfReadyToProceed() {
         if (bossdownSoundFinished && bossExplosionFinished) {
             Platform.runLater(() -> {
+                if (getRoot().getChildren().contains(pauseButton)) {
+                    getRoot().getChildren().remove(pauseButton);
+                }
                 clearAllProjectiles();
                 double offScreenX = getScreenWidth() + 100;
                 Timeline exitTimeline = new Timeline(

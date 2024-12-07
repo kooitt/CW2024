@@ -1,4 +1,3 @@
-// SettingsPage.java
 package com.example.demo.ui;
 
 import com.example.demo.controller.Controller;
@@ -9,8 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class SettingsPage {
@@ -18,6 +15,7 @@ public class SettingsPage {
     private StackPane root; // 使用 StackPane 作为根布局
     private Controller controller;
     private KeyBindings keyBindings;
+    private Runnable backAction; // 用于在不同场景下动态指定Back按钮的行为
 
     public SettingsPage(Controller controller) {
         this.controller = controller;
@@ -27,13 +25,9 @@ public class SettingsPage {
 
     private void initialize() {
         root = new StackPane();
-
-        // 加载背景图
-        Image backgroundImage = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
-        ImageView bgView = new ImageView(backgroundImage);
-        bgView.setFitWidth(controller.getStage().getWidth());
-        bgView.setFitHeight(controller.getStage().getHeight());
-        bgView.setPreserveRatio(false);
+        // 设置黑色半透明背景
+        root.setStyle("-fx-background-color: rgba(0,0,0,0.75);");
+        root.setPrefSize(controller.getStage().getWidth(), controller.getStage().getHeight());
 
         VBox contentBox = new VBox(20);
         contentBox.setAlignment(Pos.CENTER);
@@ -52,12 +46,15 @@ public class SettingsPage {
                 createKeySetting("Right Key:", keyBindings.getRightKey(), keyBindings::setRightKey)
         );
 
-        Button backBtn = createButton("Back to Main Menu", controller::showMainMenu);
+        Button backBtn = createButton("Back", () -> {
+            if (backAction != null) {
+                backAction.run();
+            }
+        });
 
         contentBox.getChildren().addAll(title, keyBox, backBtn);
 
-        // 将背景图和内容添加到 StackPane
-        root.getChildren().addAll(bgView, contentBox);
+        root.getChildren().add(contentBox);
     }
 
     private HBox createKeySetting(String labelText, KeyCode currentKey, java.util.function.Consumer<KeyCode> setter) {
@@ -104,5 +101,9 @@ public class SettingsPage {
 
     public StackPane getRoot() {
         return root;
+    }
+
+    public void setBackAction(Runnable backAction) {
+        this.backAction = backAction;
     }
 }

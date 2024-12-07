@@ -31,6 +31,9 @@ public class LevelThree extends LevelParent {
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
+            if (getRoot().getChildren().contains(pauseButton)) {
+                getRoot().getChildren().remove(pauseButton);
+            }
             loseGame();
         } else if (boss.isDestroyed()) {
             winGame();

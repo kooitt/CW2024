@@ -13,7 +13,7 @@ public class LevelOne extends LevelParent {
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
     private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
     private static final int TOTAL_ENEMIES = 5;
-    private static final int KILLS_TO_ADVANCE = 10;
+    private static final int KILLS_TO_ADVANCE = 20;
     private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
     private static final double POWER_UP_SPAWN_PROBABILITY = 0.01;
     private static final double HEART_SPAWN_PROBABILITY = 0.005;
@@ -30,6 +30,9 @@ public class LevelOne extends LevelParent {
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
+            if (getRoot().getChildren().contains(pauseButton)) {
+                getRoot().getChildren().remove(pauseButton);
+            }
             loseGame();
         } else if (userHasReachedKillTarget() && !transitioningToNextLevel) {
             transitioningToNextLevel = true;
@@ -42,6 +45,9 @@ public class LevelOne extends LevelParent {
 
     private void checkIfReadyToProceed() {
         Platform.runLater(() -> {
+            if (getRoot().getChildren().contains(pauseButton)) {
+                getRoot().getChildren().remove(pauseButton);
+            }
             clearAllProjectiles();
             double offScreenX = getScreenWidth() + 100;
             Timeline exitTimeline = new Timeline(

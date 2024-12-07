@@ -9,13 +9,16 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import com.example.demo.components.SoundComponent;
 
+// MainMenu.java 部分修改
 public class MainMenu {
 
-    private StackPane root; // 使用 StackPane 作为根布局
+    private StackPane root;
     private Controller controller;
+    private SettingsPage settingsPage;
 
     public MainMenu(Controller controller) {
         this.controller = controller;
+        this.settingsPage = new SettingsPage(controller);
         initialize();
         SoundComponent.playMainmenuSound();
     }
@@ -23,25 +26,29 @@ public class MainMenu {
     private void initialize() {
         root = new StackPane();
 
-        // 加载背景图
         Image backgroundImage = new Image(getClass().getResource("/com/example/demo/images/StartMenu.png").toExternalForm());
         ImageView bgView = new ImageView(backgroundImage);
         bgView.setFitWidth(controller.getStage().getWidth());
         bgView.setFitHeight(controller.getStage().getHeight());
         bgView.setPreserveRatio(false);
 
-        // 创建按钮
         VBox menuBox = new VBox(20);
         menuBox.setAlignment(Pos.CENTER);
 
         Button startBtn = createButton("Start Game", controller::launchGame);
-        Button settingsBtn = createButton("Settings", controller::showSettings);
+        Button settingsBtn = createButton("Settings", this::showSettingsOverlay);
         Button exitBtn = createButton("Exit Game", controller::exitGame);
 
         menuBox.getChildren().addAll(startBtn, settingsBtn, exitBtn);
 
-        // 将背景图和按钮添加到 StackPane
         root.getChildren().addAll(bgView, menuBox);
+
+        // 设置返回操作（当在主菜单下显示settings时，back返回关闭settings界面）
+        settingsPage.setBackAction(() -> {
+            if (root.getChildren().contains(settingsPage.getRoot())) {
+                root.getChildren().remove(settingsPage.getRoot());
+            }
+        });
     }
 
     private Button createButton(String text, Runnable action) {
@@ -55,7 +62,14 @@ public class MainMenu {
         return button;
     }
 
+    private void showSettingsOverlay() {
+        if (!root.getChildren().contains(settingsPage.getRoot())) {
+            root.getChildren().add(settingsPage.getRoot());
+        }
+    }
+
     public StackPane getRoot() {
         return root;
     }
 }
+

@@ -6,6 +6,8 @@ import javafx.scene.media.MediaPlayer;
 
 public class SoundComponent {
 
+
+    private static MediaPlayer currentBGM;
     private static final String ENEMYDOWN_SOUND_LOCATION = "/com/example/demo/sounds/enemydown.wav";
     private static final String BOSSDOWN_SOUND_LOCATION = "/com/example/demo/sounds/bossdown.wav";
     private static final String SHOOT_SOUND_LOCATION = "/com/example/demo/sounds/bullet.wav";
@@ -86,6 +88,18 @@ public class SoundComponent {
         }
     }
 
+    public static void pauseCurrentLevelSound() {
+        if (currentBGM != null) {
+            currentBGM.pause();
+        }
+    }
+
+    public static void resumeCurrentLevelSound() {
+        if (currentBGM != null) {
+            currentBGM.play();
+        }
+    }
+
     /**
      * 播放爆炸声音
      */
@@ -101,6 +115,7 @@ public class SoundComponent {
             enemydownPlayer.stop();
         }
     }
+
 
     /**
      * 播放射击声音
@@ -154,8 +169,9 @@ public class SoundComponent {
      */
     public static void playLevel1Sound() {
         if (level1Player != null) {
-            level1Player.stop(); // 重置播放器以便重复播放
+            level1Player.stop();
             level1Player.play();
+            currentBGM = level1Player; // 设置当前BGM
         }
     }
 
@@ -169,6 +185,7 @@ public class SoundComponent {
         if (level2Player != null) {
             level2Player.stop(); // 重置播放器以便重复播放
             level2Player.play();
+            currentBGM = level2Player; // 设置当前BGM
         }
     }
 
@@ -259,6 +276,7 @@ public class SoundComponent {
     }
 
     public static void stopAllSound() {
+        currentBGM = null;
         if (level1Player != null) {
             level1Player.stop();
         }

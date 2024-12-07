@@ -110,7 +110,11 @@ public class Boss extends ActiveActor {
         }));
         shieldCheckTimeline.setCycleCount(Timeline.INDEFINITE);
         shieldCheckTimeline.play();
+
+        // 将boss的shieldCheckTimeline添加到level中，以便统一暂停/恢复
+        level.addTimeline(shieldCheckTimeline);
     }
+
 
     private void summonShield() {
         if (isSummoningShield) return;

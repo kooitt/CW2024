@@ -2,6 +2,7 @@ module com.example.demo {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.media;
+    requires java.desktop;
 
     // 仅导出需要暴露的包，符合封装原则
     exports com.example.demo.controller;
