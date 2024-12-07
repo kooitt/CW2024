@@ -1,4 +1,3 @@
-// SoundComponent.java
 package com.example.demo.components;
 
 import javafx.scene.media.Media;
@@ -6,83 +5,29 @@ import javafx.scene.media.MediaPlayer;
 
 public class SoundComponent {
 
-
     private static MediaPlayer currentBGM;
-    private static final String ENEMYDOWN_SOUND_LOCATION = "/com/example/demo/sounds/enemydown.wav";
-    private static final String BOSSDOWN_SOUND_LOCATION = "/com/example/demo/sounds/bossdown.wav";
-    private static final String SHOOT_SOUND_LOCATION = "/com/example/demo/sounds/bullet.wav";
-    private static final String LEVEL1_SOUND_LOCATION = "/com/example/demo/sounds/level1.wav";
-    private static final String LEVEL2_SOUND_LOCATION = "/com/example/demo/sounds/level2.mp3";
-    private static final String MAINMENU_SOUND_LOCATION = "/com/example/demo/sounds/mainmenu.wav";
-    private static final String UPGRADE_SOUND_LOCATION = "/com/example/demo/sounds/upgrade.wav";
-    private static final String GAMEOVER_SOUND_LOCATION = "/com/example/demo/sounds/gameover.wav";
-    private static final String GETBULLET_SOUND_LOCATION = "/com/example/demo/sounds/getbullet.wav";
-    private static final String GETHEALTH_SOUND_LOCATION = "/com/example/demo/sounds/gethealth.wav";
+    private static final String[] SOUND_LOCATIONS = {
+        "/com/example/demo/sounds/enemydown.wav",
+        "/com/example/demo/sounds/bossdown.wav",
+        "/com/example/demo/sounds/bullet.wav",
+        "/com/example/demo/sounds/level1.wav",
+        "/com/example/demo/sounds/level2.mp3",
+        "/com/example/demo/sounds/mainmenu.wav",
+        "/com/example/demo/sounds/upgrade.wav",
+        "/com/example/demo/sounds/gameover.wav",
+        "/com/example/demo/sounds/getbullet.wav",
+        "/com/example/demo/sounds/gethealth.wav"
+    };
 
-    private static Media explosionMedia;
-    private static Media bossdownMedia;
-    private static Media shootMedia;
-    private static Media level1Media;
-    private static Media level2Media;
-    private static Media mainmenuMedia;
-    private static Media upgradeMedia;
-    private static Media gameoverMedia;
-    private static Media getbulletMedia;
-    private static Media gethealthMedia;
-    private static MediaPlayer enemydownPlayer;
-    private static MediaPlayer bossdownPlayer;
-    private static MediaPlayer shootPlayer;
-    private static MediaPlayer level1Player;
-    private static MediaPlayer level2Player;
-    private static MediaPlayer mainmenuPlayer;
-    private static MediaPlayer upgradePlayer;
-    private static MediaPlayer gameoverPlayer;
-    private static MediaPlayer getbulletPlayer;
-    private static MediaPlayer gethealthPlayer;
-
+    private static Media[] media = new Media[SOUND_LOCATIONS.length];
+    private static MediaPlayer[] players = new MediaPlayer[SOUND_LOCATIONS.length];
 
     static {
         try {
-            // 加载爆炸声音
-            explosionMedia = new Media(SoundComponent.class.getResource(ENEMYDOWN_SOUND_LOCATION).toExternalForm());
-            enemydownPlayer = new MediaPlayer(explosionMedia);
-
-            // 加载射击声音
-            shootMedia = new Media(SoundComponent.class.getResource(SHOOT_SOUND_LOCATION).toExternalForm());
-            shootPlayer = new MediaPlayer(shootMedia);
-
-            //加载bossdown声音
-            bossdownMedia = new Media(SoundComponent.class.getResource(BOSSDOWN_SOUND_LOCATION).toExternalForm());
-            bossdownPlayer = new MediaPlayer(bossdownMedia);
-
-            //加载level1声音
-            level1Media = new Media(SoundComponent.class.getResource(LEVEL1_SOUND_LOCATION).toExternalForm());
-            level1Player = new MediaPlayer(level1Media);
-
-
-            level2Media = new Media(SoundComponent.class.getResource(LEVEL2_SOUND_LOCATION).toExternalForm());
-            level2Player = new MediaPlayer(level2Media);
-
-            //加载mainmenu声音
-            mainmenuMedia = new Media(SoundComponent.class.getResource(MAINMENU_SOUND_LOCATION).toExternalForm());
-            mainmenuPlayer = new MediaPlayer(mainmenuMedia);
-
-            //加载upgrade声音
-            upgradeMedia = new Media(SoundComponent.class.getResource(UPGRADE_SOUND_LOCATION).toExternalForm());
-            upgradePlayer = new MediaPlayer(upgradeMedia);
-
-            //加载gameover声音
-            gameoverMedia = new Media(SoundComponent.class.getResource(GAMEOVER_SOUND_LOCATION).toExternalForm());
-            gameoverPlayer = new MediaPlayer(gameoverMedia);
-
-            //加载getbullet声音
-            getbulletMedia = new Media(SoundComponent.class.getResource(GETBULLET_SOUND_LOCATION).toExternalForm());
-            getbulletPlayer = new MediaPlayer(getbulletMedia);
-
-            //加载gethealth声音
-            gethealthMedia = new Media(SoundComponent.class.getResource(GETHEALTH_SOUND_LOCATION).toExternalForm());
-            gethealthPlayer = new MediaPlayer(gethealthMedia);
-
+            for (int i = 0; i < SOUND_LOCATIONS.length; i++) {
+                media[i] = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[i]).toExternalForm());
+                players[i] = new MediaPlayer(media[i]);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,210 +45,88 @@ public class SoundComponent {
         }
     }
 
-    /**
-     * 播放爆炸声音
-     */
+    public static void playSound(int index) {
+        if (players[index] != null) {
+            players[index].stop();
+            players[index].play();
+        }
+    }
+
+    public static void stopSound(int index) {
+        if (players[index] != null) {
+            players[index].stop();
+        }
+    }
     public static void playExplosionSound() {
-        if (enemydownPlayer != null) {
-            enemydownPlayer.stop(); // 重置播放器以便重复播放
-            enemydownPlayer.play();
-        }
+        playSound(0); // Assuming index 0 is for explosion sound
     }
-
-    public static void stopExplosionSound() {
-        if (enemydownPlayer != null) {
-            enemydownPlayer.stop();
-        }
-    }
-
-
-    /**
-     * 播放射击声音
-     */
-    public static void playShootingSound() {
-        if (shootPlayer != null) {
-            shootPlayer.stop(); // 重置播放器以便重复播放
-            shootPlayer.play();
-        }
-    }
-
-    public static void stopShootingSound() {
-        if (shootPlayer != null) {
-            shootPlayer.stop();
-        }
-    }
-
-    /**
-     * 播放bossdown声音
-     */
     public static void playBossdownSound(Runnable onFinished) {
-        if (bossdownPlayer != null) {
-            bossdownPlayer.stop(); // 重置播放器以便重复播放
-            bossdownPlayer.setOnEndOfMedia(() -> {
-                bossdownPlayer.setOnEndOfMedia(null); // 重置事件处理器
+        if (players[1] != null) {
+            players[1].stop();
+            players[1].setOnEndOfMedia(() -> {
+                players[1].setOnEndOfMedia(null);
                 if (onFinished != null) {
                     onFinished.run();
                 }
             });
-            bossdownPlayer.play();
+            players[1].play();
         } else if (onFinished != null) {
-            onFinished.run(); // 如果播放器不可用，立即执行回调
+            onFinished.run();
         }
     }
 
-    // 不带参数的重载方法，兼容其他调用
     public static void playBossdownSound() {
         playBossdownSound(null);
     }
 
-
-
-    public static void stopBossdownSound() {
-        if (bossdownPlayer != null) {
-            bossdownPlayer.stop();
-        }
+    public static void playShootingSound() {
+        playSound(2);
     }
 
-    /**
-     * 播放level1声音
-     */
     public static void playLevel1Sound() {
-        if (level1Player != null) {
-            level1Player.stop();
-            level1Player.play();
-            currentBGM = level1Player; // 设置当前BGM
-        }
-    }
-
-    public static void stopLevel1Sound() {
-        if (level1Player != null) {
-            level1Player.stop();
-        }
+        playSound(3);
+        currentBGM = players[3];
     }
 
     public static void playLevel2Sound() {
-        if (level2Player != null) {
-            level2Player.stop(); // 重置播放器以便重复播放
-            level2Player.play();
-            currentBGM = level2Player; // 设置当前BGM
-        }
+        playSound(4);
+        currentBGM = players[4];
+    }
+
+    public static void playMainmenuSound() {
+        playSound(5);
+    }
+
+    public static void playUpgradeSound() {
+        playSound(6);
+    }
+
+    public static void playGameoverSound() {
+        playSound(7);
+    }
+
+    public static void playGetbulletSound() {
+        playSound(8);
+    }
+
+    public static void playGethealthSound() {
+        playSound(9);
+    }
+
+    public static void stopLevel1Sound() {
+        stopSound(3);
     }
 
     public static void stopLevel2Sound() {
-        if (level2Player != null) {
-            level2Player.stop();
-        }
-    }
-
-    /**
-     * 播放mainmenu声音
-     */
-    public static void playMainmenuSound() {
-        if (mainmenuPlayer != null) {
-            mainmenuPlayer.stop(); // 重置播放器以便重复播放
-            mainmenuPlayer.play();
-        }
-    }
-
-    public static void stopMainmenuSound() {
-        if (mainmenuPlayer != null) {
-            mainmenuPlayer.stop();
-        }
-    }
-
-    /**
-     * 播放upgrade声音
-     */
-    public static void playUpgradeSound() {
-        if (upgradePlayer != null) {
-            upgradePlayer.stop(); // 重置播放器以便重复播放
-            upgradePlayer.play();
-        }
-    }
-
-    public static void stopUpgradeSound() {
-        if (upgradePlayer != null) {
-            upgradePlayer.stop();
-        }
-    }
-
-    /**
-     * 播放gameover声音
-     */
-    public static void playGameoverSound() {
-        if (gameoverPlayer != null) {
-            gameoverPlayer.stop(); // 重置播放器以便重复播放
-            gameoverPlayer.play();
-        }
-    }
-
-    public static void stopGameoverSound() {
-        if (gameoverPlayer != null) {
-            gameoverPlayer.stop();
-        }
-    }
-
-    /**
-     * 播放getbullet声音
-     */
-    public static void playGetbulletSound() {
-        if (getbulletPlayer != null) {
-            getbulletPlayer.stop(); // 重置播放器以便重复播放
-            getbulletPlayer.play();
-        }
-    }
-
-    public static void stopGetbulletSound() {
-        if (getbulletPlayer != null) {
-            getbulletPlayer.stop();
-        }
-    }
-
-    /**
-     * 播放gethealth声音
-     */
-    public static void playGethealthSound() {
-        if (gethealthPlayer != null) {
-            gethealthPlayer.stop(); // 重置播放器以便重复播放
-            gethealthPlayer.play();
-        }
-    }
-
-    public static void stopGethealthSound() {
-        if (gethealthPlayer != null) {
-            gethealthPlayer.stop();
-        }
+        stopSound(4);
     }
 
     public static void stopAllSound() {
         currentBGM = null;
-        if (level1Player != null) {
-            level1Player.stop();
-        }
-        if (level2Player != null) {
-            level2Player.stop();
-        }
-        if (bossdownPlayer != null) {
-            bossdownPlayer.stop();
-        }
-        if (shootPlayer != null) {
-            shootPlayer.stop();
-        }
-        if (enemydownPlayer != null) {
-            enemydownPlayer.stop();
-        }
-        if (mainmenuPlayer != null) {
-            mainmenuPlayer.stop();
-        }
-        if (upgradePlayer != null) {
-            upgradePlayer.stop();
-        }
-        if (gameoverPlayer != null) {
-            gameoverPlayer.stop();
-        }
-        if (getbulletPlayer != null) {
-            getbulletPlayer.stop();
+        for (MediaPlayer player : players) {
+            if (player != null) {
+                player.stop();
+            }
         }
     }
-
 }

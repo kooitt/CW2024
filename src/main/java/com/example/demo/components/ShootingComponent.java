@@ -1,4 +1,3 @@
-// ShootingComponent.java
 package com.example.demo.components;
 
 import com.example.demo.actors.ActiveActor;
@@ -15,9 +14,8 @@ public class ShootingComponent {
     private double projectileXOffset;
     private double projectileYOffset;
     private boolean isFiring;
-
-    private int bulletRows; // 当前发射的子弹排数
-    private double rowSpacing; // 每排子弹之间的垂直间距
+    private int bulletRows = 1;
+    private double rowSpacing = 30;
 
     public ShootingComponent(ActiveActor owner, double fireRate, ObjectPool<Projectile> projectilePool, double projectileXOffset, double projectileYOffset) {
         this.owner = owner;
@@ -25,10 +23,6 @@ public class ShootingComponent {
         this.projectilePool = projectilePool;
         this.projectileXOffset = projectileXOffset;
         this.projectileYOffset = projectileYOffset;
-        this.timeSinceLastShot = 0;
-        this.isFiring = false;
-        this.bulletRows = 1; // 默认一排
-        this.rowSpacing = 30; // 每排之间的间距，可以根据需要调整
     }
 
     public void update(double deltaTime, LevelParent level) {
@@ -52,7 +46,6 @@ public class ShootingComponent {
                 level.getRoot().getChildren().add(projectile);
                 level.addProjectile(projectile, owner);
 
-                // 播放射击声音（仅当所有者是 UserPlane 时）
                 if (owner instanceof UserPlane) {
                     SoundComponent.playShootingSound();
                 }

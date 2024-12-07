@@ -12,10 +12,10 @@ import javafx.stage.Stage;
 
 public class SettingsPage {
 
-    private StackPane root; // 使用 StackPane 作为根布局
+    private StackPane root;
     private Controller controller;
     private KeyBindings keyBindings;
-    private Runnable backAction; // 用于在不同场景下动态指定Back按钮的行为
+    private Runnable backAction;
 
     public SettingsPage(Controller controller) {
         this.controller = controller;
@@ -25,7 +25,6 @@ public class SettingsPage {
 
     private void initialize() {
         root = new StackPane();
-        // 设置黑色半透明背景
         root.setStyle("-fx-background-color: rgba(0,0,0,0.75);");
         root.setPrefSize(controller.getStage().getWidth(), controller.getStage().getHeight());
 
@@ -53,7 +52,6 @@ public class SettingsPage {
         });
 
         contentBox.getChildren().addAll(title, keyBox, backBtn);
-
         root.getChildren().add(contentBox);
     }
 
@@ -63,7 +61,6 @@ public class SettingsPage {
 
         Button keyBtn = new Button(currentKey.getName());
         keyBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 18px; -fx-border-color: white;");
-
         keyBtn.setOnMouseEntered(e -> keyBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: yellow; -fx-font-size: 18px; -fx-border-color: yellow;"));
         keyBtn.setOnMouseExited(e -> keyBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 18px; -fx-border-color: white;"));
 
