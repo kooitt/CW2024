@@ -34,9 +34,9 @@ public class MainMenu {
         menuBox.setAlignment(Pos.CENTER);
 
         menuBox.getChildren().addAll(
-            createButton("Start Game", controller::launchGame),
-            createButton("Settings", this::showSettingsOverlay),
-            createButton("Exit Game", controller::exitGame)
+                createButton("Start Game", controller::launchGame),
+                createButton("Settings", this::showSettingsOverlay),
+                createButton("Exit Game", controller::exitGame)
         );
 
         root.getChildren().addAll(bgView, menuBox);

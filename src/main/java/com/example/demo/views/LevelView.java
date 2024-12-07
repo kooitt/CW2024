@@ -1,5 +1,6 @@
 package com.example.demo.views;
 
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import com.example.demo.ui.*;
 
@@ -9,8 +10,6 @@ public class LevelView {
 	private static final double HEART_Y = 25;
 	private static final int WIN_X = 355;
 	private static final int WIN_Y = 175;
-	private static final int LOSS_X = -160;
-	private static final int LOSS_Y = -375;
 	private final Group root;
 	private final WinImage winImage;
 	private final GameOverImage gameOverImage;
@@ -20,7 +19,7 @@ public class LevelView {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_X, HEART_Y, heartsToDisplay);
 		this.winImage = new WinImage(WIN_X, WIN_Y);
-		this.gameOverImage = new GameOverImage(LOSS_X, LOSS_Y);
+		this.gameOverImage = new GameOverImage();
 	}
 
 	public void showHeartDisplay() {

@@ -41,6 +41,7 @@ public class UserPlane extends Actor {
         getMovementComponent().setVelocity(0, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
         shootingComponent.startFiring();
+
     }
 
     public void setAnimationComponent(AnimationComponent animationComponent) {

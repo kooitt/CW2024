@@ -45,13 +45,15 @@ public class SettingsPage {
                 createKeySetting("Right Key:", keyBindings.getRightKey(), keyBindings::setRightKey)
         );
 
-        Button backBtn = createButton("Back", () -> {
+        Button backBtn = createStyledButton("Back", () -> {
             if (backAction != null) {
                 backAction.run();
             }
         });
 
-        contentBox.getChildren().addAll(title, keyBox, backBtn);
+        Button returnToMainMenuBtn = createStyledButton("Return to Main Menu", () -> controller.returnToMainMenu());
+
+        contentBox.getChildren().addAll(title, keyBox, backBtn, returnToMainMenuBtn);
         root.getChildren().add(contentBox);
     }
 
@@ -85,10 +87,10 @@ public class SettingsPage {
         return hbox;
     }
 
-    private Button createButton(String text, Runnable action) {
+    private Button createStyledButton(String text, Runnable action) {
         Button button = new Button(text);
-        String style = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px;";
-        String hoverStyle = "-fx-background-color: transparent; -fx-text-fill: yellow; -fx-font-size: 24px;";
+        String style = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-border-color: white; -fx-border-width: 2;";
+        String hoverStyle = "-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 24px; -fx-border-color: white; -fx-border-width: 2;";
         button.setStyle(style);
         button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
         button.setOnMouseExited(e -> button.setStyle(style));

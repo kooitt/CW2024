@@ -4,6 +4,7 @@ import com.example.demo.actors.Actor.*;
 import com.example.demo.actors.Projectile.BulletFactory;
 import com.example.demo.actors.Projectile.Projectile;
 import com.example.demo.components.*;
+import com.example.demo.controller.Controller;
 import com.example.demo.utils.*;
 import com.example.demo.views.LevelView;
 import com.example.demo.ui.SettingsPage;
@@ -16,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -40,6 +42,7 @@ public abstract class LevelParent extends Observable {
     protected final List<Actor> enemyProjectiles = new ArrayList<>();
     protected final List<Actor> shields = new ArrayList<>();
     protected final List<Actor> powerUps = new ArrayList<>();
+    protected Controller controller;
     private List<Timeline> additionalTimelines = new ArrayList<>();
     protected boolean isInputEnabled = true;
 
@@ -60,7 +63,8 @@ public abstract class LevelParent extends Observable {
     private boolean isGamePaused = false;
     private SettingsPage settingsPageForPause;
 
-    public LevelParent(String backgroundImageName, double screenHeight, double screenWidth) {
+    public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, Controller controller) {
+        this.controller = controller;
         this.root = new Group();
         this.scene = new Scene(root, screenWidth, screenHeight);
         this.timeline = new Timeline();
@@ -411,21 +415,61 @@ public abstract class LevelParent extends Observable {
         levelView.showGameOverImage();
         SoundComponent.stopAllSound();
         SoundComponent.playGameoverSound();
+
         if (getRoot().getChildren().contains(pauseButton)) {
             getRoot().getChildren().remove(pauseButton);
         }
+
+        // 创建一个返回主菜单的按钮
+        Button returnButton = createStyledButton("Return to Main Menu", () -> getController().returnToMainMenu());
+        returnButton.setLayoutX(getScreenWidth() / 2 - 150); // 设置按钮的X位置
+        returnButton.setLayoutY(getScreenHeight() / 2 + 100); // 设置按钮的Y位置
+        getRoot().getChildren().add(returnButton);
     }
 
+    // 创建风格化按钮的方法
+    private Button createStyledButton(String text, Runnable action) {
+        Button button = new Button(text);
+        String style = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-border-color: white; -fx-border-width: 2;";
+        String hoverStyle = "-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 24px; -fx-border-color: white; -fx-border-width: 2;";
+        button.setStyle(style);
+        button.setOnMouseEntered(e -> button.setStyle(hoverStyle));
+        button.setOnMouseExited(e -> button.setStyle(style));
+        button.setOnAction(e -> action.run());
+        return button;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
     public void cleanUp() {
-        timeline.stop();
+        // 停止所有时间线
+        if (timeline != null) {
+            timeline.stop();
+            timeline.getKeyFrames().clear();
+        }
+        additionalTimelines.forEach(Timeline::stop);
+        additionalTimelines.clear();
+
+        // 清理根节点和所有子节点
         root.getChildren().clear();
         friendlyUnits.clear();
         enemyUnits.clear();
-        shields.clear();
         userProjectiles.clear();
         enemyProjectiles.clear();
+        shields.clear();
         powerUps.clear();
+
+        // 释放音效和其他资源
+        SoundComponent.stopAllSound();
+
+        // 清理用户和其他对象的引用
+        if (user != null) {
+            user.stopShooting();
+            user.setHealthComponent(null);
+        }
     }
+
 
     public UserPlane getUser() {
         return user;

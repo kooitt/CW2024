@@ -4,6 +4,7 @@ package com.example.demo.levels;
 import com.example.demo.actors.Actor.ActorLevelUp;
 import com.example.demo.actors.Actor.BossTwo;
 import com.example.demo.actors.Actor.HeartItem;
+import com.example.demo.controller.Controller;
 import com.example.demo.views.LevelView;
 import com.example.demo.views.LevelViewLevelThree;
 import com.example.demo.components.SoundComponent;
@@ -17,8 +18,8 @@ public class LevelThree extends LevelParent {
     private BossTwo boss;
     private LevelViewLevelThree levelView;
 
-    public LevelThree(double screenHeight, double screenWidth) {
-        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
+    public LevelThree(double screenHeight, double screenWidth, Controller controller) {
+        super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, controller);
         boss = new BossTwo(getRoot(), this);
         SoundComponent.stopAllSound();
     }

@@ -7,16 +7,16 @@ public class SoundComponent {
 
     private static MediaPlayer currentBGM;
     private static final String[] SOUND_LOCATIONS = {
-        "/com/example/demo/sounds/enemydown.wav",
-        "/com/example/demo/sounds/bossdown.wav",
-        "/com/example/demo/sounds/bullet.wav",
-        "/com/example/demo/sounds/level1.wav",
-        "/com/example/demo/sounds/level2.mp3",
-        "/com/example/demo/sounds/mainmenu.wav",
-        "/com/example/demo/sounds/upgrade.wav",
-        "/com/example/demo/sounds/gameover.wav",
-        "/com/example/demo/sounds/getbullet.wav",
-        "/com/example/demo/sounds/gethealth.wav"
+            "/com/example/demo/sounds/enemydown.wav",
+            "/com/example/demo/sounds/bossdown.wav",
+            "/com/example/demo/sounds/bullet.wav",
+            "/com/example/demo/sounds/level1.wav",
+            "/com/example/demo/sounds/level2.mp3",
+            "/com/example/demo/sounds/mainmenu.wav",
+            "/com/example/demo/sounds/upgrade.wav",
+            "/com/example/demo/sounds/gameover.wav",
+            "/com/example/demo/sounds/getbullet.wav",
+            "/com/example/demo/sounds/gethealth.wav"
     };
 
     private static Media[] media = new Media[SOUND_LOCATIONS.length];
@@ -129,4 +129,5 @@ public class SoundComponent {
             }
         }
     }
+
 }

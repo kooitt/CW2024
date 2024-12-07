@@ -4,6 +4,7 @@ import com.example.demo.actors.Actor.Actor;
 import com.example.demo.actors.Actor.ActorLevelUp;
 import com.example.demo.actors.Actor.Boss;
 import com.example.demo.actors.Actor.HeartItem;
+import com.example.demo.controller.Controller;
 import com.example.demo.views.LevelView;
 import com.example.demo.views.LevelViewLevelTwo;
 import com.example.demo.components.SoundComponent;
@@ -27,8 +28,8 @@ public class LevelTwo extends LevelParent {
     private boolean bossdownSoundFinished = false;
     private boolean bossExplosionFinished = false;
 
-    public LevelTwo(double screenHeight, double screenWidth) {
-        super(BACKGROUND_IMAGE, screenHeight, screenWidth);
+    public LevelTwo(double screenHeight, double screenWidth, Controller controller) {
+        super(BACKGROUND_IMAGE, screenHeight, screenWidth, controller);
         SoundComponent.stopAllSound();
         SoundComponent.playLevel2Sound();
         boss = new Boss(getRoot(), this);

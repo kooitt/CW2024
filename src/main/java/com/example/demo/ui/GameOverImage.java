@@ -7,16 +7,15 @@ import javafx.scene.image.ImageView;
 public class GameOverImage extends ImageView {
 
 	private static final String IMAGE_NAME = "/com/example/demo/images/gameover.png";
+	private static final int IMAGE_SIZE = 100;
+	private static final int LOSS_X = 450;
+	private static final int LOSS_Y = 150;
 
-	/**
-	 * Constructs a GameOverImage at specified position.
-	 *
-	 * @param xPosition X position.
-	 * @param yPosition Y position.
-	 */
-	public GameOverImage(double xPosition, double yPosition) {
+	public GameOverImage() {
 		setImage(new Image(getClass().getResource(IMAGE_NAME).toExternalForm()));
-		setLayoutX(xPosition);
-		setLayoutY(yPosition);
+		setFitWidth(IMAGE_SIZE*4);
+		setFitHeight(IMAGE_SIZE*3);
+		setLayoutX(LOSS_X);
+		setLayoutY(LOSS_Y);
 	}
 }

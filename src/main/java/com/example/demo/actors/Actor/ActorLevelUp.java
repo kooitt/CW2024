@@ -40,6 +40,7 @@ public class ActorLevelUp extends Actor {
         user.incrementPowerUpCount();
         user.doubleFireRate();
         destroy();
-        SoundComponent.playGetbulletSound();
+        SoundComponent soundComponent = new SoundComponent();
+        soundComponent.playGetbulletSound();
     }
 }
