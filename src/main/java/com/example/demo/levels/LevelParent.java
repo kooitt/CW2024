@@ -1,14 +1,13 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.*;
+import com.example.demo.actors.Actor.*;
+import com.example.demo.actors.Projectile.BulletFactory;
+import com.example.demo.actors.Projectile.Projectile;
 import com.example.demo.components.*;
-import com.example.demo.projectiles.*;
 import com.example.demo.utils.*;
 import com.example.demo.views.LevelView;
 import com.example.demo.ui.SettingsPage;
 import javafx.animation.*;
-import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -35,12 +34,12 @@ public abstract class LevelParent extends Observable {
     private final Scene scene;
     private final ImageView background;
 
-    protected final List<ActiveActor> friendlyUnits = new ArrayList<>();
-    protected final List<ActiveActor> enemyUnits = new ArrayList<>();
-    protected final List<ActiveActor> userProjectiles = new ArrayList<>();
-    protected final List<ActiveActor> enemyProjectiles = new ArrayList<>();
-    protected final List<ActiveActor> shields = new ArrayList<>();
-    protected final List<ActiveActor> powerUps = new ArrayList<>();
+    protected final List<Actor> friendlyUnits = new ArrayList<>();
+    protected final List<Actor> enemyUnits = new ArrayList<>();
+    protected final List<Actor> userProjectiles = new ArrayList<>();
+    protected final List<Actor> enemyProjectiles = new ArrayList<>();
+    protected final List<Actor> shields = new ArrayList<>();
+    protected final List<Actor> powerUps = new ArrayList<>();
     private List<Timeline> additionalTimelines = new ArrayList<>();
     protected boolean isInputEnabled = true;
 
@@ -173,7 +172,7 @@ public abstract class LevelParent extends Observable {
         return screenHeight;
     }
 
-    public void addEnemyUnit(ActiveActor enemy) {
+    public void addEnemyUnit(Actor enemy) {
         if (enemy instanceof Shield && !shields.contains(enemy)) {
             shields.add(enemy);
         } else if (!(enemy instanceof Shield) && !enemyUnits.contains(enemy)) {
@@ -194,8 +193,8 @@ public abstract class LevelParent extends Observable {
         removeDestroyedActors(enemyUnits);
     }
 
-    private void destroyActors(List<ActiveActor> actors) {
-        for (ActiveActor actor : actors) {
+    private void destroyActors(List<Actor> actors) {
+        for (Actor actor : actors) {
             actor.destroy();
         }
     }
@@ -314,10 +313,10 @@ public abstract class LevelParent extends Observable {
         removeDestroyedActors(powerUps);
     }
 
-    private void removeDestroyedActors(List<ActiveActor> actors, ObjectPool<Projectile>... pools) {
-        Iterator<ActiveActor> iterator = actors.iterator();
+    private void removeDestroyedActors(List<Actor> actors, ObjectPool<Projectile>... pools) {
+        Iterator<Actor> iterator = actors.iterator();
         while (iterator.hasNext()) {
-            ActiveActor actor = iterator.next();
+            Actor actor = iterator.next();
             if (actor.isDestroyed()) {
                 if (actor instanceof Boss && !((Boss) actor).isReadyToRemove) continue;
                 root.getChildren().remove(actor);
@@ -331,7 +330,7 @@ public abstract class LevelParent extends Observable {
         }
     }
 
-    private void removeDestroyedActors(List<ActiveActor> actors) {
+    private void removeDestroyedActors(List<Actor> actors) {
         actors.removeIf(actor -> {
             if (actor.isDestroyed()) {
                 root.getChildren().remove(actor);
@@ -350,9 +349,9 @@ public abstract class LevelParent extends Observable {
         handleCollisions(enemyProjectiles, friendlyUnits);
     }
 
-    private void handlePickupCollisions(List<ActiveActor> actors1, List<ActiveActor> powerUps) {
-        for (ActiveActor actor1 : actors1) {
-            for (ActiveActor powerUp : powerUps) {
+    private void handlePickupCollisions(List<Actor> actors1, List<Actor> powerUps) {
+        for (Actor actor1 : actors1) {
+            for (Actor powerUp : powerUps) {
                 if (actor1.isDestroyed() || powerUp.isDestroyed()) continue;
                 if (actor1.getCollisionComponent().checkCollision(powerUp.getCollisionComponent())) {
                     if (powerUp instanceof ActorLevelUp) {
@@ -365,9 +364,9 @@ public abstract class LevelParent extends Observable {
         }
     }
 
-    private void handleCollisions(List<ActiveActor> actors1, List<ActiveActor> actors2) {
-        for (ActiveActor actor1 : actors1) {
-            for (ActiveActor actor2 : actors2) {
+    private void handleCollisions(List<Actor> actors1, List<Actor> actors2) {
+        for (Actor actor1 : actors1) {
+            for (Actor actor2 : actors2) {
                 if (actor1.isDestroyed() || actor2.isDestroyed()) continue;
                 if (actor1.getCollisionComponent().checkCollision(actor2.getCollisionComponent())) {
                     actor1.takeDamage(1);
@@ -378,7 +377,7 @@ public abstract class LevelParent extends Observable {
     }
 
     private void handleEnemyPenetration() {
-        for (ActiveActor enemy : enemyUnits) {
+        for (Actor enemy : enemyUnits) {
             if (Math.abs(enemy.getTranslateX()) > screenWidth) {
                 user.takeDamage(1);
                 enemy.destroy();
@@ -400,6 +399,10 @@ public abstract class LevelParent extends Observable {
         isInputEnabled = false;
         timeline.stop();
         levelView.showWinImage();
+        SoundComponent.stopAllSound();
+        if (getRoot().getChildren().contains(pauseButton)) {
+            getRoot().getChildren().remove(pauseButton);
+        }
     }
 
     protected void loseGame() {
@@ -408,6 +411,9 @@ public abstract class LevelParent extends Observable {
         levelView.showGameOverImage();
         SoundComponent.stopAllSound();
         SoundComponent.playGameoverSound();
+        if (getRoot().getChildren().contains(pauseButton)) {
+            getRoot().getChildren().remove(pauseButton);
+        }
     }
 
     public void cleanUp() {
@@ -442,7 +448,7 @@ public abstract class LevelParent extends Observable {
         removeOutOfBounds(enemyProjectiles, screenWidth, screenHeight);
     }
 
-    private void removeOutOfBounds(List<ActiveActor> projectiles, double width, double height) {
+    private void removeOutOfBounds(List<Actor> projectiles, double width, double height) {
         projectiles.removeIf(proj -> {
             CollisionComponent cc = proj.getCollisionComponent();
             double x = cc.getHitboxX();
@@ -455,7 +461,7 @@ public abstract class LevelParent extends Observable {
         });
     }
 
-    public void addProjectile(Projectile projectile, ActiveActor owner) {
+    public void addProjectile(Projectile projectile, Actor owner) {
         if (owner instanceof UserPlane) {
             userProjectiles.add(projectile);
         } else {

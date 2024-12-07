@@ -1,9 +1,9 @@
 // LevelThree.java
 package com.example.demo.levels;
 
-import com.example.demo.actors.ActorLevelUp;
-import com.example.demo.actors.BossTwo;
-import com.example.demo.actors.HeartItem;
+import com.example.demo.actors.Actor.ActorLevelUp;
+import com.example.demo.actors.Actor.BossTwo;
+import com.example.demo.actors.Actor.HeartItem;
 import com.example.demo.views.LevelView;
 import com.example.demo.views.LevelViewLevelThree;
 import com.example.demo.components.SoundComponent;
@@ -31,9 +31,6 @@ public class LevelThree extends LevelParent {
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
-            if (getRoot().getChildren().contains(pauseButton)) {
-                getRoot().getChildren().remove(pauseButton);
-            }
             loseGame();
         } else if (boss.isDestroyed()) {
             winGame();

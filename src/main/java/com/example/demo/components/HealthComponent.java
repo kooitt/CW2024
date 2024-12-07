@@ -1,14 +1,14 @@
 package com.example.demo.components;
 
-import com.example.demo.actors.ActiveActor;
+import com.example.demo.actors.Actor.Actor;
 import java.util.Observable;
 
 public class HealthComponent extends Observable {
     private int maxHealth;
     private int currentHealth;
-    private ActiveActor owner;
+    private Actor owner;
 
-    public HealthComponent(ActiveActor owner, int maxHealth) {
+    public HealthComponent(Actor owner, int maxHealth) {
         this.owner = owner;
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;

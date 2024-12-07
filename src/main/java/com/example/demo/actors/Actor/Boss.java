@@ -1,4 +1,4 @@
-package com.example.demo.actors;
+package com.example.demo.actors.Actor;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Boss extends ActiveActor {
+public class Boss extends Actor {
 
     private static final String IMAGE_NAME = "bossplane.png";
     private static final double INITIAL_X_POSITION = 1000.0;

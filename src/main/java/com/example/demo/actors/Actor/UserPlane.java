@@ -1,12 +1,12 @@
-package com.example.demo.actors;
+package com.example.demo.actors.Actor;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.components.SoundComponent;
-import com.example.demo.projectiles.UserProjectile;
+import com.example.demo.actors.Projectile.UserProjectile;
 
-public class UserPlane extends ActiveActor {
+public class UserPlane extends Actor {
 
     private static final double Y_UPPER_BOUND = -40, Y_LOWER_BOUND = 600.0;
     private static final double X_LEFT_BOUND = 0.0, X_RIGHT_BOUND = 800.0;
@@ -42,7 +42,7 @@ public class UserPlane extends ActiveActor {
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
         shootingComponent.startFiring();
     }
-    
+
     public void setAnimationComponent(AnimationComponent animationComponent) {
         this.animationComponent = animationComponent;
     }

@@ -1,10 +1,10 @@
 // Shield.java
-package com.example.demo.actors;
+package com.example.demo.actors.Actor;
 
 import com.example.demo.levels.LevelParent;
 
 
-public class Shield extends ActiveActor {
+public class Shield extends Actor {
 
     private static final String IMAGE_NAME = "shield.png";
     private static final int IMAGE_HEIGHT = 200;

@@ -1,5 +1,5 @@
 // UserProjectile.java
-package com.example.demo.projectiles;
+package com.example.demo.actors.Projectile;
 
 /**
  * Represents a projectile fired by the user.

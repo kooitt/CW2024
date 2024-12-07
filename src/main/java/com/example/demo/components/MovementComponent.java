@@ -1,7 +1,7 @@
 // MovementComponent.java
 package com.example.demo.components;
 
-import com.example.demo.actors.Actor;
+import com.example.demo.actors.Actor.Actor;
 
 public class MovementComponent {
 

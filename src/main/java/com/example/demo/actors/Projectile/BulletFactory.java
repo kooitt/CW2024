@@ -1,5 +1,5 @@
 // BulletFactory.java
-package com.example.demo.projectiles;
+package com.example.demo.actors.Projectile;
 
 import com.example.demo.interfaces.ObjectFactory;
 

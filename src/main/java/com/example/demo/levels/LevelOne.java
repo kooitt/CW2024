@@ -1,6 +1,9 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.*;
+import com.example.demo.actors.Actor.Actor;
+import com.example.demo.actors.Actor.ActorLevelUp;
+import com.example.demo.actors.Actor.EnemyPlane;
+import com.example.demo.actors.Actor.HeartItem;
 import com.example.demo.views.LevelView;
 import com.example.demo.components.SoundComponent;
 import javafx.animation.*;
@@ -30,9 +33,6 @@ public class LevelOne extends LevelParent {
     @Override
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
-            if (getRoot().getChildren().contains(pauseButton)) {
-                getRoot().getChildren().remove(pauseButton);
-            }
             loseGame();
         } else if (userHasReachedKillTarget() && !transitioningToNextLevel) {
             transitioningToNextLevel = true;
@@ -51,8 +51,8 @@ public class LevelOne extends LevelParent {
             clearAllProjectiles();
             double offScreenX = getScreenWidth() + 100;
             Timeline exitTimeline = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(getUser().layoutXProperty(), getUser().layoutXProperty().getValue())),
-                new KeyFrame(Duration.millis(1000), event -> goToNextLevel(NEXT_LEVEL), new KeyValue(getUser().layoutXProperty(), offScreenX, Interpolator.EASE_IN))
+                    new KeyFrame(Duration.ZERO, new KeyValue(getUser().layoutXProperty(), getUser().layoutXProperty().getValue())),
+                    new KeyFrame(Duration.millis(1000), event -> goToNextLevel(NEXT_LEVEL), new KeyValue(getUser().layoutXProperty(), offScreenX, Interpolator.EASE_IN))
             );
             exitTimeline.play();
         });
@@ -84,7 +84,7 @@ public class LevelOne extends LevelParent {
         }
     }
 
-    private void addPowerUp(ActiveActor powerUp) {
+    private void addPowerUp(Actor powerUp) {
         powerUps.add(powerUp);
         getRoot().getChildren().add(powerUp);
     }

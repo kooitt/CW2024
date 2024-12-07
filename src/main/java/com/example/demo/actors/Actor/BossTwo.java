@@ -1,16 +1,13 @@
-package com.example.demo.actors;
+package com.example.demo.actors.Actor;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.control.ProgressBar;
-import javafx.util.Duration;
 
-public class BossTwo extends ActiveActor {
+public class BossTwo extends Actor {
 
     private static final String IMAGE_NAME = "bosscxk.png";
     private static final double INITIAL_X_POSITION = 1000.0;

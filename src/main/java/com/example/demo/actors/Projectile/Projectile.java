@@ -1,11 +1,11 @@
 // Projectile.java
-package com.example.demo.projectiles;
+package com.example.demo.actors.Projectile;
 
-import com.example.demo.actors.ActiveActor;
+import com.example.demo.actors.Actor.Actor;
 import com.example.demo.components.CollisionComponent;
 import com.example.demo.levels.LevelParent;
 
-public abstract class Projectile extends ActiveActor {
+public abstract class Projectile extends Actor {
 
 	public Projectile(String imageName, int imageHeight, double initialXPos, double initialYPos) {
 		super(imageName, imageHeight, initialXPos, initialYPos, 1);

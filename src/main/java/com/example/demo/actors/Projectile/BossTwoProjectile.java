@@ -1,5 +1,5 @@
 // BossTwoProjectile.java
-package com.example.demo.projectiles;
+package com.example.demo.actors.Projectile;
 
 public class BossTwoProjectile extends Projectile {
 

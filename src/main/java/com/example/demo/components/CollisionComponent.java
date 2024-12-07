@@ -1,13 +1,13 @@
 package com.example.demo.components;
 
-import com.example.demo.actors.ActiveActor;
+import com.example.demo.actors.Actor.Actor;
 import com.example.demo.interfaces.Hitbox;
 import com.example.demo.utils.GameSettings;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class CollisionComponent implements Hitbox {
-    private ActiveActor owner;
+    private Actor owner;
     private double hitboxWidth;
     private double hitboxHeight;
     private double offsetX;
@@ -15,7 +15,7 @@ public class CollisionComponent implements Hitbox {
     private Rectangle hitboxVisualization;
 
 
-    public CollisionComponent(ActiveActor owner, double hitboxWidth, double hitboxHeight, double offsetX, double offsetY) {
+    public CollisionComponent(Actor owner, double hitboxWidth, double hitboxHeight, double offsetX, double offsetY) {
         this.owner = owner;
         this.hitboxWidth = hitboxWidth;
         this.hitboxHeight = hitboxHeight;

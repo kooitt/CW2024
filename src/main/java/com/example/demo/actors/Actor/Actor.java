@@ -1,15 +1,16 @@
 
-package com.example.demo.actors;
+package com.example.demo.actors.Actor;
 
 import com.example.demo.components.CollisionComponent;
 import com.example.demo.components.HealthComponent;
 import com.example.demo.components.MovementComponent;
 import com.example.demo.interfaces.Destructible;
 import com.example.demo.levels.LevelParent;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public abstract class ActiveActor extends Actor implements Destructible {
+public abstract class Actor extends Group implements Destructible {
 
 	public static final String IMAGE_LOCATION = "/com/example/demo/images/";
 
@@ -19,7 +20,7 @@ public abstract class ActiveActor extends Actor implements Destructible {
 	private HealthComponent healthComponent;
 	protected boolean isDestroyed;
 
-	public ActiveActor(String imageName, int imageHeight, double initialXPos, double initialYPos, int maxHealth) {
+	public Actor(String imageName, int imageHeight, double initialXPos, double initialYPos, int maxHealth) {
 		super();
 		imageView = new ImageView(new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm()));
 		imageView.setFitHeight(imageHeight);

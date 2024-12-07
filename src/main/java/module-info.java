@@ -6,8 +6,8 @@ module com.example.demo {
 
     // 仅导出需要暴露的包，符合封装原则
     exports com.example.demo.controller;
-    exports com.example.demo.actors;
-    exports com.example.demo.projectiles;
+    exports com.example.demo.actors.Actor;
+    exports com.example.demo.actors.Projectile;
     exports com.example.demo.levels;
     exports com.example.demo.views;
     exports com.example.demo.ui;

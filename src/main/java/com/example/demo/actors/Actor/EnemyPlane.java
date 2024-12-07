@@ -1,4 +1,4 @@
-package com.example.demo.actors;
+package com.example.demo.actors.Actor;
 
 import com.example.demo.components.AnimationComponent;
 import com.example.demo.components.ShootingComponent;
@@ -6,7 +6,7 @@ import com.example.demo.components.SoundComponent;
 import com.example.demo.levels.LevelParent;
 import javafx.scene.Group;
 
-public class EnemyPlane extends ActiveActor {
+public class EnemyPlane extends Actor {
 
     private static final String IMAGE_NAME = "enemyplane.png";
     private static final int IMAGE_HEIGHT = 150;

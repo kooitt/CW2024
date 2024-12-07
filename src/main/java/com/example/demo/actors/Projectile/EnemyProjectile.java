@@ -1,5 +1,5 @@
 // EnemyProjectile.java
-package com.example.demo.projectiles;
+package com.example.demo.actors.Projectile;
 
 public class EnemyProjectile extends Projectile {
 

@@ -1,23 +1,23 @@
 package com.example.demo.components;
 
-import com.example.demo.actors.ActiveActor;
+import com.example.demo.actors.Actor.Actor;
 import com.example.demo.levels.LevelParent;
-import com.example.demo.projectiles.Projectile;
+import com.example.demo.actors.Projectile.Projectile;
 import com.example.demo.utils.ObjectPool;
-import com.example.demo.actors.UserPlane;
+import com.example.demo.actors.Actor.UserPlane;
 
 public class ShootingComponent {
     private double fireRate;
     private double timeSinceLastShot;
     private ObjectPool<Projectile> projectilePool;
-    private ActiveActor owner;
+    private Actor owner;
     private double projectileXOffset;
     private double projectileYOffset;
     private boolean isFiring;
     private int bulletRows = 1;
     private double rowSpacing = 30;
 
-    public ShootingComponent(ActiveActor owner, double fireRate, ObjectPool<Projectile> projectilePool, double projectileXOffset, double projectileYOffset) {
+    public ShootingComponent(Actor owner, double fireRate, ObjectPool<Projectile> projectilePool, double projectileXOffset, double projectileYOffset) {
         this.owner = owner;
         this.fireRate = fireRate;
         this.projectilePool = projectilePool;
