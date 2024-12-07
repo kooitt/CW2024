@@ -21,9 +21,11 @@ public abstract class FighterPlane extends ActiveActorDestructible implements Pr
 		return getLayoutX() + getTranslateX() + xPositionOffset;
 	}
 
-	protected double getProjectileYPosition(double yPositionOffset) {
-		return getLayoutY() + getTranslateY() + yPositionOffset;
+	protected double getProjectileYPosition() {
+		return getLayoutY() + getTranslateY() + getImageHeight() / 4.0;
 	}
+
+	protected abstract double getImageHeight();
 
 	private boolean healthAtZero() {
 		return health == 0;

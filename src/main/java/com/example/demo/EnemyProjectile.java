@@ -8,10 +8,6 @@ public class EnemyProjectile extends Projectile {
 
 	public EnemyProjectile(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos);
-		double imageWidth = this.getImage().getWidth();
-
-		this.setLayoutY(initialYPos - IMAGE_HEIGHT / 2.0);
-		this.setLayoutX(initialXPos + (imageWidth * 0.1));
 	}
 
 	@Override
