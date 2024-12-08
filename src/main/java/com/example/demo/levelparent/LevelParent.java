@@ -7,6 +7,7 @@ import com.example.demo.levels.LevelView;
 import com.example.demo.actors.ActiveActorDestructible;
 import com.example.demo.actors.FighterPlane;
 import com.example.demo.actors.UserPlane;
+import com.example.demo.actors.Obstacle;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -33,11 +34,13 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyUnits;
 	private final List<ActiveActorDestructible> userProjectiles;
 	private final List<ActiveActorDestructible> enemyProjectiles;
+	private final List<ActiveActorDestructible> obstacles;
 	private int currentNumberOfEnemies;
+	private int currentNumberOfObstacles;
 	private final LevelView levelView;
 	private final Set<KeyCode> activeKeys = new HashSet<>(); //Creating a new hash-set which is basically a box that keeps track of all active keys being pressed by the player
 	private long lastFiredProjectile = 0;
-	private static final long PROJECTILE_COOLDOWN = 50; // Cooldown in milliseconds
+	private static final long PROJECTILE_COOLDOWN = 120; // Cooldown in milliseconds
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -48,6 +51,7 @@ public abstract class LevelParent extends Observable {
 		this.enemyUnits = new ArrayList<>();
 		this.userProjectiles = new ArrayList<>();
 		this.enemyProjectiles = new ArrayList<>();
+		this.obstacles = new ArrayList<>();
 
 		this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
 		this.screenHeight = screenHeight;
@@ -55,6 +59,7 @@ public abstract class LevelParent extends Observable {
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
+		this.currentNumberOfObstacles = 0;
 		initializeTimeline();
 		friendlyUnits.add(user);
 	}
@@ -64,6 +69,8 @@ public abstract class LevelParent extends Observable {
 	protected abstract void checkIfGameOver();
 
 	protected abstract void spawnEnemyUnits();
+
+	protected void spawnObstacles() {  } //Does nothing, only for the sake of overriding when needed.;
 
 	protected abstract LevelView instantiateLevelView();
 
@@ -98,6 +105,7 @@ public abstract class LevelParent extends Observable {
 		friendlyUnits.clear();
 		enemyUnits.clear();
 		enemyProjectiles.clear();
+		obstacles.clear();
 	}
 
 	public void goToNextLevel(String levelName) {
@@ -109,11 +117,16 @@ public abstract class LevelParent extends Observable {
 
 	private void updateScene() {
 		spawnEnemyUnits();
+		spawnObstacles();
 		updateActors();
 		generateEnemyFire();
 		handlePlayerActions();
 		updateNumberOfEnemies();
+		updateNumberOfObstacles();
 		handleEnemyPenetration();
+		handleObstaclePenetration();
+		handleObstacleCollisions();
+		handleProjectileObstacleCollisions();
 		handleUserProjectileCollisions();
 		handleEnemyProjectileCollisions();
 		handlePlaneCollisions();
@@ -191,6 +204,7 @@ public abstract class LevelParent extends Observable {
 		enemyUnits.forEach(ActiveActorDestructible::updateActor);
 		userProjectiles.forEach(ActiveActorDestructible::updateActor);
 		enemyProjectiles.forEach(ActiveActorDestructible::updateActor);
+		obstacles.forEach(ActiveActorDestructible::updateActor);
 	}
 
 	private void removeAllDestroyedActors() {
@@ -198,6 +212,7 @@ public abstract class LevelParent extends Observable {
 		removeDestroyedActors(enemyUnits);
 		removeDestroyedActors(userProjectiles);
 		removeDestroyedActors(enemyProjectiles);
+		removeDestroyedActors(obstacles);
 	}
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
@@ -211,8 +226,16 @@ public abstract class LevelParent extends Observable {
 		handleCollisions(friendlyUnits, enemyUnits);
 	}
 
+	private void handleObstacleCollisions() {
+		handleCollisions(friendlyUnits, obstacles);
+	}
+
 	private void handleUserProjectileCollisions() {
 		handleCollisions(userProjectiles, enemyUnits);
+	}
+
+	private void handleProjectileObstacleCollisions() {
+		handleCollisions(userProjectiles, obstacles);
 	}
 
 	private void handleEnemyProjectileCollisions() {
@@ -241,6 +264,15 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
+	private void handleObstaclePenetration() {
+		for (ActiveActorDestructible obstacle : obstacles) {
+			if (obstacleHasPenetratedDefenses(obstacle)) {
+				obstacle.destroy();
+				System.out.println("Obstacle cleared!");
+			}
+		}
+	} //Obstacles do not count as enemies. Therefore, they should not make user take damage
+
 	private void updateLevelView() {
 		levelView.removeHearts(user.getHealth());
 	}
@@ -255,10 +287,15 @@ public abstract class LevelParent extends Observable {
 		return Math.abs(enemy.getTranslateX()) > screenWidth;
 	}
 
+	private boolean obstacleHasPenetratedDefenses(ActiveActorDestructible obstacles) {
+		return Math.abs(obstacles.getTranslateX()) > screenWidth;
+	}
+
 	protected void winGame() {
 		timeline.stop();
 		isGameActive = false;
 		levelView.showWinImage();
+		cleanAssets();
 	}
 
 	protected void loseGame() {
@@ -284,6 +321,15 @@ public abstract class LevelParent extends Observable {
 		root.getChildren().add(enemy);
 	}
 
+	protected int getCurrentNumberOfObstacles() {
+		return obstacles.size();
+	}
+
+	protected void addObstacle(ActiveActorDestructible obstacle) {
+		obstacles.add(obstacle);
+		root.getChildren().add(obstacle);
+	} // Add obstacles to the scene
+
 	protected double getEnemyMaximumYPosition() {
 		return enemyMaximumYPosition;
 	}
@@ -298,6 +344,10 @@ public abstract class LevelParent extends Observable {
 
 	private void updateNumberOfEnemies() {
 		currentNumberOfEnemies = enemyUnits.size();
+	}
+
+	private void updateNumberOfObstacles() {
+		currentNumberOfObstacles = obstacles.size();
 	}
 
 }
