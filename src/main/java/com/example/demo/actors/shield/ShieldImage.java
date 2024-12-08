@@ -25,15 +25,4 @@ public class ShieldImage extends ImageView {
 			this.setImage(image);
 		}
 	}
-
-	public void showShield() {
-		this.setVisible(true);
-		System.out.println("Shield is now visible");
-	}
-	
-	public void hideShield() {
-		this.setVisible(false);
-		System.out.println("Shield is now hidden");
-	}
-
 }
