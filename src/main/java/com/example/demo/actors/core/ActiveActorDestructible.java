@@ -1,32 +1,19 @@
-package com.example.demo;
+package com.example.demo.actors.core;
 
-import javafx.scene.paint.Color;
+import com.example.demo.collision.Hitbox;
 import javafx.scene.shape.Rectangle;
 
-public abstract class ActiveActorDestructible extends ActiveActor implements Destructible {
+public abstract class ActiveActorDestructible extends ActiveActor implements Destructible, ActorBehaviour {
 
 	private boolean isDestroyed;
-	private Rectangle hitbox;
+	private final Hitbox hitbox;
 
 	public ActiveActorDestructible(String imageName, int imageHeight, double initialXPos, double initialYPos) {
 		super(imageName, imageHeight, initialXPos, initialYPos);
 		isDestroyed = false;
-
 		int imageWidth = (int) this.getImage().getWidth();
-
-		// initialize hitbox with same size as the plane's image
-		hitbox = new Rectangle(initialXPos, initialYPos, imageWidth, imageHeight); // imageWidth should be declared
-		hitbox.setStroke(Color.RED);  // visualize the hitbox
-		hitbox.setFill(Color.TRANSPARENT);  // transparent inside
+		hitbox = new Hitbox(initialXPos, initialYPos, imageWidth, imageHeight);
 	}
-
-	@Override
-	public abstract void updatePosition();
-
-	public abstract void updateActor();
-
-	@Override
-	public abstract void takeDamage();
 
 	@Override
 	public void destroy() {
@@ -44,13 +31,13 @@ public abstract class ActiveActorDestructible extends ActiveActor implements Des
 	// get the hitbox
 	public Rectangle getHitbox() {
 		System.out.println("width:" + this.getImage().getWidth() + "height:" + this.getImage().getWidth());
-		return hitbox;
+		return hitbox.getHitbox();
 	}
 
 	// update the hitbox position to match the plane position
 	public void updateHitboxPosition() {
-		hitbox.setX(getLayoutX() + getTranslateX());
-		hitbox.setY(getLayoutY() + getTranslateY());
+		double newX = getLayoutX() + getTranslateX();
+		double newY = getLayoutY() + getTranslateY();
+		hitbox.updatePosition(newX, newY);
 	}
-
 }

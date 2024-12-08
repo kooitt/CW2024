@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.actors.projectiles;
 
 public class BossProjectile extends Projectile {
 	
@@ -9,7 +9,6 @@ public class BossProjectile extends Projectile {
 
 	public BossProjectile(double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, initialYPos);
-		this.setLayoutY(initialYPos - IMAGE_HEIGHT / 2.0);
 	}
 
 	@Override

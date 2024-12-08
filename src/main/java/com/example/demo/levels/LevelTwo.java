@@ -1,11 +1,13 @@
-package com.example.demo;
+package com.example.demo.levels;
+
+import com.example.demo.actors.planes.Boss;
 
 public class LevelTwo extends LevelParent {
 
-	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background2.jpg";
+	private static final String BACKGROUND_IMAGE_NAME = "background2.jpg";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private final Boss boss;
-	private LevelViewLevelTwo levelView;
+	private LevelTwoView levelView;
 
 	public LevelTwo(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
@@ -13,32 +15,32 @@ public class LevelTwo extends LevelParent {
 	}
 
 	@Override
-	protected void initializeFriendlyUnits() {
+	public void initializeFriendlyUnits() {
 		getRoot().getChildren().add(getUser());
 		getRoot().getChildren().add(boss.getShieldImage());
 		getRoot().getChildren().add(boss.getHitbox());
 	}
 
 	@Override
-	protected void checkIfGameOver() {
+	public void checkIfGameOver() {
 		if (userIsDestroyed()) {
-			loseGame();
+			getController().loseGame();
 		}
 		else if (boss.isDestroyed()) {
-			winGame();
+			getController().winGame();
 		}
 	}
 
 	@Override
-	protected void spawnEnemyUnits() {
+	public void spawnEnemyUnits() {
 		if (getCurrentNumberOfEnemies() == 0) {
 			addEnemyUnit(boss);
 		}
 	}
 
 	@Override
-	protected LevelView instantiateLevelView() {
-		levelView = new LevelViewLevelTwo(getRoot(), PLAYER_INITIAL_HEALTH);
+	public LevelParentView instantiateLevelView() {
+		levelView = new LevelTwoView(getRoot(), PLAYER_INITIAL_HEALTH);
 		return levelView;
 	}
 

@@ -1,6 +1,9 @@
-package com.example.demo;
+package com.example.demo.actors.planes;
 
-public abstract class FighterPlane extends ActiveActorDestructible {
+import com.example.demo.actors.core.ActiveActorDestructible;
+import com.example.demo.actors.projectiles.ProjectileFiring;
+
+public abstract class FighterPlane extends ActiveActorDestructible implements ProjectileFiring {
 
 	private int health;
 
@@ -8,8 +11,6 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 		super(imageName, imageHeight, initialXPos, initialYPos);
 		this.health = health;
 	}
-
-	public abstract ActiveActorDestructible fireProjectile();
 	
 	@Override
 	public void takeDamage() {
@@ -23,9 +24,11 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 		return getLayoutX() + getTranslateX() + xPositionOffset;
 	}
 
-	protected double getProjectileYPosition(double yPositionOffset) {
-		return getLayoutY() + getTranslateY() + yPositionOffset;
+	protected double getProjectileYPosition() {
+		return getLayoutY() + getTranslateY() + getImageHeight() / 4.0;
 	}
+
+	protected abstract double getImageHeight();
 
 	private boolean healthAtZero() {
 		return health == 0;

@@ -1,21 +1,24 @@
-package com.example.demo;
+package com.example.demo.actors.core;
 
+import com.example.demo.util.ImageLoader;
 import javafx.scene.image.*;
 
-public abstract class ActiveActor extends ImageView {
-	
-	private static final String IMAGE_LOCATION = "/com/example/demo/images/";
+public abstract class ActiveActor extends ImageView implements ActorBehaviour {
 
 	public ActiveActor(String imageName, int imageHeight, double initialXPos, double initialYPos) {
-		//this.setImage(new Image(IMAGE_LOCATION + imageName));
-		this.setImage(new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm()));
+		this.loadActiveActorImage(imageName);
 		this.setLayoutX(initialXPos);
 		this.setLayoutY(initialYPos);
 		this.setFitHeight(imageHeight);
 		this.setPreserveRatio(true);
 	}
 
-	public abstract void updatePosition();
+	public void loadActiveActorImage(String imageName){
+		Image image = ImageLoader.loadImage(imageName);
+		if (image != null) {
+			this.setImage(image);
+		}
+	}
 
 	protected void moveHorizontally(double horizontalMove) {
 		this.setTranslateX(getTranslateX() + horizontalMove);

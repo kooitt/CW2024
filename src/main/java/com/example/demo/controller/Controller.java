@@ -2,18 +2,18 @@ package com.example.demo.controller;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Observable;
-import java.util.Observer;
 
+import com.example.demo.levels.LevelParentController;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import com.example.demo.LevelParent;
+import com.example.demo.levels.LevelParent;
+import com.example.demo.util.Observer;
 
 public class Controller implements Observer {
 
-	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.LevelOne";
+	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
 	private final Stage stage;
 
 	public Controller(Stage stage) {
@@ -33,6 +33,7 @@ public class Controller implements Observer {
 			Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
 			LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
 			myLevel.addObserver(this);
+			LevelParentController levelController = new LevelParentController(myLevel, myLevel.getLevelView());
 			Scene scene = myLevel.initializeScene();
 			stage.setScene(scene);
 			myLevel.startGame();
@@ -40,9 +41,9 @@ public class Controller implements Observer {
 	}
 
 	@Override
-	public void update(Observable arg0, Object arg1) {
+	public void update(String levelName) {
 		try {
-			goToLevel((String) arg1);
+			goToLevel(levelName);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			Alert alert = new Alert(AlertType.ERROR);
@@ -50,5 +51,4 @@ public class Controller implements Observer {
 			alert.show();
 		}
 	}
-
 }

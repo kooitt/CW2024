@@ -1,9 +1,12 @@
-package com.example.demo;
+package com.example.demo.levels;
+
+import com.example.demo.actors.core.ActiveActorDestructible;
+import com.example.demo.actors.planes.EnemyPlane;
 
 public class LevelOne extends LevelParent {
 	
-	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
-	private static final String NEXT_LEVEL = "com.example.demo.LevelTwo";
+	private static final String BACKGROUND_IMAGE_NAME = "background1.jpg";
+	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
 	private static final int TOTAL_ENEMIES = 5;
 	private static final int KILLS_TO_ADVANCE = 10;
 	private static final double ENEMY_SPAWN_PROBABILITY = .20;
@@ -14,21 +17,21 @@ public class LevelOne extends LevelParent {
 	}
 
 	@Override
-	protected void checkIfGameOver() {
+	public void checkIfGameOver() {
 		if (userIsDestroyed()) {
-			loseGame();
+			getController().loseGame();
 		}
 		else if (userHasReachedKillTarget())
 			goToNextLevel(NEXT_LEVEL);
 	}
 
 	@Override
-	protected void initializeFriendlyUnits() {
+	public void initializeFriendlyUnits() {
 		getRoot().getChildren().add(getUser());
 	}
 
 	@Override
-	protected void spawnEnemyUnits() {
+	public void spawnEnemyUnits() {
 		int currentNumberOfEnemies = getCurrentNumberOfEnemies();
 		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
 			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
@@ -41,8 +44,8 @@ public class LevelOne extends LevelParent {
 	}
 
 	@Override
-	protected LevelView instantiateLevelView() {
-		return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+	public LevelParentView instantiateLevelView() {
+		return new LevelParentView(getRoot(), PLAYER_INITIAL_HEALTH);
 	}
 
 	private boolean userHasReachedKillTarget() {
