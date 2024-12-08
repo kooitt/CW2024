@@ -1,6 +1,7 @@
 package com.example.demo.ui;
 
 import com.example.demo.controller.Controller;
+import com.example.demo.components.SoundComponent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,7 +17,7 @@ public class MainMenu {
         this.controller = controller;
         root = new Group();
         scene = new Scene(root, controller.getStage().getWidth(), controller.getStage().getHeight());
-
+        SoundComponent.playMainmenuSound();
         initializeUI();
     }
 

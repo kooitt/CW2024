@@ -5,6 +5,9 @@ import com.example.demo.components.ShootingComponent;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.components.SoundComponent;
 import com.example.demo.actors.Projectile.UserProjectile;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 public class UserPlane extends Actor {
 
@@ -139,4 +142,54 @@ public class UserPlane extends Actor {
         if (newX < X_LEFT_BOUND || newX > X_RIGHT_BOUND) setTranslateX(initialTranslateX);
         if (newY < Y_UPPER_BOUND || newY > Y_LOWER_BOUND) setTranslateY(initialTranslateY);
     }
+    @Override
+    public void takeDamage(int damage) {
+        super.takeDamage(damage);
+        if (getCurrentHealth() > 0) {
+            SoundComponent.playBlinkSound();
+            startBlinking();
+            setActorCollisionEnabled(false, 2000);
+        }
+    }
+    private void startBlinking() {
+        // 我们需要闪烁4次, 每次闪烁由2个状态切换(可见->不可见->可见)
+        // 每次闪烁周期为500ms，即250ms一次状态切换，两次切换一共500ms
+        // 因此共需要8个状态切换（4次闪烁 * 2次切换每闪烁 = 8次）
+        // 我们可以用Timeline创建8个KeyFrame，每250ms切换一次可见性
+
+        Timeline blinkTimeline = new Timeline();
+
+        // 总共要闪烁4次，每次2个状态变化，所以一共8个KeyFrame
+        // 时间序列：0ms(变不可见), 250ms(变可见), 500ms(变不可见), 750ms(变可见), ... 持续8次
+        int totalFlashes = 4;
+        int switchesPerFlash = 2;
+        int totalSwitches = totalFlashes * switchesPerFlash;
+        int interval = 250; // 每次状态切换的间隔 250ms
+
+        for (int i = 0; i < totalSwitches; i++) {
+            KeyFrame frame = new KeyFrame(Duration.millis(i * interval), e -> {
+                // 每次切换可见性
+                setVisible(!isVisible());
+            });
+            blinkTimeline.getKeyFrames().add(frame);
+        }
+
+        // 动画结束后确保飞机最终处于可见状态
+        blinkTimeline.setOnFinished(e -> setVisible(true));
+        blinkTimeline.play();
+    }
+
+    public void setActorCollisionEnabled(boolean enabled, int durationMs) {
+        getCollisionComponent().setCollisionEnabled(enabled);
+        if (!enabled) {
+            Timeline reEnableTimeline = new Timeline(
+                    new KeyFrame(Duration.millis(durationMs), event -> {
+                        getCollisionComponent().setCollisionEnabled(true);
+                    })
+            );
+            reEnableTimeline.play();
+        }
+    }
+
+
 }
