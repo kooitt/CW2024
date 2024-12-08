@@ -15,8 +15,7 @@ public class CollisionComponent implements Hitbox {
     private double offsetX;
     private double offsetY;
     private Rectangle hitboxVisualization;
-    private boolean collisionEnabled = true; // 新增字段，默认为启用状态
-
+    private boolean collisionEnabled = true;
 
     public CollisionComponent(Actor owner, double hitboxWidth, double hitboxHeight, double offsetX, double offsetY) {
         this.owner = owner;
@@ -26,15 +25,13 @@ public class CollisionComponent implements Hitbox {
         this.offsetY = offsetY;
 
         if (GameSettings.SHOW_HITBOXES) {
-            hitboxVisualization = new Rectangle(hitboxWidth, hitboxHeight);
+            hitboxVisualization = new Rectangle(hitboxWidth, hitboxHeight, Color.TRANSPARENT);
             hitboxVisualization.setStroke(Color.RED);
-            hitboxVisualization.setFill(Color.TRANSPARENT);
             hitboxVisualization.setTranslateX(offsetX);
             hitboxVisualization.setTranslateY(offsetY);
             owner.getChildren().add(hitboxVisualization);
         }
     }
-
 
     public void setHitboxSize(double width, double height) {
         this.hitboxWidth = width;
@@ -47,35 +44,25 @@ public class CollisionComponent implements Hitbox {
         }
     }
 
-
     public void updateHitBoxPosition() {
         if (GameSettings.SHOW_HITBOXES && hitboxVisualization != null) {
-            double visualX = offsetX;
-            double visualY = offsetY;
-            hitboxVisualization.setTranslateX(visualX);
-            hitboxVisualization.setTranslateY(visualY);
+            hitboxVisualization.setTranslateX(offsetX);
+            hitboxVisualization.setTranslateY(offsetY);
         }
     }
 
     public boolean checkCollision(CollisionComponent other) {
-        // 判断this和other是否为增益道具
         boolean thisIsBeneficial = (this.owner instanceof ActorLevelUp) || (this.owner instanceof HeartItem);
         boolean otherIsBeneficial = (other.owner instanceof ActorLevelUp) || (other.owner instanceof HeartItem);
 
-        // 如果两者都不是增益道具，那么就按正常逻辑检查collisionEnabled
-        if (!thisIsBeneficial && !otherIsBeneficial) {
-            // 至少有一方collisionEnabled为false就不碰撞
-            if (!this.collisionEnabled || !other.collisionEnabled) {
-                return false;
-            }
+        if (!thisIsBeneficial && !otherIsBeneficial && (!this.collisionEnabled || !other.collisionEnabled)) {
+            return false;
         }
-        // 正常进行Hitbox范围碰撞检测
         return this.getHitboxX() < other.getHitboxX() + other.getHitboxWidth()
                 && this.getHitboxX() + this.getHitboxWidth() > other.getHitboxX()
                 && this.getHitboxY() < other.getHitboxY() + other.getHitboxHeight()
                 && this.getHitboxY() + this.getHitboxHeight() > other.getHitboxY();
     }
-
 
     @Override
     public double getHitboxX() {
@@ -104,5 +91,4 @@ public class CollisionComponent implements Hitbox {
     public boolean isCollisionEnabled() {
         return collisionEnabled;
     }
-
 }

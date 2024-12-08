@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.example.demo.components.SoundComponent.playBossdownSound;
+
 public class Boss extends Actor {
 
     private static final String IMAGE_NAME = "bossplane.png";
@@ -102,19 +104,22 @@ public class Boss extends Actor {
         });
     }
 
+    public void stopShieldTimeline() {
+        if (shieldCheckTimeline != null) {
+            shieldCheckTimeline.stop();
+        }
+    }
+
     private void initializeShieldCheck() {
         shieldCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(10.0), e -> {
-            if (shield == null || shield.isDestroyed()) {
+            if ((shield == null || shield.isDestroyed())) {
                 summonShield();
             }
         }));
         shieldCheckTimeline.setCycleCount(Timeline.INDEFINITE);
         shieldCheckTimeline.play();
-
-        // 将boss的shieldCheckTimeline添加到level中，以便统一暂停/恢复
         level.addTimeline(shieldCheckTimeline);
     }
-
 
     private void summonShield() {
         if (isSummoningShield) return;
@@ -154,6 +159,7 @@ public class Boss extends Actor {
             super.destroy();
             if (shieldCheckTimeline != null) shieldCheckTimeline.stop();
             if (shield != null && !shield.isDestroyed()) shield.destroy();
+            playBossdownSound();
             animationComponent.playExplosion(
                     getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth() / 2,
                     getCollisionComponent().getHitboxY() + getCollisionComponent().getHitboxHeight() / 2,

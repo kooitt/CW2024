@@ -64,18 +64,20 @@ public abstract class LevelParent {
     private boolean isGamePaused = false;
     private SettingsPage settingsPageForPause;
 
+    private int heartsToDisplay = 5;
+
     public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, Controller controller) {
         this.controller = controller;
         this.root = new Group();
         this.scene = new Scene(root, screenWidth, screenHeight);
         this.timeline = new Timeline();
         this.animationComponent = new AnimationComponent(root);
-        this.user = new UserPlane(5);
+        this.user = new UserPlane(heartsToDisplay);
         this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
         this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
-        this.levelView = instantiateLevelView();
+        this.levelView = NewLevelView(heartsToDisplay);
 
         initializeTimeline();
         friendlyUnits.add(user);
@@ -94,8 +96,6 @@ public abstract class LevelParent {
 
     protected abstract void spawnEnemyUnits();
 
-    protected abstract LevelView instantiateLevelView();
-
     public Scene initializeScene() {
         initializeBackground();
         initializeFriendlyUnits();
@@ -106,6 +106,10 @@ public abstract class LevelParent {
         pauseButton.setOnAction(e -> showPauseMenu());
 
         return scene;
+    }
+
+    protected LevelView NewLevelView(int hearts) {
+        return new LevelView(root, hearts);
     }
 
     public void addTimeline(Timeline timeline) {
@@ -151,19 +155,17 @@ public abstract class LevelParent {
         isInputEnabled = false;
         isGamePaused = true;
 
-        // 显示前刷新
-        getController().getSettingsPage().refresh();
-        getController().getSettingsPage().setBackAction(this::hidePauseMenu);
+        controller.getSettingsPage().refresh();
+        controller.getSettingsPage().setBackAction(this::hidePauseMenu);
 
-        if (getController().getSettingsPage().getRoot().getParent() != null) {
-            ((Pane) getController().getSettingsPage().getRoot().getParent()).getChildren().remove(getController().getSettingsPage().getRoot());
+        if (controller.getSettingsPage().getRoot().getParent() != null) {
+            ((Pane) controller.getSettingsPage().getRoot().getParent()).getChildren().remove(controller.getSettingsPage().getRoot());
         }
 
-        getRoot().getChildren().add(getController().getSettingsPage().getRoot());
-        getController().getSettingsPage().getRoot().setVisible(true);
-        getController().getSettingsPage().getRoot().toFront();
+        root.getChildren().add(controller.getSettingsPage().getRoot());
+        controller.getSettingsPage().getRoot().setVisible(true);
+        controller.getSettingsPage().getRoot().toFront();
     }
-
 
     private void hidePauseMenu() {
         if (!isGamePaused) return;
@@ -171,7 +173,7 @@ public abstract class LevelParent {
         if (background != null) {
             background.requestFocus();
         }
-        getRoot().getChildren().remove(settingsPageForPause.getRoot());
+        root.getChildren().remove(settingsPageForPause.getRoot());
 
         isGamePaused = false;
         isInputEnabled = true;
@@ -244,10 +246,10 @@ public abstract class LevelParent {
             background.requestFocus();
             timeline.play();
 
-            pauseButton.setLayoutX(getScreenWidth() - 100);
+            pauseButton.setLayoutX(screenWidth - 100);
             pauseButton.setLayoutY(20);
             if (!userIsDestroyed()) {
-                getRoot().getChildren().add(pauseButton);
+                root.getChildren().add(pauseButton);
             }
 
         }, kv2);
@@ -369,8 +371,8 @@ public abstract class LevelParent {
     private void handleCollisions() {
         handleCollisions(userProjectiles, shields);
         handleCollisions(enemyProjectiles, friendlyUnits);
-        handleCollisions(enemyUnits, Collections.singletonList(getUser()));
-        handlePickupCollisions(Collections.singletonList(getUser()), powerUps);
+        handleCollisions(enemyUnits, Collections.singletonList(user));
+        handlePickupCollisions(Collections.singletonList(user), powerUps);
         handleCollisions(userProjectiles, enemyUnits);
         handleCollisions(enemyProjectiles, friendlyUnits);
     }
@@ -426,13 +428,13 @@ public abstract class LevelParent {
         timeline.stop();
         levelView.showWinImage();
         SoundComponent.stopAllSound();
-        if (getRoot().getChildren().contains(pauseButton)) {
-            getRoot().getChildren().remove(pauseButton);
+        if (root.getChildren().contains(pauseButton)) {
+            root.getChildren().remove(pauseButton);
         }
-        Button returnButton = createStyledButton("Return to Main Menu", () -> getController().returnToMainMenu());
-        returnButton.setLayoutX(getScreenWidth() / 2 - 150);
-        returnButton.setLayoutY(getScreenHeight() / 2 + 100);
-        getRoot().getChildren().add(returnButton);
+        Button returnButton = createStyledButton("Return to Main Menu", controller::returnToMainMenu);
+        returnButton.setLayoutX(screenWidth / 2 - 150);
+        returnButton.setLayoutY(screenHeight / 2 + 100);
+        root.getChildren().add(returnButton);
     }
 
     protected void loseGame() {
@@ -442,14 +444,14 @@ public abstract class LevelParent {
         SoundComponent.stopAllSound();
         SoundComponent.playGameoverSound();
 
-        if (getRoot().getChildren().contains(pauseButton)) {
-            getRoot().getChildren().remove(pauseButton);
+        if (root.getChildren().contains(pauseButton)) {
+            root.getChildren().remove(pauseButton);
         }
 
-        Button returnButton = createStyledButton("Return to Main Menu", () -> getController().returnToMainMenu());
-        returnButton.setLayoutX(getScreenWidth() / 2 - 150);
-        returnButton.setLayoutY(getScreenHeight() / 2 + 100);
-        getRoot().getChildren().add(returnButton);
+        Button returnButton = createStyledButton("Return to Main Menu", controller::returnToMainMenu);
+        returnButton.setLayoutX(screenWidth / 2 - 150);
+        returnButton.setLayoutY(screenHeight / 2 + 100);
+        root.getChildren().add(returnButton);
     }
 
     private Button createStyledButton(String text, Runnable action) {

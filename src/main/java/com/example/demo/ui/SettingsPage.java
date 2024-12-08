@@ -5,9 +5,12 @@ import com.example.demo.utils.KeyBindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class SettingsPage {
@@ -15,12 +18,7 @@ public class SettingsPage {
     private Controller controller;
     private KeyBindings keyBindings;
     private Runnable backAction;
-
-    // 假设这四个按钮是用来显示当前按键的
-    private Button upKeyBtn;
-    private Button downKeyBtn;
-    private Button leftKeyBtn;
-    private Button rightKeyBtn;
+    private Button upKeyBtn, downKeyBtn, leftKeyBtn, rightKeyBtn;
 
     public SettingsPage(Controller controller) {
         this.controller = controller;
@@ -43,28 +41,23 @@ public class SettingsPage {
         VBox keyBox = new VBox(10);
         keyBox.setAlignment(Pos.CENTER);
 
-        // createKeySetting 返回HBox，其中包含用于显示按键的按钮引用
-        // 这里我们需要在 createKeySetting 时保存按钮引用以便 refresh 时更新文本
         keyBox.getChildren().addAll(
-                createKeySetting("Up Key:", keyBindings.getUpKey(), keyBindings::setUpKey, (btn)-> upKeyBtn = btn),
-                createKeySetting("Down Key:", keyBindings.getDownKey(), keyBindings::setDownKey, (btn)-> downKeyBtn = btn),
-                createKeySetting("Left Key:", keyBindings.getLeftKey(), keyBindings::setLeftKey, (btn)-> leftKeyBtn = btn),
-                createKeySetting("Right Key:", keyBindings.getRightKey(), keyBindings::setRightKey, (btn)-> rightKeyBtn = btn)
+                createKeySetting("Up Key:", keyBindings.getUpKey(), keyBindings::setUpKey, btn -> upKeyBtn = btn),
+                createKeySetting("Down Key:", keyBindings.getDownKey(), keyBindings::setDownKey, btn -> downKeyBtn = btn),
+                createKeySetting("Left Key:", keyBindings.getLeftKey(), keyBindings::setLeftKey, btn -> leftKeyBtn = btn),
+                createKeySetting("Right Key:", keyBindings.getRightKey(), keyBindings::setRightKey, btn -> rightKeyBtn = btn)
         );
 
         Button backBtn = createStyledButton("Back", () -> {
-            if (backAction != null) {
-                backAction.run();
-            }
+            if (backAction != null) backAction.run();
         });
 
-        Button returnToMainMenuBtn = createStyledButton("Return to Main Menu", () -> controller.returnToMainMenu());
+        Button returnToMainMenuBtn = createStyledButton("Return to Main Menu", controller::returnToMainMenu);
 
         contentBox.getChildren().addAll(title, keyBox, backBtn, returnToMainMenuBtn);
         root.getChildren().add(contentBox);
     }
 
-    // 添加 refresh() 方法，在显示前调用
     public void refresh() {
         upKeyBtn.setText(keyBindings.getUpKey().getName());
         downKeyBtn.setText(keyBindings.getDownKey().getName());
@@ -72,8 +65,7 @@ public class SettingsPage {
         rightKeyBtn.setText(keyBindings.getRightKey().getName());
     }
 
-    private HBox createKeySetting(String labelText, KeyCode currentKey,
-                                  java.util.function.Consumer<KeyCode> setter, java.util.function.Consumer<Button> buttonReference) {
+    private HBox createKeySetting(String labelText, KeyCode currentKey, java.util.function.Consumer<KeyCode> setter, java.util.function.Consumer<Button> buttonReference) {
         Label label = new Label(labelText);
         label.setStyle("-fx-text-fill: white; -fx-font-size: 18px;");
 

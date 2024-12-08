@@ -21,7 +21,6 @@ public class LevelOne extends LevelParent {
     private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
     private static final double POWER_UP_SPAWN_PROBABILITY = 0.01;
     private static final double HEART_SPAWN_PROBABILITY = 0.005;
-    private static final int PLAYER_INITIAL_HEALTH = 5;
 
     private boolean transitioningToNextLevel = false;
 
@@ -46,9 +45,7 @@ public class LevelOne extends LevelParent {
 
     private void checkIfReadyToProceed() {
         Platform.runLater(() -> {
-            if (getRoot().getChildren().contains(pauseButton)) {
-                getRoot().getChildren().remove(pauseButton);
-            }
+            getRoot().getChildren().remove(pauseButton);
             clearAllProjectiles();
             double offScreenX = getScreenWidth() + 100;
             Timeline exitTimeline = new Timeline(
@@ -80,19 +77,14 @@ public class LevelOne extends LevelParent {
         if (Math.random() < POWER_UP_SPAWN_PROBABILITY) {
             addPowerUp(new ActorLevelUp(getScreenWidth(), Math.random() * getEnemyMaximumYPosition()));
         }
-        if (Math.random() < HEART_SPAWN_PROBABILITY) {
+        if (getUser().getCurrentHealth() < getUser().getMaxHealth() && Math.random() < HEART_SPAWN_PROBABILITY) {
             addPowerUp(new HeartItem(getScreenWidth(), Math.random() * getEnemyMaximumYPosition()));
         }
     }
 
     private void addPowerUp(Actor powerUp) {
-        powerUps.add(powerUp);
         getRoot().getChildren().add(powerUp);
-    }
-
-    @Override
-    protected LevelView instantiateLevelView() {
-        return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+        powerUps.add(powerUp);
     }
 
     private boolean userHasReachedKillTarget() {

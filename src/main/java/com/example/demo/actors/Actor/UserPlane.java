@@ -14,12 +14,12 @@ public class UserPlane extends Actor {
     private static final double Y_UPPER_BOUND = -40, Y_LOWER_BOUND = 600.0;
     private static final double X_LEFT_BOUND = 0.0, X_RIGHT_BOUND = 800.0;
     private static final double INITIAL_X_POSITION = 5.0, INITIAL_Y_POSITION = 300.0;
-    private static final int IMAGE_HEIGHT = 100, VERTICAL_VELOCITY = 8, HORIZONTAL_VELOCITY = 8;
+    private static final int IMAGE_HEIGHT = 100, VELOCITY = 8;
     private static final double PROJECTILE_X_OFFSET = 110, PROJECTILE_Y_OFFSET = 45;
     private static final double FIRE_RATE = 5.0;
     private static final int POWER_UP_THRESHOLD = 5;
 
-    private int planeImageIndex = 0; // 初始为0，对应userplane.png
+    private int planeImageIndex = 0;
     private static final String[] PLANE_IMAGES = {"userplane.png", "userplane2.png", "userplane3.png", "userplane4.png"};
     private static final String[] BULLET_IMAGES = {"userfire.png", "userfire2.png", "userfire3.png", "userfire4.png"};
 
@@ -28,23 +28,17 @@ public class UserPlane extends Actor {
 
     private ShootingComponent shootingComponent;
     private AnimationComponent animationComponent;
-
-    // 移除静态 INITIAL_HEALTH，改为实例变量
     private int initialHealth;
 
-    // 修改构造函数以接受初始健康值
     public UserPlane(int initialHealth) {
         super(PLANE_IMAGES[0], IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
         this.initialHealth = initialHealth;
-        // 重置飞机图片索引
-        planeImageIndex = 0;
         UserProjectile.setCurrentImageName(BULLET_IMAGES[0]);
 
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT * 0.8, IMAGE_HEIGHT);
         getMovementComponent().setVelocity(0, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
         shootingComponent.startFiring();
-
     }
 
     public void setAnimationComponent(AnimationComponent animationComponent) {
@@ -72,21 +66,21 @@ public class UserPlane extends Actor {
 
     public void incrementPowerUpCount() {
         powerUpCount++;
-        if (powerUpCount % POWER_UP_THRESHOLD == 0) {
-            if (animationComponent != null) {
-                double x = getCollisionComponent().getHitboxX() + getCollisionComponent().getHitboxWidth() * 1.5;
-                double y = getCollisionComponent().getHitboxY() + getCollisionComponent().getHitboxHeight();
-                animationComponent.playLevelUp(x, y, 5.0);
-            }
+        if (powerUpCount % POWER_UP_THRESHOLD == 0 && animationComponent != null) {
             SoundComponent.playUpgradeSound();
             addExtraBulletRow();
             planeImageIndex = Math.min(planeImageIndex + 1, PLANE_IMAGES.length - 1);
-            String newImage = PLANE_IMAGES[planeImageIndex];
-            setImageViewImage(newImage);
-            String newBulletImage = BULLET_IMAGES[planeImageIndex];
-            UserProjectile.setCurrentImageName(newBulletImage);
+            setImageViewImage(PLANE_IMAGES[planeImageIndex]);
+            UserProjectile.setCurrentImageName(BULLET_IMAGES[planeImageIndex]);
+
+            // 用相对位置播放动画：偏移量可以根据需要调整
+            animationComponent.playLevelUpRelative(this,
+                    getCollisionComponent().getHitboxWidth() * 1.3,
+                    getCollisionComponent().getHitboxHeight(),
+                    5.0);
         }
     }
+
 
     public void moveUp() {
         verticalVelocityMultiplier = -1;
@@ -119,7 +113,7 @@ public class UserPlane extends Actor {
     }
 
     private void updateVelocity() {
-        getMovementComponent().setVelocity(HORIZONTAL_VELOCITY * horizontalVelocityMultiplier, VERTICAL_VELOCITY * verticalVelocityMultiplier);
+        getMovementComponent().setVelocity(VELOCITY * horizontalVelocityMultiplier, VELOCITY * verticalVelocityMultiplier);
     }
 
     public int getNumberOfKills() {
@@ -142,6 +136,7 @@ public class UserPlane extends Actor {
         if (newX < X_LEFT_BOUND || newX > X_RIGHT_BOUND) setTranslateX(initialTranslateX);
         if (newY < Y_UPPER_BOUND || newY > Y_LOWER_BOUND) setTranslateY(initialTranslateY);
     }
+
     @Override
     public void takeDamage(int damage) {
         super.takeDamage(damage);
@@ -151,30 +146,13 @@ public class UserPlane extends Actor {
             setActorCollisionEnabled(false, 2000);
         }
     }
+
     private void startBlinking() {
-        // 我们需要闪烁4次, 每次闪烁由2个状态切换(可见->不可见->可见)
-        // 每次闪烁周期为500ms，即250ms一次状态切换，两次切换一共500ms
-        // 因此共需要8个状态切换（4次闪烁 * 2次切换每闪烁 = 8次）
-        // 我们可以用Timeline创建8个KeyFrame，每250ms切换一次可见性
-
         Timeline blinkTimeline = new Timeline();
-
-        // 总共要闪烁4次，每次2个状态变化，所以一共8个KeyFrame
-        // 时间序列：0ms(变不可见), 250ms(变可见), 500ms(变不可见), 750ms(变可见), ... 持续8次
-        int totalFlashes = 4;
-        int switchesPerFlash = 2;
-        int totalSwitches = totalFlashes * switchesPerFlash;
-        int interval = 250; // 每次状态切换的间隔 250ms
-
-        for (int i = 0; i < totalSwitches; i++) {
-            KeyFrame frame = new KeyFrame(Duration.millis(i * interval), e -> {
-                // 每次切换可见性
-                setVisible(!isVisible());
-            });
-            blinkTimeline.getKeyFrames().add(frame);
+        int totalFlashes = 4, interval = 250;
+        for (int i = 0; i < totalFlashes * 2; i++) {
+            blinkTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(i * interval), e -> setVisible(!isVisible())));
         }
-
-        // 动画结束后确保飞机最终处于可见状态
         blinkTimeline.setOnFinished(e -> setVisible(true));
         blinkTimeline.play();
     }
@@ -182,14 +160,7 @@ public class UserPlane extends Actor {
     public void setActorCollisionEnabled(boolean enabled, int durationMs) {
         getCollisionComponent().setCollisionEnabled(enabled);
         if (!enabled) {
-            Timeline reEnableTimeline = new Timeline(
-                    new KeyFrame(Duration.millis(durationMs), event -> {
-                        getCollisionComponent().setCollisionEnabled(true);
-                    })
-            );
-            reEnableTimeline.play();
+            new Timeline(new KeyFrame(Duration.millis(durationMs), event -> getCollisionComponent().setCollisionEnabled(true))).play();
         }
     }
-
-
 }
