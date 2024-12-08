@@ -40,7 +40,7 @@ The source code for the Plane Shooter Game can be found at:
    ```bash
    git clone https://github.com/fsfuzhu/CW2024.git
    cd CW2024
-   git checkout 20241205
+   git checkout 20241208
    ```
 
 2. **Configure JavaFX**:
@@ -81,7 +81,7 @@ The following features have been correctly implemented:
 
 ### 1. Multiple Levels
 
-- **Level One**: Basic enemies spawn, and the player must eliminate 10 enemies to advance.
+- **Level One**: Basic enemies spawn, and the player must eliminate enemies to advance.
 - **Level Two**: Introduces the first boss with shielding mechanics.
 - **Level Three**: Final boss with advanced attack patterns.
 
@@ -105,7 +105,7 @@ The following features have been correctly implemented:
 ### 5. Sound and Animation
 
 - **Sound Effects**: Includes shooting sounds, explosion sounds, and background music for each level.
-- **Animations**: Explosion animations for enemies and bosses, level-up effects for the player.
+- **Animations**: Explosion animations for enemies and bosses, level-up effects for the player that follow the player's movement.
 
 ### 6. Collision Detection
 
@@ -119,13 +119,19 @@ The following features have been correctly implemented:
 
 ## Features with Issues
 
-The following feature has been implemented but encountered issues:
+The following features have been implemented but encountered issues:
 
-### Boss Explosion Animation in Level Two
+### 1. Boss Explosion Animation in Level Two
 
 - **Issue**: Upon defeating the boss in Level Two, the explosion animation does not play completely; it stops midway.
 - **Effect**: The game proceeds to Level Three after the boss defeat sound finishes, even though the animation hasn't completed.
 - **Current Status**: Adjustments were made to ensure the boss is not removed from the scene until the explosion animation finishes. However, the issue persists where the animation stops prematurely.
+
+### 2. Shield Refreshing After Game Over
+
+- **Issue**: After the player dies and the `GameOver` screen is displayed, the boss in Level Two continues to refresh and display shields.
+- **Effect**: Unwanted shield animations and potential resource leaks after the game has ended.
+- **Solution**: Modified `LevelTwo` to stop the shield refreshing `Timeline` when the player dies, ensuring that no further shield updates occur post `GameOver`.
 
 ---
 
@@ -146,6 +152,7 @@ The following Java classes were added to enhance functionality:
   - Plays explosion animations for enemies and bosses.
   - Supports callback functions to execute code after animations finish.
   - Uses `Timeline` and `KeyFrame` for frame-based animations.
+  - **New Addition**: `playLevelUpRelative` method to allow level-up animations to follow the player's position.
 
 ### 2. `SoundComponent` (in `com.example.demo.components` package)
 
@@ -193,7 +200,7 @@ The following Java classes were added to enhance functionality:
   - Used to manage projectiles efficiently.
   - Reduces overhead by reusing objects instead of creating new ones.
 
-### 8. `BulletFactory` (in `com.example.demo.projectiles` package)
+### 8. `BulletFactory` (in `com.example.demo.actors.Projectile` package)
 
 - **Function**: Factory class for creating bullets/projectiles.
 - **Details**:
@@ -248,6 +255,7 @@ The following Java classes were modified, along with reasons for modification:
     - Added methods to handle horizontal movement (left and right).
   - **Animations**:
     - Integrated `AnimationComponent` to play level-up animations when collecting power-ups.
+    - **New Change**: Level-up animations now follow the player's movement by being added as child nodes to the player's `Group`.
   - **Health Management**:
     - Adjusted to use a health component for better health management.
 
@@ -260,6 +268,7 @@ The following Java classes were modified, along with reasons for modification:
     - Added a health bar display above the boss.
   - **Shield Mechanics**:
     - Implemented the ability for the boss to summon a shield (`Shield` class).
+    - **New Change**: Added `stopShieldTimeline` method to allow external control of the shield refreshing timeline.
   - **Shooting Behavior**:
     - Integrated `ShootingComponent` for firing projectiles.
   - **Explosion Animation**:
@@ -269,123 +278,96 @@ The following Java classes were modified, along with reasons for modification:
     - Enhanced movement with a move pattern and vertical velocity adjustments.
     - Implemented random movement patterns to make the boss's actions less predictable.
 
-- **Reason**: To create a more challenging and engaging boss fight with proper visual feedback and unique behaviors.
+- **Reason**: To create a more challenging and engaging boss fight with proper visual feedback and unique behaviors, and to fix the bug where shields continued to refresh after game over.
 
 ### 4. `LevelTwo` (in `com.example.demo.levels` package)
 
 - **Modifications**:
   - **Boss Integration**:
     - Adjusted to integrate the modified `Boss` class with new mechanics.
+    - Implemented `checkIfGameOver` to stop the boss's shield refreshing timeline upon player death.
   - **Power-Up Spawning**:
     - Added logic to spawn power-ups (`ActorLevelUp`, `HeartItem`) during the level.
   - **Game State Handling**:
     - Managed game state transitions to Level Three upon boss defeat.
     - Ensured explosion animations and sounds are completed before proceeding.
     - Added flags to synchronize the end of sounds and animations.
+  - **Bug Fix**:
+    - **New Addition**: In `checkIfGameOver`, added logic to stop the boss's shield refreshing timeline when the player dies to prevent shields from appearing post `GameOver`.
 
-- **Reason**: To accommodate the enhanced boss mechanics and provide a smooth transition between levels.
+- **Reason**: To accommodate the enhanced boss mechanics, provide a smooth transition between levels, and fix the shield refreshing bug after `GameOver`.
 
-### 5. `ShootingComponent` (in `com.example.demo.components` package)
-
-- **Modifications**:
-  - **Automatic Firing**:
-    - Handles the timing and firing of projectiles automatically.
-  - **Upgrades Support**:
-    - Supports increased fire rate and extra bullet rows as upgrades.
-  - **Integration with Sound**:
-    - Plays shooting sound when the player fires.
-  - **Bullet Pooling**:
-    - Utilizes `ObjectPool` for efficient projectile management.
-
-- **Reason**: To centralize and manage the shooting behavior for both the player and enemies, and to support weapon upgrades.
-
-### 6. `Projectile` and Derived Classes (in `com.example.demo.projectiles` package)
+### 5. `AnimationComponent` (in `com.example.demo.components` package)
 
 - **Modifications**:
-  - **Pooling Integration**:
-    - Adjusted to work with `ObjectPool` for efficient resource management.
-  - **Collision Component**:
-    - Added `CollisionComponent` for collision detection.
-  - **Reset Methods**:
-    - Implemented methods to reset position and state when reused from the pool.
+  - **New Method**: Added `playLevelUpRelative` to allow level-up animations to follow the player's position by adding them as child nodes to the player's `Group`.
+  - **Enhanced Functionality**:
+    - Ensured animations can be attached to any parent node, facilitating dynamic positioning.
+    - Modified existing animation methods to support relative positioning.
 
-- **Reason**: To improve performance and integrate with the new collision detection system.
+- **Reason**: To enable level-up animations to follow the player's movement, enhancing visual feedback and preventing animations from remaining static when the player moves.
 
-### 7. `ActiveActor` (in `com.example.demo.actors` package)
+### 6. `CollisionComponent` (in `com.example.demo.components` package)
 
 - **Modifications**:
-  - **Health Management**:
-    - Added `HealthComponent` to manage health and destruction.
-  - **Collision Detection**:
-    - Integrated `CollisionComponent` to handle collisions.
-  - **Movement and Updates**:
-    - Standardized the `updateActor` method to include delta time.
-    - Separated movement logic into `MovementComponent`.
+  - **Enhancements**:
+    - Improved collision checking logic to account for beneficial objects like `ActorLevelUp` and `HeartItem`.
+    - Ensured collision visualizations are accurately updated based on the actor's position.
+  
+- **Reason**: To support accurate and efficient collision detection with new power-up items and maintain game integrity.
 
-- **Reason**: To unify the actor hierarchy and support new features like health management and collision detection.
-
-### 8. `Main` and `Controller` Classes (in `com.example.demo.controller` package)
+### 7. `Controller` (in `com.example.demo.controller` package)
 
 - **Modifications**:
-  - **Game Initialization**:
-    - Adjusted to accommodate the new level structure and game state management.
-  - **Event Handling**:
-    - Updated to work with the new input processing system.
-    - Ensured proper handling of level transitions and observer patterns.
+  - **Main Menu Management**:
+    - Ensured that upon transitioning to `GameOver`, all timelines and animations are properly stopped.
+    - Added logic to handle returning to the main menu cleanly without residual animations or timelines.
 
-- **Reason**: To ensure proper game startup and level transitions with the updated game architecture.
+- **Reason**: To manage game state transitions effectively and prevent unwanted behaviors post `GameOver`.
 
 ---
 
 ## Unexpected Issues and Solutions
 
+### Issue: Shield Refreshing After Game Over
+
+- **Problem**: After the player dies and the `GameOver` screen is displayed, the boss in Level Two continues to refresh and display shields.
+- **Solution**:
+  - **Implemented**: Added a method `stopShieldTimeline()` in the `Boss` class to allow external control over the shield refreshing `Timeline`.
+  - **Modified**: Updated `LevelTwo`'s `checkIfGameOver` method to call `boss.stopShieldTimeline()` when the player dies.
+  - **Outcome**: Ensures that once the player is dead and `GameOver` is triggered, the boss no longer refreshes or displays shields, preventing unwanted animations and resource usage post-game termination.
+
+### Issue: LevelUp Animation Not Following Player
+
+- **Problem**: The LevelUp animation remained static on the screen when the player moved, breaking immersion and visual consistency.
+- **Solution**:
+  - **Implemented**: Modified the `AnimationComponent` to include the `playLevelUpRelative` method, which attaches the LevelUp animation as a child node to the player's `Group`.
+  - **Modified**: Updated the `UserPlane` class to use the new `playLevelUpRelative` method when a power-up is collected, ensuring the animation follows the player's movement.
+  - **Outcome**: LevelUp animations now dynamically follow the player's position, maintaining visual consistency even as the player moves across the screen.
+
 ### Issue: Main Menu Interface Offset (Scaling Issue on Windows with 125% DPI)
 
 - **Problem**: When returning to the main menu after playing a level, the main menu interface would sometimes appear offset or misaligned on systems with Windows scaling set to 125%. Initially, the first time loading the main menu had no issues, but subsequent returns caused the interface to shift. Also, attempts to reuse the same root node for the main menu scene triggered exceptions like `is already set as root of another scene`.
-
-- **Analysis**:
-  - The root node of the main menu scene was being reused across multiple scene transitions, which caused layout and scaling inconsistencies.
-  - JavaFX does not allow the same node to be the root of multiple scenes. Reusing the same `StackPane` or root layout node caused `IllegalArgumentException` when setting it to a new scene.
-  - Even after trying to recreate scenes dynamically, the offset issue persisted if the same main menu root node was reused.
-
 - **Solution**:
-  - To solve both the offset and node reuse issues, we unified the main menu display logic with the levels' approach.
-  - Instead of using a fixed `MainMenu` root node and toggling visibility, we introduced a `MainMenuParent` class similar to a `LevelParent`-like structure.
-  - Each time we return to the main menu, we create a new `MainMenuParent` instance and get a fresh `Scene`. This ensures a clean layout pass and avoids node reuse conflicts.
-  
-- **Implementation Details**:
-  - Created a `MainMenuParent` class (similar to how levels are structured) that handles its own `Scene`.
-  - In `Controller.showMainMenu()`, we now instantiate a new `MainMenuParent` each time and set its scene to the stage. This approach mirrors the process of loading a new level scene, ensuring consistency and preventing layout shifts.
-  - The `SettingsPage` is still integrated, but added and removed from the new main menu root each time as needed. This ensures no conflict in root node usage.
-
-- **Outcome**:
-  - After implementing `MainMenuParent` and creating a new scene for the main menu each time, the offset and scaling issues no longer occur.
-  - The `is already set as root of another scene` exception is resolved since each main menu display uses a brand-new root node and scene.
-  - This unified approach to scene management for both the main menu and levels led to a consistent and stable user interface across DPI scaling settings.
-
----
+  - **Implemented**: Created a new `MainMenuParent` class similar to `LevelParent`, ensuring each main menu display uses a fresh root node and scene.
+  - **Modified**: Updated the `Controller.showMainMenu()` method to instantiate a new `MainMenuParent` each time the main menu is displayed.
+  - **Outcome**: Resolved the offset and scaling issues by avoiding root node reuse and ensuring consistent scene initialization, leading to a stable and properly aligned main menu interface across different DPI settings.
 
 ### Issue: Sound Overlapping and Playback
 
 - **Problem**: Sometimes, sound effects overlap or do not play as expected.
 - **Solution**:
-  - Modified `SoundComponent` to stop and reset media players before playing sounds.
-  - Ensured that media players are managed properly to prevent resource leaks.
-  - Used callbacks to synchronize sound playback with game events.
-
----
+  - **Implemented**: Modified `SoundComponent` to stop and reset media players before playing sounds.
+  - **Modified**: Ensured that media players are managed properly to prevent resource leaks.
+  - **Outcome**: Sound playback is now more reliable, with reduced overlapping and improved synchronization with game events.
 
 ### Issue: Control Customization Not Reflecting Immediately
 
 - **Problem**: Changes in key bindings do not take effect until the game restarts.
 - **Solution**:
-  - Implemented methods to refresh input listeners when key bindings are updated.
-  - Ensured that the game reads the latest key bindings from the `KeyBindings` class.
-  - Added logic to update active keys during the game loop.
-
----
-
-If there are any further issues or if more detailed explanations are needed for any section, please feel free to reach out.
+  - **Implemented**: Added methods to refresh input listeners when key bindings are updated.
+  - **Modified**: Ensured that the game reads the latest key bindings from the `KeyBindings` class during the game loop.
+  - **Outcome**: Key binding changes now take effect immediately without needing to restart the game, enhancing user experience and control flexibility.
 
 ---
 
@@ -396,9 +378,5 @@ This project is a coursework assignment for our institution. **Copying or plagia
 - You are welcome to **view the code** to learn and understand how the game is implemented.
 - Feel free to **download and play** the game for personal enjoyment.
 - **Unauthorized distribution** of the code or claiming it as your own work is not allowed.
-
----
-
-> **Contact**: For any questions or feedback, please open an issue or reach out to the maintainers.
 
 ---
