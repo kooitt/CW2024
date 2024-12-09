@@ -15,8 +15,8 @@ public class EnemyPlaneTwo extends Actor {
     private static final int INITIAL_HEALTH = 5;
     private static final double FIRE_RATE = 0.5;
 
-    private ShootingComponent shootingComponent;
-    private AnimationComponent animationComponent;
+    private final ShootingComponent shootingComponent;
+    private final AnimationComponent animationComponent;
 
     public EnemyPlaneTwo(double initialX, double initialY, Group root) {
         super(IMAGE_NAME, IMAGE_HEIGHT, initialX, initialY, INITIAL_HEALTH);

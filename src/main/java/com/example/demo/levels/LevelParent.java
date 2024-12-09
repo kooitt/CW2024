@@ -16,7 +16,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import com.example.demo.interfaces.LevelChangeListener;
 import javafx.util.Duration;
 
@@ -42,15 +41,15 @@ public abstract class LevelParent {
     protected final List<Actor> enemyProjectiles = new ArrayList<>();
     protected final List<Actor> shields = new ArrayList<>();
     protected final List<Actor> powerUps = new ArrayList<>();
-    private List<LevelChangeListener> levelChangeListeners = new ArrayList<>();
-    private List<Timeline> additionalTimelines = new ArrayList<>();
+    private final List<LevelChangeListener> levelChangeListeners = new ArrayList<>();
+    private final List<Timeline> additionalTimelines = new ArrayList<>();
     protected Controller controller;
     protected boolean isInputEnabled = true;
 
     private int currentNumberOfEnemies;
     private LevelView levelView;
 
-    private Set<KeyCode> activeKeys = new HashSet<>();
+    private final Set<KeyCode> activeKeys = new HashSet<>();
 
     private ObjectPool<Projectile> userProjectilePool;
     private ObjectPool<Projectile> enemyProjectilePool;
@@ -60,11 +59,8 @@ public abstract class LevelParent {
     private AnimationComponent animationComponent;
     private long lastUpdateTime;
     public Button pauseButton;
-    private StackPane pauseOverlay;
     private boolean isGamePaused = false;
     private SettingsPage settingsPageForPause;
-
-    private int heartsToDisplay = 5;
 
     public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, Controller controller) {
         this.controller = controller;
@@ -72,8 +68,9 @@ public abstract class LevelParent {
         this.scene = new Scene(root, screenWidth, screenHeight);
         this.timeline = new Timeline();
         this.animationComponent = new AnimationComponent(root);
+        int heartsToDisplay = 5;
         this.user = new UserPlane(heartsToDisplay);
-        this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
+        this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
         this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
@@ -132,10 +129,6 @@ public abstract class LevelParent {
         if (listener != null && !levelChangeListeners.contains(listener)) {
             levelChangeListeners.add(listener);
         }
-    }
-
-    public void removeLevelChangeListener(LevelChangeListener listener) {
-        levelChangeListeners.remove(listener);
     }
 
     protected void notifyLevelChange(String nextLevelName) {
@@ -341,6 +334,7 @@ public abstract class LevelParent {
         removeDestroyedActors(powerUps);
     }
 
+    @SafeVarargs
     private void removeDestroyedActors(List<Actor> actors, ObjectPool<Projectile>... pools) {
         Iterator<Actor> iterator = actors.iterator();
         while (iterator.hasNext()) {
@@ -428,10 +422,8 @@ public abstract class LevelParent {
         timeline.stop();
         levelView.showWinImage();
         SoundComponent.stopAllSound();
-        if (root.getChildren().contains(pauseButton)) {
-            root.getChildren().remove(pauseButton);
-        }
-        Button returnButton = createStyledButton("Return to Main Menu", controller::returnToMainMenu);
+        root.getChildren().remove(pauseButton);
+        Button returnButton = createStyledButton(controller::returnToMainMenu);
         returnButton.setLayoutX(screenWidth / 2 - 150);
         returnButton.setLayoutY(screenHeight / 2 + 100);
         root.getChildren().add(returnButton);
@@ -444,18 +436,16 @@ public abstract class LevelParent {
         SoundComponent.stopAllSound();
         SoundComponent.playGameoverSound();
 
-        if (root.getChildren().contains(pauseButton)) {
-            root.getChildren().remove(pauseButton);
-        }
+        root.getChildren().remove(pauseButton);
 
-        Button returnButton = createStyledButton("Return to Main Menu", controller::returnToMainMenu);
+        Button returnButton = createStyledButton(controller::returnToMainMenu);
         returnButton.setLayoutX(screenWidth / 2 - 150);
         returnButton.setLayoutY(screenHeight / 2 + 100);
         root.getChildren().add(returnButton);
     }
 
-    private Button createStyledButton(String text, Runnable action) {
-        Button button = new Button(text);
+    private Button createStyledButton(Runnable action) {
+        Button button = new Button("Return to Main Menu");
         String style = "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 24px; -fx-border-color: white; -fx-border-width: 2;";
         String hoverStyle = "-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 24px; -fx-border-color: white; -fx-border-width: 2;";
         button.setStyle(style);

@@ -5,7 +5,7 @@ import com.example.demo.interfaces.ObjectFactory;
 
 public class BulletFactory implements ObjectFactory<Projectile> {
 
-    private String type;
+    private final String type;
 
     public BulletFactory(String type) {
         this.type = type;
@@ -13,18 +13,13 @@ public class BulletFactory implements ObjectFactory<Projectile> {
 
     @Override
     public Projectile create() {
-        switch (type) {
-            case "user":
-                return new UserProjectile(0, 0);
-            case "enemy":
-                return new EnemyProjectile(0, 0);
-            case "boss":
-                return new BossProjectile(0);
-            case "bossTwo":
-                return new BossTwoProjectile(0);
-            default:
-                return null;
-        }
+        return switch (type) {
+            case "user" -> new UserProjectile(0, 0);
+            case "enemy" -> new EnemyProjectile(0, 0);
+            case "boss" -> new BossProjectile(0);
+            case "bossTwo" -> new BossTwoProjectile(0);
+            default -> null;
+        };
     }
 
     @Override

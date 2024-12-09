@@ -9,18 +9,20 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.Objects;
+
 public abstract class Actor extends Group implements Destructible {
 
     public static final String IMAGE_LOCATION = "/com/example/demo/images/";
 
-    protected ImageView imageView;
+    public ImageView imageView;
     protected MovementComponent movementComponent;
     private CollisionComponent collisionComponent;
     private HealthComponent healthComponent;
     protected boolean isDestroyed;
 
     public Actor(String imageName, int imageHeight, double initialXPos, double initialYPos, int maxHealth) {
-        imageView = new ImageView(new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm()));
+        imageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(IMAGE_LOCATION + imageName)).toExternalForm()));
         imageView.setFitHeight(imageHeight);
         imageView.setPreserveRatio(true);
         setLayoutX(initialXPos);
@@ -54,7 +56,7 @@ public abstract class Actor extends Group implements Destructible {
     }
 
     protected void setImageViewImage(String imageName) {
-        imageView.setImage(new Image(getClass().getResource(IMAGE_LOCATION + imageName).toExternalForm()));
+        imageView.setImage(new Image(Objects.requireNonNull(getClass().getResource(IMAGE_LOCATION + imageName)).toExternalForm()));
     }
 
     @Override

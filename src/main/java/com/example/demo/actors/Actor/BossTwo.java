@@ -14,6 +14,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BossTwo extends Actor {
 
@@ -27,10 +28,10 @@ public class BossTwo extends Actor {
     private static final double MOVEMENT_INTERVAL = 1.0;
     private static final double VERTICAL_VELOCITY = 5;
 
-    private ShootingComponent shootingComponent;
-    private AnimationComponent animationComponent;
-    private LevelParent level;
-    private double screenHeight;
+    private final ShootingComponent shootingComponent;
+    private final AnimationComponent animationComponent;
+
+    private final double screenHeight;
     private double movementTimer = 0;
     private double timeSinceLastSpecialShot = 0.0;
     private ProgressBar healthBar;
@@ -40,7 +41,6 @@ public class BossTwo extends Actor {
 
     public BossTwo(Group root, LevelParent level) {
         super(FRAME_PREFIX + "1.png", IMAGE_HEIGHT, 1000.0, 300.0, MAX_HEALTH);
-        this.level = level;
         this.screenHeight = level.getScreenHeight();
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT);
         getMovementComponent().setVelocity(0, 0);
@@ -55,7 +55,7 @@ public class BossTwo extends Actor {
     private void loadAnimationFrames() {
         frames = new ArrayList<>();
         for (int i = 1; i <= FRAME_COUNT; i++) {
-            frames.add(new Image(getClass().getResource(IMAGE_LOCATION + FRAME_PREFIX + i + ".png").toExternalForm()));
+            frames.add(new Image(Objects.requireNonNull(getClass().getResource(IMAGE_LOCATION + FRAME_PREFIX + i + ".png")).toExternalForm()));
         }
     }
 

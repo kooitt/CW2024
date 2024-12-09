@@ -1,5 +1,6 @@
 package com.example.demo.components;
 
+import com.example.demo.actors.Actor.Actor;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -37,20 +38,27 @@ public class SoundComponent {
     private static AudioClip gethealthClip;
     private static AudioClip blinkClip;
 
+    // 新增两个静态变量用于存储音量
+    private static double bgmVolume = 0.5; // 默认50%音量
+    private static double sfxVolume = 0.5; // 默认50%音量
+
     static {
         try {
             Media level1Media = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[3]).toExternalForm());
             level1Player = new MediaPlayer(level1Media);
+            level1Player.setVolume(bgmVolume); // 设置初始音量
 
             Media level2Media = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[4]).toExternalForm());
             level2Player = new MediaPlayer(level2Media);
+            level2Player.setVolume(bgmVolume);
 
             Media level3Media = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[11]).toExternalForm());
             level3Player = new MediaPlayer(level3Media);
+            level3Player.setVolume(bgmVolume);
 
             Media mainmenuMedia = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[5]).toExternalForm());
             mainmenuPlayer = new MediaPlayer(mainmenuMedia);
-
+            mainmenuPlayer.setVolume(bgmVolume);
 
             enemyDownClip = new AudioClip(SoundComponent.class.getResource(SOUND_LOCATIONS[0]).toExternalForm());
             bossDownClip = new AudioClip(SoundComponent.class.getResource(SOUND_LOCATIONS[1]).toExternalForm());
@@ -66,6 +74,28 @@ public class SoundComponent {
         }
     }
 
+    // 添加设置和获取 BGM 音量的方法
+    public static void setBgmVolume(double volume) {
+        bgmVolume = Math.max(0, Math.min(volume, 1)); // 保证音量在0到1之间
+        if (level1Player != null) level1Player.setVolume(bgmVolume);
+        if (level2Player != null) level2Player.setVolume(bgmVolume);
+        if (level3Player != null) level3Player.setVolume(bgmVolume);
+        if (mainmenuPlayer != null) mainmenuPlayer.setVolume(bgmVolume);
+    }
+
+    public static double getBgmVolume() {
+        return bgmVolume;
+    }
+
+    // 添加设置和获取 SFX 音量的方法
+    public static void setSfxVolume(double volume) {
+        sfxVolume = Math.max(0, Math.min(volume, 1)); // 保证音量在0到1之间
+    }
+
+    public static double getSfxVolume() {
+        return sfxVolume;
+    }
+
     public static void pauseCurrentLevelSound() {
         if (currentBGM != null) {
             currentBGM.pause();
@@ -79,11 +109,11 @@ public class SoundComponent {
     }
 
     public static void playExplosionSound() {
-        enemyDownClip.play();
+        enemyDownClip.play(sfxVolume);
     }
 
     public static void playBossdownSound(Runnable onFinished) {
-        bossDownClip.play();
+        bossDownClip.play(sfxVolume);
         if (onFinished != null) {
             onFinished.run();
         }
@@ -94,11 +124,11 @@ public class SoundComponent {
     }
 
     public static void playBlinkSound() {
-        blinkClip.play();
+        blinkClip.play(sfxVolume);
     }
 
     public static void playShootingSound() {
-        bulletClip.play();
+        bulletClip.play(sfxVolume);
     }
 
     public static void playLevel1Sound() {
@@ -130,19 +160,19 @@ public class SoundComponent {
     }
 
     public static void playUpgradeSound() {
-        upgradeClip.play();
+        upgradeClip.play(sfxVolume);
     }
 
     public static void playGameoverSound() {
-        gameoverClip.play();
+        gameoverClip.play(sfxVolume);
     }
 
     public static void playGetbulletSound() {
-        getbulletClip.play();
+        getbulletClip.play(sfxVolume);
     }
 
     public static void playGethealthSound() {
-        gethealthClip.play();
+        gethealthClip.play(sfxVolume);
     }
 
     public static void stopLevel1Sound() {

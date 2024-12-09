@@ -9,13 +9,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class CollisionComponent implements Hitbox {
-    private Actor owner;
+    private final Actor owner;
     private double hitboxWidth;
     private double hitboxHeight;
-    private double offsetX;
-    private double offsetY;
+    public double offsetX;
+    public double offsetY;
     private Rectangle hitboxVisualization;
-    private boolean collisionEnabled = true;
+    public boolean collisionEnabled = true;
 
     public CollisionComponent(Actor owner, double hitboxWidth, double hitboxHeight, double offsetX, double offsetY) {
         this.owner = owner;
@@ -84,11 +84,7 @@ public class CollisionComponent implements Hitbox {
         return hitboxHeight;
     }
 
-    public void setCollisionEnabled(boolean enabled) {
+    public void SetActorCollisionEnable(boolean enabled) {
         this.collisionEnabled = enabled;
-    }
-
-    public boolean isCollisionEnabled() {
-        return collisionEnabled;
     }
 }

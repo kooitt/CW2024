@@ -6,8 +6,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class ObjectPool<T> {
-    private Deque<T> available = new ArrayDeque<>();
-    private ObjectFactory<T> factory;
+    private final Deque<T> available = new ArrayDeque<>();
+    private final ObjectFactory<T> factory;
 
     public ObjectPool(ObjectFactory<T> factory) {
         this.factory = factory;

@@ -26,13 +26,11 @@ public class UserPlane extends Actor {
     private int verticalVelocityMultiplier = 0, horizontalVelocityMultiplier = 0;
     private int numberOfKills = 0, powerUpCount = 0, extraBulletRows = 0;
 
-    private ShootingComponent shootingComponent;
+    private final ShootingComponent shootingComponent;
     private AnimationComponent animationComponent;
-    private int initialHealth;
 
     public UserPlane(int initialHealth) {
         super(PLANE_IMAGES[0], IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
-        this.initialHealth = initialHealth;
         UserProjectile.setCurrentImageName(BULLET_IMAGES[0]);
 
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT * 0.8, IMAGE_HEIGHT);
@@ -157,9 +155,9 @@ public class UserPlane extends Actor {
     }
 
     public void setActorCollisionEnabled(boolean enabled, int durationMs) {
-        getCollisionComponent().setCollisionEnabled(enabled);
+        getCollisionComponent().SetActorCollisionEnable(enabled);
         if (!enabled) {
-            new Timeline(new KeyFrame(Duration.millis(durationMs), event -> getCollisionComponent().setCollisionEnabled(true))).play();
+            new Timeline(new KeyFrame(Duration.millis(durationMs), event -> getCollisionComponent().SetActorCollisionEnable(true))).play();
         }
     }
 }

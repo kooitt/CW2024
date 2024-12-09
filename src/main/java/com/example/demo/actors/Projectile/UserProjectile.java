@@ -32,7 +32,6 @@ public class UserProjectile extends Projectile {
 	@Override
 	public void reset() {
 		super.reset();
-		// 重置时更新子弹的图片
 		setImageViewImage(currentImageName);
 	}
 

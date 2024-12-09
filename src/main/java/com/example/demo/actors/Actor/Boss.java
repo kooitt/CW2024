@@ -36,11 +36,11 @@ public class Boss extends Actor {
     private int indexOfCurrentMove = 0;
 
     private ProgressBar healthBar;
-    private ShootingComponent shootingComponent;
-    private AnimationComponent animationComponent;
+    private final ShootingComponent shootingComponent;
+    private final AnimationComponent animationComponent;
     private Shield shield;
     private Timeline shieldCheckTimeline;
-    private LevelParent level;
+    private final LevelParent level;
     private boolean isSummoningShield = false;
     public boolean isReadyToRemove = false;
     private Runnable onExplosionFinished;
@@ -121,7 +121,7 @@ public class Boss extends Actor {
         level.addTimeline(shieldCheckTimeline);
     }
 
-    private void summonShield() {
+    public void summonShield() {
         if (isSummoningShield) return;
         isSummoningShield = true;
         Platform.runLater(() -> {

@@ -28,7 +28,6 @@ class HealthComponentTest {
         mockActor = new Actor("heart.png", 50, 0, 0, 10) {
             @Override
             public void updateActor(double deltaTime, LevelParent level) {
-                // 不需要实现
             }
         };
         healthComponent = new HealthComponent(mockActor, 10);

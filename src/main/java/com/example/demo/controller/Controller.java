@@ -32,7 +32,6 @@ public class Controller {
         // 每次显示主菜单都创建新的 MainMenuParent，从而拥有全新场景
         mainMenu = new MainMenu(this);
         stage.setScene(mainMenu.getScene());
-        mainMenu.startMenu();
         stage.show();
     }
 

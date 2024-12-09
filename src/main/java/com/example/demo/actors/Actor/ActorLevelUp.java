@@ -11,7 +11,7 @@ public class ActorLevelUp extends Actor {
     private static final double AMPLITUDE = 30;
     private static final double FREQUENCY = 0.5;
 
-    private double initialY;
+    private final double initialY;
     private double time;
 
     public ActorLevelUp(double initialXPos, double initialYPos) {
@@ -40,7 +40,6 @@ public class ActorLevelUp extends Actor {
         user.incrementPowerUpCount();
         user.doubleFireRate();
         destroy();
-        SoundComponent soundComponent = new SoundComponent();
-        soundComponent.playGetbulletSound();
+        SoundComponent.playGetbulletSound();
     }
 }

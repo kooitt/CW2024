@@ -5,7 +5,6 @@ import com.example.demo.actors.Actor.ActorLevelUp;
 import com.example.demo.actors.Actor.BossTwo;
 import com.example.demo.actors.Actor.HeartItem;
 import com.example.demo.controller.Controller;
-import com.example.demo.views.LevelView;
 import com.example.demo.components.SoundComponent;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -18,7 +17,7 @@ public class LevelThree extends LevelParent {
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background3.jpg";
     private static final double POWER_UP_SPAWN_PROBABILITY = 0.01;
     private static final double HEART_SPAWN_PROBABILITY = 0.005;
-    private BossTwo boss;
+    private final BossTwo boss;
 
     public LevelThree(double screenHeight, double screenWidth, Controller controller) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, controller);
