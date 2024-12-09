@@ -45,7 +45,7 @@ public class UserPlane extends Actor {
     private static final double PROJECTILE_Y_OFFSET = 45;
 
     /** Default firing rate of the plane. */
-    private static final double FIRE_RATE = 5.0;
+    private static final double FIRE_RATE = 500.0;
 
     /** Threshold of power-ups required for level-up. */
     private static final int POWER_UP_THRESHOLD = 3;
@@ -93,6 +93,8 @@ public class UserPlane extends Actor {
         getMovementComponent().setVelocity(0, 0);
         shootingComponent = new ShootingComponent(this, FIRE_RATE, null, PROJECTILE_X_OFFSET, PROJECTILE_Y_OFFSET);
         shootingComponent.startFiring();
+
+        shootingComponent.setBulletRows(10);
     }
 
     /**
@@ -196,7 +198,9 @@ public class UserPlane extends Actor {
     }
 
     /**
-     * @return The total number of enemies killed by the player.
+     * Returns the current number of kills by the player.
+     *
+     * @return The number of kills.
      */
     public int getNumberOfKills() {
         return numberOfKills;

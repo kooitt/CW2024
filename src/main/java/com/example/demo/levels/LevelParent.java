@@ -11,14 +11,20 @@ import com.example.demo.ui.WinImage;
 import com.example.demo.utils.*;
 import com.example.demo.ui.SettingsPage;
 import javafx.animation.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import com.example.demo.interfaces.LevelChangeListener;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -200,6 +206,11 @@ public abstract class LevelParent {
     protected final GameOverImage gameOverImage;
 
     /**
+     * Label displaying the objective of the level.
+     */
+    protected Label objectiveLabel;
+
+    /**
      * Constructs a new LevelParent instance with the specified parameters.
      *
      * @param backgroundImageName The path to the background image for the level.
@@ -243,6 +254,13 @@ public abstract class LevelParent {
     protected abstract void initializeFriendlyUnits();
 
     /**
+     * Retrieves the objective text for the level.
+     *
+     * @return The objective text.
+     */
+    protected abstract String getObjectiveText();
+
+    /**
      * Checks the game state to determine if the game is over.
      * Must be implemented by subclasses to define specific game over conditions.
      */
@@ -280,8 +298,40 @@ public abstract class LevelParent {
         pauseButton = new Button("Pause");
         pauseButton.setStyle("-fx-font-size: 18px; -fx-background-color: transparent; -fx-text-fill: white;");
         pauseButton.setOnAction(e -> showPauseMenu());
-
+        initializeObjectiveLabel(); // Initialize the objective display
         return scene;
+    }
+
+    /**
+     * Updates the objective label with new text.
+     *
+     * @param newText The new objective text to display.
+     */
+    protected void updateObjectiveLabel(String newText) {
+        if (objectiveLabel != null) {
+            objectiveLabel.setText(newText);
+        }
+    }
+
+    /**
+     * Initializes the objective label for the level.
+     * Sets up the label's appearance and position within the scene.
+     */
+    protected void initializeObjectiveLabel() {
+        StackPane container = new StackPane();
+        container.setPrefSize(screenWidth, screenHeight); // Set container size to match screen
+        container.setAlignment(Pos.BOTTOM_LEFT); // Align to bottom-left corner
+
+        objectiveLabel = new Label(getObjectiveText());
+        objectiveLabel.setFont(new Font("Arial", 20));
+        objectiveLabel.setTextFill(Color.WHITE);
+        objectiveLabel.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-padding: 10; -fx-border-color: white; -fx-border-width: 1;");
+
+        // Add margin to position the label slightly above the bottom
+        StackPane.setMargin(objectiveLabel, new Insets(0, 0, 50, 0)); // 50px space from bottom
+
+        container.getChildren().add(objectiveLabel); // Add label to container
+        root.getChildren().add(container); // Add container to root
     }
 
     /**
@@ -687,24 +737,6 @@ public abstract class LevelParent {
     }
 
     /**
-     * Handles collisions between actors1 and actors2, applying damage as necessary.
-     *
-     * @param actors1 The first list of actors involved in collisions.
-     * @param actors2 The second list of actors involved in collisions.
-     */
-    private void handleCollisions(List<Actor> actors1, List<Actor> actors2) {
-        for (Actor actor1 : actors1) {
-            for (Actor actor2 : actors2) {
-                if (actor1.isDestroyed() || actor2.isDestroyed()) continue;
-                if (actor1.getCollisionComponent().checkCollision(actor2.getCollisionComponent())) {
-                    actor1.takeDamage(1);
-                    actor2.takeDamage(1);
-                }
-            }
-        }
-    }
-
-    /**
      * Handles collisions between actors1 and power-ups, triggering pickup actions.
      *
      * @param actors1  The first list of actors involved in collisions.
@@ -720,6 +752,24 @@ public abstract class LevelParent {
                     } else if (powerUp instanceof HeartItem) {
                         ((HeartItem) powerUp).onPickup(this);
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Handles collisions between actors1 and actors2, applying damage as necessary.
+     *
+     * @param actors1 The first list of actors involved in collisions.
+     * @param actors2 The second list of actors involved in collisions.
+     */
+    private void handleCollisions(List<Actor> actors1, List<Actor> actors2) {
+        for (Actor actor1 : actors1) {
+            for (Actor actor2 : actors2) {
+                if (actor1.isDestroyed() || actor2.isDestroyed()) continue;
+                if (actor1.getCollisionComponent().checkCollision(actor2.getCollisionComponent())) {
+                    actor1.takeDamage(1);
+                    actor2.takeDamage(1);
                 }
             }
         }

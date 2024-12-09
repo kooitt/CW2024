@@ -41,7 +41,7 @@ public class Main extends Application {
 
 	/**
 	 * The main method of the application.
-	 * This method launches the JavaFX application by invoking {@link Application#launch()}.
+	 * This method launches the JavaFX application by invoking {@link Application#launch(String...)}.
 	 *
 	 * @param args the command-line arguments passed to the application.
 	 */

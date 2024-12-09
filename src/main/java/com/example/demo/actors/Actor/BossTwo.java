@@ -22,31 +22,95 @@ import java.util.Objects;
  */
 public class BossTwo extends Actor {
 
-    // Constants for boss attributes and behavior
-    private static final String FRAME_PREFIX = "bosstwo"; // Prefix for animation frames
-    private static final int FRAME_COUNT = 14; // Number of frames in the animation
-    private static final int IMAGE_HEIGHT = 200; // Height of the boss image
-    private static final int MAX_HEALTH = 500; // Maximum health of the boss
-    private static final int HEALTH_BAR_WIDTH = 150; // Width of the health bar
-    private static final int HEALTH_BAR_HEIGHT = 15; // Height of the health bar
-    private static final double SPECIAL_SHOT_COOLDOWN = 5.0; // Cooldown time for special shots in seconds
-    private static final double MOVEMENT_INTERVAL = 1.0; // Time interval for movement direction change
-    private static final double VERTICAL_VELOCITY = 5; // Speed of vertical movement
+    /**
+     * Prefix for the boss's animation frames.
+     */
+    private static final String FRAME_PREFIX = "bosstwo";
 
-    // Components for boss functionality
-    private final ShootingComponent shootingComponent; // Handles shooting behavior
-    private final AnimationComponent animationComponent; // Handles explosion animations
+    /**
+     * Total number of animation frames.
+     */
+    private static final int FRAME_COUNT = 14;
 
-    // Screen-related properties
-    private final double screenHeight; // Height of the game screen
+    /**
+     * Height of the boss's image.
+     */
+    private static final int IMAGE_HEIGHT = 200;
 
-    // Internal timers and properties
-    private double movementTimer = 0; // Tracks time since the last movement direction change
-    private double timeSinceLastSpecialShot = 0.0; // Tracks time since the last special shot
-    private ProgressBar healthBar; // Displays the boss's current health
-    private List<Image> frames; // List of images for the boss's animation
-    private int currentFrameIndex = 0; // Current frame index in the animation
-    private Timeline animationTimeline; // Timeline for handling frame animations
+    /**
+     * Maximum health of the boss.
+     */
+    private static final int MAX_HEALTH = 500;
+
+    /**
+     * Width of the boss's health bar.
+     */
+    private static final int HEALTH_BAR_WIDTH = 150;
+
+    /**
+     * Height of the boss's health bar.
+     */
+    private static final int HEALTH_BAR_HEIGHT = 15;
+
+    /**
+     * Cooldown time for firing special scatter shots, in seconds.
+     */
+    private static final double SPECIAL_SHOT_COOLDOWN = 5.0;
+
+    /**
+     * Interval for changing movement direction, in seconds.
+     */
+    private static final double MOVEMENT_INTERVAL = 1.0;
+
+    /**
+     * Vertical velocity for the boss's movement.
+     */
+    private static final double VERTICAL_VELOCITY = 5;
+
+    /**
+     * Handles shooting mechanics for the boss.
+     */
+    private final ShootingComponent shootingComponent;
+
+    /**
+     * Handles explosion animations for the boss.
+     */
+    private final AnimationComponent animationComponent;
+
+    /**
+     * Height of the game screen, used to constrain the boss's movement.
+     */
+    private final double screenHeight;
+
+    /**
+     * Timer for tracking movement direction changes.
+     */
+    private double movementTimer = 0;
+
+    /**
+     * Timer for tracking the cooldown of the special scatter shot.
+     */
+    private double timeSinceLastSpecialShot = 0.0;
+
+    /**
+     * Progress bar displaying the boss's current health.
+     */
+    private ProgressBar healthBar;
+
+    /**
+     * List of images used for the boss's animation.
+     */
+    private List<Image> frames;
+
+    /**
+     * Index of the current frame in the animation sequence.
+     */
+    private int currentFrameIndex = 0;
+
+    /**
+     * Timeline used for handling frame animations.
+     */
+    private Timeline animationTimeline;
 
     /**
      * Constructs a new BossTwo instance with the given root group and level.

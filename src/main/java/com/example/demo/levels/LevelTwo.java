@@ -16,8 +16,9 @@ import javafx.scene.Group;
 import javafx.util.Duration;
 
 /**
- * LevelTwo represents the second level of the game, featuring a boss battle, power-ups, and a transition to the next level.
- * This class extends {@link LevelParent} and defines level-specific logic, including enemy spawning, power-ups, and victory conditions.
+ * LevelTwo represents the second level of the game, featuring a boss battle, power-ups,
+ * and a transition to the next level. This class extends {@link LevelParent} and defines
+ * level-specific logic, including enemy spawning, power-ups, and victory conditions.
  */
 public class LevelTwo extends LevelParent {
 
@@ -44,7 +45,7 @@ public class LevelTwo extends LevelParent {
     /**
      * Maximum health of the player in this level.
      */
-    private static final int MAX_HEALTH = 2;
+    private static final int MAX_HEALTH = 3;
 
     /**
      * The boss enemy for this level.
@@ -195,6 +196,16 @@ public class LevelTwo extends LevelParent {
      */
     @Override
     protected HeartDisplay NewHeartDisplay(Group root, double xPosition, double yPosition, int heartsToDisplay) {
-        return super.NewHeartDisplay(root, xPosition, yPosition, 2);
+        return super.NewHeartDisplay(root, xPosition, yPosition, 3);
+    }
+
+    /**
+     * Provides the objective text for this level.
+     *
+     * @return the objective text for this level.
+     */
+    @Override
+    protected String getObjectiveText() {
+        return "Objective: Defeat the Boss with a maximum health of 3";
     }
 }

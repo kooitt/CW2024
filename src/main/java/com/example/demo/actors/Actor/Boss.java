@@ -22,36 +22,123 @@ import java.util.List;
  */
 public class Boss extends Actor {
 
-    // Constants for Boss properties
+    /**
+     * The filename of the Boss's image.
+     */
     private static final String IMAGE_NAME = "bossplane.png";
-    private static final double INITIAL_X_POSITION = 1000.0; // Initial X position of the Boss
-    private static final double INITIAL_Y_POSITION = 400.0; // Initial Y position of the Boss
-    private static final double PROJECTILE_X_POSITION_OFFSET = -100.0; // X offset for projectiles
-    private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0; // Y offset for projectiles
-    private static final double FIRE_RATE = 1.0; // Fire rate of the Boss
-    private static final int IMAGE_HEIGHT = 200; // Height of the Boss image
-    private static final int VERTICAL_VELOCITY = 8; // Velocity for vertical movement
-    private static final int MAX_HEALTH = 800; // Maximum health of the Boss
-    private static final int HEALTH_BAR_WIDTH = 150; // Width of the health bar
-    private static final int HEALTH_BAR_HEIGHT = 15; // Height of the health bar
-
-    // Movement pattern for the Boss
-    private final List<Integer> movePattern = new ArrayList<>();
-    private int consecutiveMovesInSameDirection = 0; // Counter for consecutive moves
-    private int indexOfCurrentMove = 0; // Index of the current move in the pattern
-
-    private ProgressBar healthBar; // Health bar for visualizing Boss health
-    private final ShootingComponent shootingComponent; // Shooting component for handling projectiles
-    private final AnimationComponent animationComponent; // Animation component for explosion effects
-    private Shield shield; // Shield object for protecting the Boss
-    private Timeline shieldCheckTimeline; // Timeline for periodically checking the shield
-    private final LevelParent level; // Reference to the parent level
-    private boolean isSummoningShield = false; // Indicates if the Boss is currently summoning a shield
-    public boolean isReadyToRemove = false; // Indicates if the Boss is ready to be removed from the game
-    private Runnable onExplosionFinished; // Callback to execute after the Boss explosion animation is finished
 
     /**
-     * Constructs a Boss instance.
+     * The initial X position of the Boss on the screen.
+     */
+    private static final double INITIAL_X_POSITION = 1000.0;
+
+    /**
+     * The initial Y position of the Boss on the screen.
+     */
+    private static final double INITIAL_Y_POSITION = 400.0;
+
+    /**
+     * The X-axis offset for positioning projectiles relative to the Boss.
+     */
+    private static final double PROJECTILE_X_POSITION_OFFSET = -100.0;
+
+    /**
+     * The Y-axis offset for positioning projectiles relative to the Boss.
+     */
+    private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
+
+    /**
+     * The rate at which the Boss fires projectiles (shots per second).
+     */
+    private static final double FIRE_RATE = 1.0;
+
+    /**
+     * The height of the Boss's image.
+     */
+    private static final int IMAGE_HEIGHT = 200;
+
+    /**
+     * The vertical velocity multiplier for the Boss's movement.
+     */
+    private static final int VERTICAL_VELOCITY = 8;
+
+    /**
+     * The maximum health points of the Boss.
+     */
+    private static final int MAX_HEALTH = 800;
+
+    /**
+     * The width of the health bar displayed above the Boss.
+     */
+    private static final int HEALTH_BAR_WIDTH = 150;
+
+    /**
+     * The height of the health bar displayed above the Boss.
+     */
+    private static final int HEALTH_BAR_HEIGHT = 15;
+
+    /**
+     * The pattern of vertical movements the Boss will follow.
+     */
+    private final List<Integer> movePattern = new ArrayList<>();
+
+    /**
+     * Counter for tracking consecutive moves in the same direction.
+     */
+    private int consecutiveMovesInSameDirection = 0;
+
+    /**
+     * Index of the current move in the move pattern.
+     */
+    private int indexOfCurrentMove = 0;
+
+    /**
+     * Progress bar representing the Boss's current health.
+     */
+    private ProgressBar healthBar;
+
+    /**
+     * Component responsible for handling the Boss's shooting mechanics.
+     */
+    private final ShootingComponent shootingComponent;
+
+    /**
+     * Component responsible for handling animations such as explosions.
+     */
+    private final AnimationComponent animationComponent;
+
+    /**
+     * The shield object that can protect the Boss from damage.
+     */
+    private Shield shield;
+
+    /**
+     * Timeline that periodically checks if the Boss needs to summon a shield.
+     */
+    private Timeline shieldCheckTimeline;
+
+    /**
+     * Reference to the parent level in which the Boss exists.
+     */
+    private final LevelParent level;
+
+    /**
+     * Indicates whether the Boss is currently summoning a shield.
+     */
+    private boolean isSummoningShield = false;
+
+    /**
+     * Flag indicating whether the Boss is ready to be removed from the game.
+     */
+    public boolean isReadyToRemove = false;
+
+    /**
+     * Callback to execute after the Boss's explosion animation finishes.
+     */
+    private Runnable onExplosionFinished;
+
+    /**
+     * Constructs a Boss instance with specified root group and parent level.
      *
      * @param root  The root group to which the Boss belongs.
      * @param level The parent level of the Boss.
@@ -71,6 +158,7 @@ public class Boss extends Actor {
 
     /**
      * Initializes the health bar for the Boss.
+     * Sets up the ProgressBar and positions it above the Boss.
      */
     private void initializeHealthBar() {
         healthBar = new ProgressBar(1.0);
@@ -86,8 +174,9 @@ public class Boss extends Actor {
 
     /**
      * Updates the Boss's state during each frame.
+     * Handles movement, shooting, and shield positioning.
      *
-     * @param deltaTime The time since the last update.
+     * @param deltaTime The time elapsed since the last update (in seconds).
      * @param level     The parent level of the Boss.
      */
     @Override
@@ -105,7 +194,8 @@ public class Boss extends Actor {
     }
 
     /**
-     * Inflicts damage on the Boss, bypassing the shield if it is active.
+     * Inflicts damage on the Boss. If a shield is active and not destroyed, damage is bypassed.
+     * Otherwise, the Boss takes damage and the health bar is updated.
      *
      * @param damage The amount of damage to inflict.
      */
@@ -118,7 +208,7 @@ public class Boss extends Actor {
     }
 
     /**
-     * Sets a callback to be executed after the Boss explosion animation finishes.
+     * Sets a callback to be executed after the Boss's explosion animation finishes.
      *
      * @param onExplosionFinished The callback to execute.
      */
@@ -128,6 +218,7 @@ public class Boss extends Actor {
 
     /**
      * Updates the health bar to reflect the Boss's current health.
+     * Ensures that UI updates occur on the JavaFX Application Thread.
      */
     private void updateHealthBar() {
         Platform.runLater(() -> {
@@ -138,7 +229,7 @@ public class Boss extends Actor {
     }
 
     /**
-     * Stops the shield timeline.
+     * Stops the timeline responsible for periodically checking and summoning shields.
      */
     public void stopShieldTimeline() {
         if (shieldCheckTimeline != null) {
@@ -147,7 +238,8 @@ public class Boss extends Actor {
     }
 
     /**
-     * Initializes the timeline for periodically checking the shield.
+     * Initializes the timeline that periodically checks if the Boss needs to summon a shield.
+     * The Boss attempts to summon a shield every 10 seconds if no active shield exists.
      */
     private void initializeShieldCheck() {
         shieldCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(10.0), e -> {
@@ -162,6 +254,7 @@ public class Boss extends Actor {
 
     /**
      * Summons a shield to protect the Boss.
+     * Ensures that only one shield is being summoned at a time.
      */
     public void summonShield() {
         if (isSummoningShield) return;
@@ -174,7 +267,8 @@ public class Boss extends Actor {
     }
 
     /**
-     * Initializes the move pattern for the Boss.
+     * Initializes the movement pattern for the Boss.
+     * The pattern consists of alternating vertical velocities to create a back-and-forth motion.
      */
     private void initializeMovePattern() {
         for (int i = 0; i < 5; i++) {
@@ -187,8 +281,9 @@ public class Boss extends Actor {
 
     /**
      * Retrieves the next move in the move pattern.
+     * Shuffles the pattern after a certain number of consecutive moves to vary the Boss's movement.
      *
-     * @return The next move as an integer value.
+     * @return The next vertical velocity for the Boss.
      */
     private int getNextMove() {
         int currentMove = movePattern.get(indexOfCurrentMove);
@@ -203,7 +298,8 @@ public class Boss extends Actor {
     }
 
     /**
-     * Destroys the Boss, playing an explosion animation and executing the callback.
+     * Destroys the Boss, triggering an explosion animation and executing the onExplosionFinished callback.
+     * Ensures that the Boss is only destroyed once.
      */
     @Override
     public void destroy() {
@@ -229,6 +325,7 @@ public class Boss extends Actor {
 
     /**
      * Updates the Boss's position based on its movement component and move pattern.
+     * Prevents the Boss from moving outside the visible screen bounds.
      */
     @Override
     public void updatePosition() {

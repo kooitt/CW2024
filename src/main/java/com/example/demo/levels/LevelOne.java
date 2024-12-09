@@ -11,28 +11,30 @@ import javafx.animation.Interpolator;
 
 /**
  * Represents the first level of the game.
- * LevelOne initializes the gameplay for the first stage, handling the spawning of enemies,
- * transition to the next level, and game-over conditions.
+ * <p>
+ * This class manages the initialization of gameplay elements for the first stage,
+ * including the spawning of enemy units, level progression, and game-over conditions.
+ * </p>
  */
 public class LevelOne extends LevelParent {
 
     /**
-     * Path to the background image for this level.
+     * Path to the background image used in this level.
      */
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
 
     /**
-     * The fully qualified name of the next level class to transition to.
+     * The fully qualified name of the next level class for transitioning.
      */
     private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
 
     /**
-     * The total number of enemies to be spawned in this level.
+     * The total number of enemies that will be spawned in this level.
      */
-    private static final int TOTAL_ENEMIES = 20;
+    private static final int TOTAL_ENEMIES = 25;
 
     /**
-     * The number of enemies spawned at a time.
+     * The number of enemies spawned in each wave.
      */
     private static final int ENEMIES_PER_SPAWN = 5;
 
@@ -47,21 +49,26 @@ public class LevelOne extends LevelParent {
     private static final double ENEMY_SPAWN_PROBABILITY_TWO = 0.20;
 
     /**
-     * Tracks the total number of enemies that have been spawned so far.
+     * The total number of enemies that have been spawned so far.
      */
     private int spawnedEnemies = 0;
 
     /**
-     * Indicates whether the level is transitioning to the next level.
+     * Indicates whether the level is currently transitioning to the next stage.
      */
     private boolean transitioningToNextLevel = false;
 
     /**
-     * Constructs a new instance of LevelOne.
+     * Tracks the current wave of enemies that the player is facing.
+     */
+    private int currentWave = 0;
+
+    /**
+     * Constructs the first level of the game.
      *
-     * @param screenHeight the height of the screen.
-     * @param screenWidth the width of the screen.
-     * @param controller the controller managing the game state and transitions.
+     * @param screenHeight the height of the game screen.
+     * @param screenWidth  the width of the game screen.
+     * @param controller   the controller managing the game's state and transitions.
      */
     public LevelOne(double screenHeight, double screenWidth, Controller controller) {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, controller);
@@ -70,8 +77,7 @@ public class LevelOne extends LevelParent {
     }
 
     /**
-     * Checks if the game is over, either due to the player's destruction
-     * or the successful completion of the level.
+     * Checks if the game is over by evaluating the player's state or completion of the level objectives.
      */
     @Override
     protected void checkIfGameOver() {
@@ -90,7 +96,7 @@ public class LevelOne extends LevelParent {
     }
 
     /**
-     * Proceeds to the next level by transitioning the player's character off the screen.
+     * Transitions to the next level by animating the player's character off the screen and initializing the next stage.
      */
     private void proceedToNextLevel() {
         Platform.runLater(() -> {
@@ -106,7 +112,10 @@ public class LevelOne extends LevelParent {
     }
 
     /**
-     * Initializes the friendly units, such as the player's character, for the level.
+     * Initializes friendly units, such as the player's character, for this level.
+     * <p>
+     * This method ensures that the player's character is added to the game root for interaction and visibility.
+     * </p>
      */
     @Override
     protected void initializeFriendlyUnits() {
@@ -114,8 +123,12 @@ public class LevelOne extends LevelParent {
     }
 
     /**
-     * Spawns enemy units for the level based on defined probabilities.
-     * The enemies are spawned in batches, and the total number of enemies is capped.
+     * Spawns enemy units based on predefined probabilities and caps the total number of enemies.
+     * <p>
+     * This method spawns enemies in waves, and their types are determined randomly
+     * based on the probabilities defined in {@link #ENEMY_SPAWN_PROBABILITY_ONE} and
+     * {@link #ENEMY_SPAWN_PROBABILITY_TWO}.
+     * </p>
      */
     @Override
     protected void spawnEnemyUnits() {
@@ -133,7 +146,24 @@ public class LevelOne extends LevelParent {
                 addEnemyUnit(new EnemyPlaneOne(getScreenWidth(), Math.random() * getEnemyMaximumYPosition(), getRoot()));
             }
             spawnedEnemies++;
-            if (spawnedEnemies >= TOTAL_ENEMIES) break;
         }
+
+        if (spawnedEnemies % ENEMIES_PER_SPAWN == 0 && currentWave < 5) {
+            currentWave++;
+            updateObjectiveLabel(getObjectiveText());
+        }
+    }
+
+    /**
+     * Retrieves the current objective text for the level.
+     * <p>
+     * This method provides information about the player's progress in completing the current wave of enemies.
+     * </p>
+     *
+     * @return the objective text as a string.
+     */
+    @Override
+    protected String getObjectiveText() {
+        return "Objective: Defeat 5 waves of enemies\nCurrent Wave: " + currentWave;
     }
 }
