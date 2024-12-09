@@ -19,11 +19,13 @@ public class SoundComponent {
             "/com/example/demo/sounds/gameover.wav",
             "/com/example/demo/sounds/getbullet.wav",
             "/com/example/demo/sounds/gethealth.wav",
-            "/com/example/demo/sounds/blink.wav"
+            "/com/example/demo/sounds/blink.wav",
+            "/com/example/demo/sounds/level3.mp3"
     };
 
     private static MediaPlayer level1Player;
     private static MediaPlayer level2Player;
+    private static MediaPlayer level3Player;
     private static MediaPlayer mainmenuPlayer;
 
     private static AudioClip enemyDownClip;
@@ -43,8 +45,12 @@ public class SoundComponent {
             Media level2Media = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[4]).toExternalForm());
             level2Player = new MediaPlayer(level2Media);
 
+            Media level3Media = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[11]).toExternalForm());
+            level3Player = new MediaPlayer(level3Media);
+
             Media mainmenuMedia = new Media(SoundComponent.class.getResource(SOUND_LOCATIONS[5]).toExternalForm());
             mainmenuPlayer = new MediaPlayer(mainmenuMedia);
+
 
             enemyDownClip = new AudioClip(SoundComponent.class.getResource(SOUND_LOCATIONS[0]).toExternalForm());
             bossDownClip = new AudioClip(SoundComponent.class.getResource(SOUND_LOCATIONS[1]).toExternalForm());
@@ -105,6 +111,13 @@ public class SoundComponent {
     public static void playLevel2Sound() {
         stopAllSound();
         currentBGM = level2Player;
+        currentBGM.setCycleCount(MediaPlayer.INDEFINITE);
+        currentBGM.play();
+    }
+
+    public static void playLevel3Sound() {
+        stopAllSound();
+        currentBGM = level3Player;
         currentBGM.setCycleCount(MediaPlayer.INDEFINITE);
         currentBGM.play();
     }

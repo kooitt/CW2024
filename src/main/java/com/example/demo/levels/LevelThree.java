@@ -7,6 +7,11 @@ import com.example.demo.actors.Actor.HeartItem;
 import com.example.demo.controller.Controller;
 import com.example.demo.views.LevelView;
 import com.example.demo.components.SoundComponent;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 public class LevelThree extends LevelParent {
 
@@ -19,6 +24,7 @@ public class LevelThree extends LevelParent {
         super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, controller);
         boss = new BossTwo(getRoot(), this);
         SoundComponent.stopAllSound();
+        SoundComponent.playLevel3Sound();
     }
 
     @Override
@@ -35,13 +41,33 @@ public class LevelThree extends LevelParent {
         }
     }
 
+    private void animateBossTwoEntry() {
+        // 设置BossTwo初始的X坐标在屏幕外的右边
+        double bossFinalX = boss.getLayoutX();
+        double offScreenStartX = getScreenWidth() + 100;
+        boss.setLayoutX(offScreenStartX);
+
+        // 创建入场动画Timeline
+        Timeline bossTwoIntroTimeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(boss.layoutXProperty(), offScreenStartX)),
+                new KeyFrame(
+                        Duration.millis(1000), // 动画持续时间
+                        new KeyValue(boss.layoutXProperty(), bossFinalX, Interpolator.EASE_IN) // 从屏幕外飞到目标位置
+                )
+        );
+
+        bossTwoIntroTimeline.play();
+    }
+
     @Override
     protected void spawnEnemyUnits() {
         if (getCurrentNumberOfEnemies() == 0) {
             addEnemyUnit(boss);
+            animateBossTwoEntry(); // 调用入场动画
         }
         spawnPowerUps();
     }
+
 
     private void spawnPowerUps() {
         if (Math.random() < POWER_UP_SPAWN_PROBABILITY) {
