@@ -16,29 +16,112 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents the second boss in the game, featuring shooting, movement, animations, and health management.
+ * Extends {@link Actor} to inherit basic actor properties and behavior.
+ */
 public class BossTwo extends Actor {
 
+    // Constants for boss attributes and behavior
+    /**
+     * Prefix for the animation frames of the boss.
+     */
     private static final String FRAME_PREFIX = "bosstwo";
+
+    /**
+     * Number of frames in the boss's animation sequence.
+     */
     private static final int FRAME_COUNT = 14;
+
+    /**
+     * Height of the boss image in pixels.
+     */
     private static final int IMAGE_HEIGHT = 200;
+
+    /**
+     * Maximum health of the boss.
+     */
     private static final int MAX_HEALTH = 500;
+
+    /**
+     * Width of the health bar in pixels.
+     */
     private static final int HEALTH_BAR_WIDTH = 150;
+
+    /**
+     * Height of the health bar in pixels.
+     */
     private static final int HEALTH_BAR_HEIGHT = 15;
+
+    /**
+     * Cooldown time in seconds for the boss's special scatter shot.
+     */
     private static final double SPECIAL_SHOT_COOLDOWN = 5.0;
+
+    /**
+     * Time interval in seconds for changing movement direction.
+     */
     private static final double MOVEMENT_INTERVAL = 1.0;
+
+    /**
+     * Speed of the boss's vertical movement.
+     */
     private static final double VERTICAL_VELOCITY = 5;
 
+    // Components for boss functionality
+    /**
+     * Handles the boss's shooting behavior, including projectile management.
+     */
     private final ShootingComponent shootingComponent;
+
+    /**
+     * Handles explosion animations for the boss.
+     */
     private final AnimationComponent animationComponent;
 
+    // Screen-related properties
+    /**
+     * Height of the game screen.
+     */
     private final double screenHeight;
+
+    // Internal timers and properties
+    /**
+     * Tracks time since the last movement direction change.
+     */
     private double movementTimer = 0;
+
+    /**
+     * Tracks time since the last special scatter shot.
+     */
     private double timeSinceLastSpecialShot = 0.0;
+
+    /**
+     * Displays the boss's current health as a progress bar.
+     */
     private ProgressBar healthBar;
+
+    /**
+     * List of images representing the boss's animation frames.
+     */
     private List<Image> frames;
+
+    /**
+     * Current frame index in the animation sequence.
+     */
     private int currentFrameIndex = 0;
+
+    /**
+     * Timeline for controlling the animation sequence.
+     */
     private Timeline animationTimeline;
 
+    /**
+     * Constructs a new BossTwo instance with the given root group and level.
+     *
+     * @param root  The root group of the game scene.
+     * @param level The level instance to which the boss belongs.
+     */
     public BossTwo(Group root, LevelParent level) {
         super(FRAME_PREFIX + "1.png", IMAGE_HEIGHT, 1000.0, 300.0, MAX_HEALTH);
         this.screenHeight = level.getScreenHeight();
@@ -52,6 +135,9 @@ public class BossTwo extends Actor {
         startAnimation();
     }
 
+    /**
+     * Loads the animation frames for the boss.
+     */
     private void loadAnimationFrames() {
         frames = new ArrayList<>();
         for (int i = 1; i <= FRAME_COUNT; i++) {
@@ -59,6 +145,9 @@ public class BossTwo extends Actor {
         }
     }
 
+    /**
+     * Starts the animation timeline for the boss's movement and appearance.
+     */
     private void startAnimation() {
         animationTimeline = new Timeline(new KeyFrame(Duration.millis(50), e -> {
             currentFrameIndex = (currentFrameIndex + 1) % frames.size();
@@ -68,6 +157,9 @@ public class BossTwo extends Actor {
         animationTimeline.play();
     }
 
+    /**
+     * Initializes the health bar for the boss and adds it to the display.
+     */
     private void initializeHealthBar() {
         healthBar = new ProgressBar(1.0);
         healthBar.setPrefSize(HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT);
@@ -79,6 +171,12 @@ public class BossTwo extends Actor {
         healthBar.setVisible(getCurrentHealth() > 0);
     }
 
+    /**
+     * Updates the boss's state, including movement, shooting, and health bar.
+     *
+     * @param deltaTime The time elapsed since the last update, in seconds.
+     * @param level     The current level instance.
+     */
     @Override
     public void updateActor(double deltaTime, LevelParent level) {
         movementTimer += deltaTime;
@@ -111,6 +209,11 @@ public class BossTwo extends Actor {
         updateHealthBar();
     }
 
+    /**
+     * Fires a scatter shot with projectiles at predefined angles.
+     *
+     * @param level The current level instance.
+     */
     private void fireScatterShot(LevelParent level) {
         if (level.getBossTwoProjectilePool() == null) return;
         double[] angles = {-15, -7.5, 0, 7.5, 15};
@@ -129,12 +232,9 @@ public class BossTwo extends Actor {
         }
     }
 
-    @Override
-    public void takeDamage(int damage) {
-        super.takeDamage(damage);
-        updateHealthBar();
-    }
-
+    /**
+     * Updates the boss's health bar to reflect the current health.
+     */
     private void updateHealthBar() {
         Platform.runLater(() -> {
             double progress = (double) getCurrentHealth() / MAX_HEALTH;
@@ -143,6 +243,20 @@ public class BossTwo extends Actor {
         });
     }
 
+    /**
+     * Takes damage, updates health, and refreshes the health bar.
+     *
+     * @param damage The amount of damage to be taken.
+     */
+    @Override
+    public void takeDamage(int damage) {
+        super.takeDamage(damage);
+        updateHealthBar();
+    }
+
+    /**
+     * Destroys the boss, plays the explosion animation, and stops the animation timeline.
+     */
     @Override
     public void destroy() {
         if (!isDestroyed) {

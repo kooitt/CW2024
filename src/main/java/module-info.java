@@ -10,7 +10,6 @@ module com.example.demo {
     exports com.example.demo.actors.Actor;
     exports com.example.demo.actors.Projectile;
     exports com.example.demo.levels;
-    exports com.example.demo.views;
     exports com.example.demo.ui;
     exports com.example.demo.utils;
     exports com.example.demo.interfaces;
@@ -18,5 +17,4 @@ module com.example.demo {
 
     // 如果有反射需求，例如与 FXML 配合，需要开放部分包
     opens com.example.demo.controller to javafx.fxml;
-    opens com.example.demo.views to javafx.fxml;
 }

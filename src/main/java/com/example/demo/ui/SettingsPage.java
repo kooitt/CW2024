@@ -16,68 +16,99 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * The SettingsPage class represents a user interface for managing game settings such as key bindings
+ * and audio volume levels for background music (BGM) and sound effects (SFX).
+ */
 public class SettingsPage {
-    private StackPane root;
-    private final Controller controller;
-    private final KeyBindings keyBindings;
-    private Runnable backAction;
-    private Button upKeyBtn, downKeyBtn, leftKeyBtn, rightKeyBtn;
-    private Slider bgmSlider, sfxSlider; // 音量滑动条
-    private Label bgmVolumeLabel, sfxVolumeLabel; // 音量指示标签
 
+    /**
+     * Root container for the settings page.
+     */
+    private StackPane root;
+
+    /**
+     * Controller to manage interactions with the main application.
+     */
+    private final Controller controller;
+
+    /**
+     * Key bindings for the game, allowing customization of input keys.
+     */
+    private final KeyBindings keyBindings;
+
+    /**
+     * Runnable action to execute when the back button is clicked.
+     */
+    private Runnable backAction;
+
+    /**
+     * Buttons for configuring key bindings for up, down, left, and right controls.
+     */
+    private Button upKeyBtn, downKeyBtn, leftKeyBtn, rightKeyBtn;
+
+    /**
+     * Sliders for adjusting the volume of background music (BGM) and sound effects (SFX).
+     */
+    private Slider bgmSlider, sfxSlider;
+
+    /**
+     * Labels to display the current volume percentage for BGM and SFX.
+     */
+    private Label bgmVolumeLabel, sfxVolumeLabel;
+
+    /**
+     * Constructs a new SettingsPage with the specified controller.
+     *
+     * @param controller The controller managing the application.
+     */
     public SettingsPage(Controller controller) {
         this.controller = controller;
         this.keyBindings = KeyBindings.getInstance();
         initialize();
     }
 
+    /**
+     * Initializes the settings page layout and UI components.
+     */
     private void initialize() {
         root = new StackPane();
-        // 设置根容器背景
         setSemiTransparentBackground();
 
-        // 创建主内容容器
-        VBox contentBox = new VBox(30); // 垂直布局间距为 30
-        contentBox.setAlignment(Pos.CENTER); // 确保内容居中
-        contentBox.setPadding(new Insets(40)); // 设置内边距
-        contentBox.setMaxWidth(600); // 限制宽度，防止过于宽大
-        contentBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 20;"); // 半透明背景和圆角
+        VBox contentBox = new VBox(30); // Vertical layout with spacing of 30
+        contentBox.setAlignment(Pos.CENTER);
+        contentBox.setPadding(new Insets(40));
+        contentBox.setMaxWidth(600);
+        contentBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-background-radius: 20;");
 
-        // 添加标题
         Label title = new Label("Settings");
         title.setTextFill(Color.WHITE);
         title.setFont(Font.font("Arial", 36));
         title.setEffect(new DropShadow(5, Color.BLACK));
 
-        // 音量调节部分
-        VBox volumeBox = new VBox(30); // 设置音量部分的间距
-        volumeBox.setAlignment(Pos.CENTER); // 居中对齐
+        VBox volumeBox = new VBox(30);
+        volumeBox.setAlignment(Pos.CENTER);
 
-        // 添加 BGM 和 SFX 音量滑动条
         bgmSlider = new Slider(0, 1, SoundComponent.getBgmVolume());
         sfxSlider = new Slider(0, 1, SoundComponent.getSfxVolume());
 
-        // BGM 音量
         HBox bgmBox = createVolumeControl("BGM Volume:", bgmSlider, bgmVolumeLabel = new Label(String.format("%.0f%%", SoundComponent.getBgmVolume() * 100)));
         bgmSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            SoundComponent.setBgmVolume(newVal.doubleValue()); // 更新背景音乐音量
+            SoundComponent.setBgmVolume(newVal.doubleValue());
             bgmVolumeLabel.setText(String.format("%.0f%%", newVal.doubleValue() * 100));
         });
 
-        // SFX 音量
         HBox sfxBox = createVolumeControl("SFX Volume:", sfxSlider, sfxVolumeLabel = new Label(String.format("%.0f%%", SoundComponent.getSfxVolume() * 100)));
         sfxSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            SoundComponent.setSfxVolume(newVal.doubleValue()); // 更新音效音量
+            SoundComponent.setSfxVolume(newVal.doubleValue());
             sfxVolumeLabel.setText(String.format("%.0f%%", newVal.doubleValue() * 100));
         });
 
         volumeBox.getChildren().addAll(bgmBox, sfxBox);
 
-        // 键位设置部分
-        VBox keyBox = new VBox(20); // 设置键位部分的间距
+        VBox keyBox = new VBox(20);
         keyBox.setAlignment(Pos.CENTER);
 
-        // 添加键位按钮
         keyBox.getChildren().addAll(
                 createKeySetting("Up Key:", keyBindings.getUpKey(), keyBindings::setUpKey, btn -> upKeyBtn = btn),
                 createKeySetting("Down Key:", keyBindings.getDownKey(), keyBindings::setDownKey, btn -> downKeyBtn = btn),
@@ -85,8 +116,7 @@ public class SettingsPage {
                 createKeySetting("Right Key:", keyBindings.getRightKey(), keyBindings::setRightKey, btn -> rightKeyBtn = btn)
         );
 
-        // 按钮部分
-        HBox buttonsBox = new HBox(30); // 设置按钮间距
+        HBox buttonsBox = new HBox(30);
         buttonsBox.setAlignment(Pos.CENTER);
 
         Button backBtn = createStyledButton("Back", () -> {
@@ -97,32 +127,35 @@ public class SettingsPage {
 
         buttonsBox.getChildren().addAll(backBtn, returnToMainMenuBtn);
 
-        // 将所有部分添加到内容框中
         contentBox.getChildren().addAll(title, volumeBox, keyBox, buttonsBox);
-
-        // 将内容框添加到根容器中并居中对齐
         root.getChildren().add(contentBox);
-        StackPane.setAlignment(contentBox, Pos.CENTER); // 设置内容框在 StackPane 中居中对齐
-
-        // 确保根容器大小动态适应
+        StackPane.setAlignment(contentBox, Pos.CENTER);
         root.setPrefSize(controller.getStage().getWidth(), controller.getStage().getHeight());
     }
 
-
-
+    /**
+     * Sets a semi-transparent black background for the root container.
+     */
     private void setSemiTransparentBackground() {
-        // 设置半透明黑色背景
         BackgroundFill backgroundFill = new BackgroundFill(
-                Color.rgb(0, 0, 0, 0.8), // 半透明黑色
+                Color.rgb(0, 0, 0, 0.8),
                 CornerRadii.EMPTY,
                 Insets.EMPTY
         );
         root.setBackground(new Background(backgroundFill));
     }
 
+    /**
+     * Creates a volume control UI element with a slider and a label.
+     *
+     * @param labelText   The label text for the control.
+     * @param slider      The slider to adjust the volume.
+     * @param volumeLabel The label to display the current volume percentage.
+     * @return An HBox containing the volume control elements.
+     */
     private HBox createVolumeControl(String labelText, Slider slider, Label volumeLabel) {
         HBox hbox = new HBox(15);
-        hbox.setAlignment(Pos.CENTER); // 居中对齐
+        hbox.setAlignment(Pos.CENTER);
 
         Label label = new Label(labelText);
         label.setTextFill(Color.WHITE);
@@ -139,6 +172,15 @@ public class SettingsPage {
         return hbox;
     }
 
+    /**
+     * Creates a key binding configuration UI element.
+     *
+     * @param labelText       The label text for the control.
+     * @param currentKey      The current key binding.
+     * @param setter          A consumer to update the key binding.
+     * @param buttonReference A consumer to update the button reference.
+     * @return A VBox containing the key binding configuration elements.
+     */
     private VBox createKeySetting(String labelText, KeyCode currentKey, java.util.function.Consumer<KeyCode> setter, java.util.function.Consumer<Button> buttonReference) {
         Label label = new Label(labelText);
         label.setTextFill(Color.WHITE);
@@ -147,9 +189,6 @@ public class SettingsPage {
         Button keyBtn = new Button(currentKey.getName());
         keyBtn.setStyle("-fx-background-color: rgba(255, 255, 255, 0.2); -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10 20;");
         keyBtn.setEffect(new DropShadow(3, Color.BLACK));
-        keyBtn.setOnMouseEntered(e -> keyBtn.setStyle("-fx-background-color: rgba(255, 255, 255, 0.4); -fx-text-fill: black; -fx-font-size: 16px; -fx-padding: 10 20;"));
-        keyBtn.setOnMouseExited(e -> keyBtn.setStyle("-fx-background-color: rgba(255, 255, 255, 0.2); -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 10 20;"));
-
         buttonReference.accept(keyBtn);
 
         keyBtn.setOnAction(e -> {
@@ -175,10 +214,17 @@ public class SettingsPage {
         });
 
         VBox vbox = new VBox(5, label, keyBtn);
-        vbox.setAlignment(Pos.CENTER); // 居中对齐
+        vbox.setAlignment(Pos.CENTER);
         return vbox;
     }
 
+    /**
+     * Creates a styled button with hover effects.
+     *
+     * @param text   The text to display on the button.
+     * @param action The action to perform when the button is clicked.
+     * @return A styled Button.
+     */
     private Button createStyledButton(String text, Runnable action) {
         Button button = new Button(text);
         button.setFont(Font.font("Arial", 18));
@@ -191,13 +237,15 @@ public class SettingsPage {
         return button;
     }
 
+    /**
+     * Refreshes the settings page UI components to reflect the current state.
+     */
     public void refresh() {
         upKeyBtn.setText(keyBindings.getUpKey().getName());
         downKeyBtn.setText(keyBindings.getDownKey().getName());
         leftKeyBtn.setText(keyBindings.getLeftKey().getName());
         rightKeyBtn.setText(keyBindings.getRightKey().getName());
 
-        // 同步滑动条的值和标签
         bgmSlider.setValue(SoundComponent.getBgmVolume());
         bgmVolumeLabel.setText(String.format("%.0f%%", bgmSlider.getValue() * 100));
 
@@ -205,10 +253,20 @@ public class SettingsPage {
         sfxVolumeLabel.setText(String.format("%.0f%%", sfxSlider.getValue() * 100));
     }
 
+    /**
+     * Returns the root container for the settings page.
+     *
+     * @return The root container.
+     */
     public StackPane getRoot() {
         return root;
     }
 
+    /**
+     * Sets the action to be performed when the back button is clicked.
+     *
+     * @param backAction The back action.
+     */
     public void setBackAction(Runnable backAction) {
         this.backAction = backAction;
     }
