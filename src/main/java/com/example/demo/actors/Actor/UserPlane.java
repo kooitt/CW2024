@@ -17,7 +17,7 @@ public class UserPlane extends Actor {
     private static final int IMAGE_HEIGHT = 100, VELOCITY = 8;
     private static final double PROJECTILE_X_OFFSET = 110, PROJECTILE_Y_OFFSET = 45;
     private static final double FIRE_RATE = 5.0;
-    private static final int POWER_UP_THRESHOLD = 5;
+    private static final int POWER_UP_THRESHOLD = 3;
 
     private int planeImageIndex = 0;
     private static final String[] PLANE_IMAGES = {"userplane.png", "userplane2.png", "userplane3.png", "userplane4.png"};
@@ -73,7 +73,6 @@ public class UserPlane extends Actor {
             setImageViewImage(PLANE_IMAGES[planeImageIndex]);
             UserProjectile.setCurrentImageName(BULLET_IMAGES[planeImageIndex]);
 
-            // 用相对位置播放动画：偏移量可以根据需要调整
             animationComponent.playLevelUpRelative(this,
                     getCollisionComponent().getHitboxWidth() * 1.3,
                     getCollisionComponent().getHitboxHeight(),

@@ -2,10 +2,10 @@ package com.example.demo.levels;
 
 import com.example.demo.actors.Actor.Actor;
 import com.example.demo.actors.Actor.ActorLevelUp;
-import com.example.demo.actors.Actor.EnemyPlane;
+import com.example.demo.actors.Actor.EnemyPlaneOne;
+import com.example.demo.actors.Actor.EnemyPlaneTwo;
 import com.example.demo.actors.Actor.HeartItem;
 import com.example.demo.controller.Controller;
-import com.example.demo.views.LevelView;
 import com.example.demo.components.SoundComponent;
 import javafx.animation.*;
 import javafx.application.Platform;
@@ -16,12 +16,14 @@ public class LevelOne extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
     private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
-    private static final int TOTAL_ENEMIES = 5;
-    private static final int KILLS_TO_ADVANCE = 20;
-    private static final double ENEMY_SPAWN_PROBABILITY = 0.20;
+    private static final int TOTAL_ENEMIES = 20;
+    private static final int ENEMIES_PER_SPAWN = 5;
+    private static final double ENEMY_SPAWN_PROBABILITY_ONE = 0.30;
+    private static final double ENEMY_SPAWN_PROBABILITY_TWO = 0.20;
     private static final double POWER_UP_SPAWN_PROBABILITY = 0.01;
     private static final double HEART_SPAWN_PROBABILITY = 0.005;
 
+    private int spawnedEnemies = 0;
     private boolean transitioningToNextLevel = false;
 
     public LevelOne(double screenHeight, double screenWidth, Controller controller) {
@@ -34,16 +36,19 @@ public class LevelOne extends LevelParent {
     protected void checkIfGameOver() {
         if (userIsDestroyed()) {
             loseGame();
-        } else if (userHasReachedKillTarget() && !transitioningToNextLevel) {
+            return;
+        }
+
+        if (spawnedEnemies == TOTAL_ENEMIES && getCurrentNumberOfEnemies() == 0 && !transitioningToNextLevel) {
             transitioningToNextLevel = true;
             isInputEnabled = false;
             getUser().stopShooting();
             SoundComponent.stopLevel1Sound();
-            checkIfReadyToProceed();
+            proceedToNextLevel();
         }
     }
 
-    private void checkIfReadyToProceed() {
+    private void proceedToNextLevel() {
         Platform.runLater(() -> {
             getRoot().getChildren().remove(pauseButton);
             clearAllProjectiles();
@@ -63,13 +68,23 @@ public class LevelOne extends LevelParent {
 
     @Override
     protected void spawnEnemyUnits() {
-        if (!isInputEnabled) return;
-        int currentEnemies = getCurrentNumberOfEnemies();
-        for (int i = 0; i < TOTAL_ENEMIES - currentEnemies; i++) {
-            if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-                addEnemyUnit(new EnemyPlane(getScreenWidth(), Math.random() * getEnemyMaximumYPosition(), getRoot()));
+        if (!isInputEnabled || spawnedEnemies >= TOTAL_ENEMIES || getCurrentNumberOfEnemies() > 0) return;
+
+        int enemiesToSpawn = Math.min(ENEMIES_PER_SPAWN, TOTAL_ENEMIES - spawnedEnemies);
+
+        for (int i = 0; i < enemiesToSpawn; i++) {
+            double rand = Math.random();
+            if (rand < ENEMY_SPAWN_PROBABILITY_ONE) {
+                addEnemyUnit(new EnemyPlaneOne(getScreenWidth(), Math.random() * getEnemyMaximumYPosition(), getRoot()));
+            } else if (rand < ENEMY_SPAWN_PROBABILITY_ONE + ENEMY_SPAWN_PROBABILITY_TWO) {
+                addEnemyUnit(new EnemyPlaneTwo(getScreenWidth(), Math.random() * getEnemyMaximumYPosition(), getRoot()));
+            } else {
+                addEnemyUnit(new EnemyPlaneOne(getScreenWidth(), Math.random() * getEnemyMaximumYPosition(), getRoot()));
             }
+            spawnedEnemies++;
+            if (spawnedEnemies >= TOTAL_ENEMIES) break;
         }
+
         spawnPowerUps();
     }
 
@@ -85,9 +100,5 @@ public class LevelOne extends LevelParent {
     private void addPowerUp(Actor powerUp) {
         getRoot().getChildren().add(powerUp);
         powerUps.add(powerUp);
-    }
-
-    private boolean userHasReachedKillTarget() {
-        return getUser().getNumberOfKills() >= KILLS_TO_ADVANCE;
     }
 }
