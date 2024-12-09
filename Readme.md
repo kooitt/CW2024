@@ -325,6 +325,33 @@ The following Java classes were modified, along with reasons for modification:
 
 - **Reason**: To manage game state transitions effectively and prevent unwanted behaviors post `GameOver`.
 
+### 8. `LevelOne` (in `com.example.demo.levels` package)
+
+- **Modifications**:
+  - **Dynamic Enemy Waves**:
+    - Enemies now spawn in waves of 3 (`ENEMIES_PER_SPAWN`).
+    - New waves are generated only when all enemies from the previous wave are destroyed.
+    - Ensured synchronization of enemy spawning to avoid premature wave creation.
+
+  - **Total Enemy Count**:
+    - Introduced `TOTAL_ENEMIES` to define the total number of enemies for the level.
+    - Removed the previous `KILLS_TO_ADVANCE` parameter to simplify level progression logic.
+
+  - **Enemy Spawn Probabilities**:
+    - Adjusted the spawn probabilities for different enemy types:
+      - **EnemyPlaneOne**: Higher probability of spawning.
+      - **EnemyPlaneTwo**: Lower probability of spawning.
+
+  - **Level Completion Logic**:
+    - Level transitions to `LevelTwo` only after all enemies (`TOTAL_ENEMIES`) have been eliminated, and no enemies remain on the screen.
+    - Added `checkIfGameOver` logic to handle seamless transition once all conditions are met.
+
+  - **Power-Up Spawning**:
+    - Integrated existing power-up logic without changes to probabilities.
+
+- **Reason**: To provide a more structured and intuitive enemy spawning system, ensuring controlled gameplay progression while maintaining balance and challenge.
+
+
 ---
 
 ## Unexpected Issues and Solutions
