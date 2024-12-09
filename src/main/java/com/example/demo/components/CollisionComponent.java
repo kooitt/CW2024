@@ -44,7 +44,6 @@ public class CollisionComponent implements Hitbox {
      * Visible only if {@link GameSettings#SHOW_HITBOXES} is enabled.
      */
     private Rectangle hitboxVisualization;
-    private boolean hitboxVisible;
 
     /**
      * Indicates whether collisions are enabled for this component.
@@ -67,15 +66,15 @@ public class CollisionComponent implements Hitbox {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
 
-
-            hitboxVisualization = new Rectangle(hitboxWidth, hitboxHeight);
-            hitboxVisualization.setVisible(GameSettings.SHOW_HITBOXES);
-
+        if (GameSettings.SHOW_HITBOXES) {
+            hitboxVisualization = new Rectangle(hitboxWidth, hitboxHeight, Color.TRANSPARENT);
+            hitboxVisualization.setStroke(Color.RED);
+            hitboxVisualization.setTranslateX(offsetX);
+            hitboxVisualization.setTranslateY(offsetY);
+            owner.getChildren().add(hitboxVisualization);
+        }
     }
-    public void setHitboxVisible(boolean visible) {
-        this.hitboxVisible = visible;
-        hitboxVisualization.setVisible(visible);
-    }
+
     /**
      * Sets the size of the hitbox and resets the offsets to zero.
      *

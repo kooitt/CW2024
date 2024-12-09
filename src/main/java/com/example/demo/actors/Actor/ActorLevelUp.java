@@ -44,7 +44,7 @@ public class ActorLevelUp extends Actor {
 
         // Configure the hitbox to match the image dimensions
         getCollisionComponent().setHitboxSize(IMAGE_HEIGHT, IMAGE_HEIGHT);
-        getCollisionComponent().updateHitBoxPosition();
+//        getCollisionComponent().updateHitBoxPosition();
     }
 
     /**
@@ -67,7 +67,7 @@ public class ActorLevelUp extends Actor {
         setLayoutY(newY);
 
         // Update the collision hitbox position
-        getCollisionComponent().updateHitBoxPosition();
+//        getCollisionComponent().updateHitBoxPosition();
 
         // If the actor moves off the left side of the screen, destroy it
         if (newX + getCollisionComponent().getHitboxWidth() < 0) {
