@@ -1,8 +1,10 @@
 package com.example.demo;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+import com.example.demo.Actorpackage.ActiveActorDestructible;
+import com.example.demo.Actorpackage.FighterPlane;
+import com.example.demo.Actorpackage.UserPlane;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;

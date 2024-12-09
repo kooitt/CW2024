@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.UI;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,5 +26,9 @@ public class ShieldImage extends ImageView {
 	// 隐藏护盾
 	public void hideShield() {
 		this.setVisible(false);
+
 	}
+
+
+
 }

@@ -1,4 +1,7 @@
-package com.example.demo;
+package com.example.demo.Actorpackage;
+
+import com.example.demo.Projectile.BossProjectile;
+import com.example.demo.UI.ShieldImage;
 
 import java.util.*;
 
@@ -24,6 +27,10 @@ public class Boss extends FighterPlane {
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 	private int framesWithShieldActivated;
+	private ShieldImage shieldImage;//import shieldimage;
+
+
+
 
 	public Boss() {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
@@ -32,8 +39,14 @@ public class Boss extends FighterPlane {
 		indexOfCurrentMove = 0;
 		framesWithShieldActivated = 0;
 		isShielded = false;
+		shieldImage = new ShieldImage(INITIAL_X_POSITION, INITIAL_Y_POSITION);
+
+		//new add
+		shieldImage = new ShieldImage(INITIAL_X_POSITION, INITIAL_Y_POSITION);
 		initializeMovePattern();
 	}
+
+
 
 	@Override
 	public void updatePosition() {
@@ -63,6 +76,9 @@ public class Boss extends FighterPlane {
 		}
 	}
 
+
+
+
 	private void initializeMovePattern() {
 		for (int i = 0; i < MOVE_FREQUENCY_PER_CYCLE; i++) {
 			movePattern.add(VERTICAL_VELOCITY);
@@ -73,9 +89,14 @@ public class Boss extends FighterPlane {
 	}
 
 	private void updateShield() {
-		if (isShielded) framesWithShieldActivated++;
-		else if (shieldShouldBeActivated()) activateShield();	
-		if (shieldExhausted()) deactivateShield();
+		if (isShielded) {framesWithShieldActivated++;
+
+			//new add
+			shieldImage.showShield();
+		}
+		//new add{ }
+		else if (shieldShouldBeActivated()){ activateShield();	}
+		if (shieldExhausted()) {deactivateShield();}
 	}
 
 	private int getNextMove() {
@@ -110,10 +131,13 @@ public class Boss extends FighterPlane {
 
 	private void activateShield() {
 		isShielded = true;
+		shieldImage.showShield();
+		//new add
 	}
 
 	private void deactivateShield() {
 		isShielded = false;
+		framesWithShieldActivated = 0;
 		framesWithShieldActivated = 0;
 	}
 
