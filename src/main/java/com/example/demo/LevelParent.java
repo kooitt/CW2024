@@ -11,6 +11,8 @@ import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
 
+import com.example.demo.CollisionHandler;
+
 public abstract class LevelParent extends Observable {
 
 	private static final double SCREEN_HEIGHT_ADJUSTMENT = 150;
@@ -24,14 +26,15 @@ public abstract class LevelParent extends Observable {
 	private final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
+	private int currentNumberOfEnemies;
+	private LevelView levelView;
 
 	private final List<ActiveActorDestructible> friendlyUnits;
 	private final List<ActiveActorDestructible> enemyUnits;
 	private final List<ActiveActorDestructible> userProjectiles;
 	private final List<ActiveActorDestructible> enemyProjectiles;
-	
-	private int currentNumberOfEnemies;
-	private LevelView levelView;
+
+	private final CollisionHandler collisionHandler; // Added the collision handler
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -50,6 +53,12 @@ public abstract class LevelParent extends Observable {
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
 		initializeTimeline();
+		friendlyUnits.add(user);
+
+		//initialised collision handler
+		this.collisionHandler = new CollisionHandler(friendlyUnits, enemyUnits, userProjectiles, enemyProjectiles, user,
+				screenWidth);
+
 		friendlyUnits.add(user);
 	}
 
@@ -84,10 +93,7 @@ public abstract class LevelParent extends Observable {
 		updateActors();
 		generateEnemyFire();
 		updateNumberOfEnemies();
-		handleEnemyPenetration();
-		handleUserProjectileCollisions();
-		handleEnemyProjectileCollisions();
-		handlePlaneCollisions();
+		collisionHandler.handleCollisions();
 		removeAllDestroyedActors();
 		updateKillCount();
 		updateLevelView();
@@ -162,38 +168,7 @@ public abstract class LevelParent extends Observable {
 		actors.removeAll(destroyedActors);
 	}
 
-	private void handlePlaneCollisions() {
-		handleCollisions(friendlyUnits, enemyUnits);
-	}
-
-	private void handleUserProjectileCollisions() {
-		handleCollisions(userProjectiles, enemyUnits);
-	}
-
-	private void handleEnemyProjectileCollisions() {
-		handleCollisions(enemyProjectiles, friendlyUnits);
-	}
-
-	private void handleCollisions(List<ActiveActorDestructible> actors1,
-			List<ActiveActorDestructible> actors2) {
-		for (ActiveActorDestructible actor : actors2) {
-			for (ActiveActorDestructible otherActor : actors1) {
-				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					actor.takeDamage();
-					otherActor.takeDamage();
-				}
-			}
-		}
-	}
-
-	private void handleEnemyPenetration() {
-		for (ActiveActorDestructible enemy : enemyUnits) {
-			if (enemyHasPenetratedDefenses(enemy)) {
-				user.takeDamage();
-				enemy.destroy();
-			}
-		}
-	}
+	
 
 	private void updateLevelView() {
 		levelView.removeHearts(user.getHealth());
@@ -205,10 +180,7 @@ public abstract class LevelParent extends Observable {
 		}
 	}
 
-	private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
-		return Math.abs(enemy.getTranslateX()) > screenWidth;
-	}
-
+	
 	protected void winGame() {
 		timeline.stop();
 		levelView.showWinImage();
