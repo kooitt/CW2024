@@ -26,4 +26,10 @@ public class ShieldImage extends ImageView {
 		this.setVisible(false);
 	}
 
+	public void updatePosition(double xPosition, double yPosition) {
+		this.setLayoutX(xPosition);
+		this.setLayoutY(yPosition);	
+		
+	}
+
 }
