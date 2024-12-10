@@ -1,8 +1,10 @@
 package com.example.demo;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+import com.example.demo.Actorpackage.ActiveActorDestructible;
+import com.example.demo.Actorpackage.FighterPlane;
+import com.example.demo.Actorpackage.UserPlane;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -75,6 +77,8 @@ public abstract class LevelParent extends Observable {
 
 	public void goToNextLevel(String levelName) {
 		setChanged();
+		timeline.stop();
+		//stop timelime,let memory gogogo
 		notifyObservers(levelName);
 	}
 
@@ -145,18 +149,12 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void removeAllDestroyedActors() {
-		removeDestroyedActors(friendlyUnits);
-		removeDestroyedActors(enemyUnits);
-		removeDestroyedActors(userProjectiles);
-		removeDestroyedActors(enemyProjectiles);
+		Gmaetools.removeDestroyedActors(friendlyUnits, root);
+		Gmaetools.removeDestroyedActors(enemyUnits, root);
+		Gmaetools.removeDestroyedActors(userProjectiles, root);
+		Gmaetools.removeDestroyedActors(enemyProjectiles, root);
 	}
 
-	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(actor -> actor.isDestroyed())
-				.collect(Collectors.toList());
-		root.getChildren().removeAll(destroyedActors);
-		actors.removeAll(destroyedActors);
-	}
 
 	private void handlePlaneCollisions() {
 		handleCollisions(friendlyUnits, enemyUnits);

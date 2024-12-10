@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.UI;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,3 +15,4 @@ public class GameOverImage extends ImageView {
 	}
 
 }
+//can add win胜利 in here

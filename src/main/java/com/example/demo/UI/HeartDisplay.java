@@ -1,8 +1,10 @@
-package com.example.demo;
+package com.example.demo.UI;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+
+import java.net.URL;
 
 public class HeartDisplay {
 	
@@ -26,6 +28,19 @@ public class HeartDisplay {
 		container = new HBox();
 		container.setLayoutX(containerXPosition);
 		container.setLayoutY(containerYPosition);		
+	}
+
+	/**
+	 * add blood image checking
+	 * @return heart image
+	 */
+
+	private Image loadHeartImage() {
+		URL resource = getClass().getResource(HEART_IMAGE_NAME);
+		if (resource == null) {
+			throw new IllegalArgumentException("Heart image resource not found: " + HEART_IMAGE_NAME);
+		}
+		return new Image(resource.toExternalForm());
 	}
 	
 	private void initializeHearts() {
