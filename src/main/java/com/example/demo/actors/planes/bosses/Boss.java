@@ -1,7 +1,11 @@
 package com.example.demo.actors.planes;
 
 import com.example.demo.actors.core.ActiveActorDestructible;
-import com.example.demo.actors.projectiles.BossProjectile;
+import com.example.demo.actors.planes.FighterPlane;
+//import com.example.demo.actors.projectiles.BossProjectile;
+//import com.example.demo.actors.projectiles.EnemyProjectile;
+import com.example.demo.actors.projectiles.Projectile;
+import com.example.demo.actors.projectiles.ProjectileFactory;
 import com.example.demo.actors.shield.ShieldImage;
 import com.example.demo.actors.shield.ShieldManager;
 
@@ -120,4 +124,7 @@ public class Boss extends FighterPlane {
 	public ShieldImage getShieldImage(){
 		return shieldImage;
 	}
+	protected ActiveActorDestructible createProjectile(){
+		return ProjectileFactory.createProjectile(ProjectileFactory.ProjectileType.BOSS, 950, INITIAL_Y_POSITION);
+	};
 }

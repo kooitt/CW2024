@@ -1,7 +1,8 @@
 package com.example.demo.actors.planes;
 
 import com.example.demo.actors.core.ActiveActorDestructible;
-import com.example.demo.actors.projectiles.EnemyProjectile;
+//import com.example.demo.actors.projectiles.EnemyProjectile;
+import com.example.demo.actors.projectiles.ProjectileFactory;
 
 public class EnemyPlane extends FighterPlane {
 
@@ -28,7 +29,7 @@ public class EnemyPlane extends FighterPlane {
 		if (Math.random() < FIRE_RATE) {
 			double projectileXPosition = getProjectileXPosition(PROJECTILE_X_POSITION_OFFSET);
 			double projectileYPosition = getProjectileYPosition();
-			return new EnemyProjectile(projectileXPosition, projectileYPosition);
+			return ProjectileFactory.createProjectile(ProjectileFactory.ProjectileType.ENEMY, projectileXPosition, projectileYPosition);
 		}
 		return null;
 	}
