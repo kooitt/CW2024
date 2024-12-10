@@ -1,6 +1,7 @@
 package com.example.demo.actors.shield;
 
-import com.example.demo.actors.planes.Boss;
+import com.example.demo.actors.planes.bosses.Boss;
+import com.example.demo.actors.planes.bosses.BossManager;
 import javafx.scene.image.ImageView;
 
 public class ShieldManager extends ImageView {
@@ -8,21 +9,21 @@ public class ShieldManager extends ImageView {
     private static final int MAX_FRAMES_WITH_SHIELD = 500; // active for ~8.33 seconds
     private static final double BOSS_SHIELD_PROBABILITY = 0.002;
     public boolean isShielded;
-    private int framesWithShieldActivated;
+    public int framesWithShieldActivated;
     private final ShieldImage shieldImage;
-    private final Boss boss;
+    private final BossManager bossManager;
 
-    public ShieldManager(ShieldImage shieldImage, Boss boss) {
+    public ShieldManager(ShieldImage shieldImage, BossManager bossManager) {
         this.shieldImage = shieldImage;
         this.isShielded = false;
         this.framesWithShieldActivated = 0;
-        this.boss = boss;
+        this.bossManager = bossManager;
     }
 
     public void updateShieldPosition(){
-        double shieldXOffset = - boss.getImageWidth() * 0.1;
-        shieldImage.setLayoutX(boss.getLayoutX() + shieldXOffset);
-        shieldImage.setLayoutY(boss.getLayoutY() + boss.getTranslateY() - boss.getImageHeight() / 4.0);
+        double shieldXOffset = - bossManager.getImageWidth() * 0.1;
+        shieldImage.setLayoutX(bossManager.getLayoutX() + shieldXOffset);
+        shieldImage.setLayoutY(bossManager.getLayoutY() + bossManager.getTranslateY() - bossManager.getImageHeight() / 4.0);
     }
 
     public void updateShield() {
@@ -52,19 +53,19 @@ public class ShieldManager extends ImageView {
         System.out.println("Shield is now hidden");
     }
 
-    private boolean shieldShouldBeActivated() {
+    public boolean shieldShouldBeActivated() {
         return Math.random() < BOSS_SHIELD_PROBABILITY;
     }
 
-    private boolean shieldExhausted() {
+    public boolean shieldExhausted() {
         return framesWithShieldActivated == MAX_FRAMES_WITH_SHIELD;
     }
 
-    private void activateShield() {
+    public void activateShield() {
         isShielded = true;
     }
 
-    private void deactivateShield() {
+    public void deactivateShield() {
         isShielded = false;
         framesWithShieldActivated = 0;
     }
