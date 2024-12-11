@@ -12,6 +12,7 @@ import javafx.scene.input.*;
 import javafx.util.Duration;
 
 import com.example.demo.CollisionHandler;
+import com.example.demo.MovementHandler;
 
 public abstract class LevelParent extends Observable {
 
@@ -35,6 +36,7 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyProjectiles;
 
 	private final CollisionHandler collisionHandler; // Added the collision handler
+	private MovementHandler movementHandler; // Added the movement handler
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -60,6 +62,8 @@ public abstract class LevelParent extends Observable {
 				screenWidth);
 
 		friendlyUnits.add(user);
+
+		movementHandler = new MovementHandler(user, this);
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -109,29 +113,12 @@ public abstract class LevelParent extends Observable {
 	private void initializeBackground() {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
-		background.setFitWidth(screenWidth);
-		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP) user.moveUp();
-				if (kc == KeyCode.DOWN) user.moveDown();
-				if (kc == KeyCode.SPACE) fireProjectile();
-				if (kc == KeyCode.RIGHT) user.moveRight();
-				if (kc == KeyCode.LEFT) user.moveLeft();
-			}
-		});
-		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			public void handle(KeyEvent e) {
-				KeyCode kc = e.getCode();
-				if (kc == KeyCode.UP || kc == KeyCode.DOWN) user.verticalStop();
-				if (kc == KeyCode.RIGHT || kc == KeyCode.LEFT) user.horizontalStop();
-			}
-		});
+		background.setOnKeyPressed(movementHandler :: KeyPress); //use function from movement handler
+		background.setOnKeyReleased(movementHandler :: KeyRelease); //use function from movement handler
 		root.getChildren().add(background);
 	}
 
-	private void fireProjectile() {
-		ActiveActorDestructible projectile = user.fireProjectile();
+	public void spawningProjectile(ActiveActorDestructible projectile) {
 		root.getChildren().add(projectile);
 		userProjectiles.add(projectile);
 	}

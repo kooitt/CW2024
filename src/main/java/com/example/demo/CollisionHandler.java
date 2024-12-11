@@ -1,8 +1,6 @@
 package com.example.demo;
 
 import java.util.List;
-import com.example.demo.ActiveActorDestructible;
-import com.example.demo.UserPlane;
 
 
 public class CollisionHandler {
@@ -13,13 +11,11 @@ public class CollisionHandler {
 	private final UserPlane user;
 	private final double screenWidth;
 
-    
 	public CollisionHandler(List<ActiveActorDestructible> friendlyUnits, 
 	List<ActiveActorDestructible> enemyUnits, 
 	List<ActiveActorDestructible> userProjectiles,
 	List<ActiveActorDestructible> enemyProjectiles, 
-	UserPlane user,
-	double screenWidth){
+	UserPlane user, double screenWidth){
 
 		this.friendlyUnits = friendlyUnits;
 		this.enemyUnits = enemyUnits;
