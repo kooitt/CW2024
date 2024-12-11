@@ -113,6 +113,7 @@ public abstract class LevelParent extends Observable {
 	private void initializeBackground() {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
+		background.setFitWidth(screenWidth);
 		background.setOnKeyPressed(movementHandler :: KeyPress); //use function from movement handler
 		background.setOnKeyReleased(movementHandler :: KeyRelease); //use function from movement handler
 		root.getChildren().add(background);
