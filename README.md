@@ -1,6 +1,6 @@
 COMP2042 Coursework
 
-Github repository link:
+Github repository link:https://github.com/slowying/CW2024/tree/master
 
 Open the project in IntelliJ: Open the project using IntelliJ.
 1.Go to File > Project Structure and set the SDK to Java 21 or higher and the language level to 11 or higher.
