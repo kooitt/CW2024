@@ -1,6 +1,8 @@
 package com.example.demo;
 
 public class LevelOne extends LevelParent {
+
+	private boolean LevelTransition = false;
 	
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
 	private static final String NEXT_LEVEL = "com.example.demo.LevelTwo";
@@ -18,8 +20,10 @@ public class LevelOne extends LevelParent {
 		if (userIsDestroyed()) {
 			loseGame();
 		}
-		else if (userHasReachedKillTarget())
+		else if (userHasReachedKillTarget() && !LevelTransition) {
 			goToNextLevel(NEXT_LEVEL);
+			LevelTransition = true;
+		}	
 	}
 
 	@Override
