@@ -1,6 +1,7 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.core.ActiveActorDestructible;
+import com.example.demo.ui.WinScreen;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -42,12 +43,12 @@ public class LevelParentController {
 
     public void winGame(){
         model.stopGameLoop();
-        view.showWinImage();
+        view.showWinScreen();
     }
 
     public void loseGame(){
         model.stopGameLoop();
-        view.showGameOverImage();
+        view.showLoseScreen();
     }
 
     public void updateLevelView(){

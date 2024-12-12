@@ -1,9 +1,9 @@
 package com.example.demo.levels;
 
-import com.example.demo.ui.GameOverImage;
-import com.example.demo.ui.HeartDisplay;
-import com.example.demo.ui.WinImage;
+import com.example.demo.controller.Controller;
+import com.example.demo.ui.*;
 import javafx.scene.Group;
+import javafx.stage.Stage;
 
 public class LevelParentView {
 	
@@ -18,12 +18,14 @@ public class LevelParentView {
 	private final WinImage winImage;
 	private final GameOverImage gameOverImage;
 	private final HeartDisplay heartDisplay;
+	//private final WinScreen winScreen;
 	
 	public LevelParentView(Group root, int heartsToDisplay) {
 		this.root = root;
 		this.heartDisplay = new HeartDisplay(HEART_DISPLAY_X_POSITION, HEART_DISPLAY_Y_POSITION, heartsToDisplay);
 		this.winImage = new WinImage(WIN_IMAGE_X_POSITION, WIN_IMAGE_Y_POSITION);
 		this.gameOverImage = new GameOverImage(LOSS_SCREEN_X_POSITION, LOSS_SCREEN_Y_POSITION);
+		//this.winScreen = winScreen;
 	}
 	
 	public void showHeartDisplay() {
@@ -34,12 +36,21 @@ public class LevelParentView {
 		heartDisplay.removeHearts(heartsRemaining);
 	}
 
-	public void showWinImage() {
-		root.getChildren().add(winImage);
-		winImage.showWinImage();
+//	public void showWinImage() {
+//		root.getChildren().add(winImage);
+//		winImage.showWinImage();
+//	}
+
+	public void showWinScreen(){
+		WinScreen.getInstance().showWinScreen();
 	}
+
 	
-	public void showGameOverImage() {
-		root.getChildren().add(gameOverImage);
+//	public void showGameOverImage() {
+//		root.getChildren().add(gameOverImage);
+//	}
+
+	public void showLoseScreen(){
+		LoseScreen.getInstance().showLoseScreen();
 	}
 }
