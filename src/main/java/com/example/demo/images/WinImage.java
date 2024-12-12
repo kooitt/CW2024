@@ -5,7 +5,7 @@ import javafx.scene.image.ImageView;
 
 public class WinImage extends ImageView {
 	
-	private static final String IMAGE_NAME = "/com/example/demo/images/youwin.png";
+	private static final String IMAGE_NAME = "/com/example/demo/images/LevelUI/youwin.png";
 	private static final int HEIGHT = 500;
 	private static final int WIDTH = 600;
 	

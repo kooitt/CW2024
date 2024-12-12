@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.effect.Bloom?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/19.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.controller.MainMenuController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.controller.MainMenuController">
    <children>
       <ImageView fitHeight="750.0" fitWidth="1300.0" pickOnBounds="true">
          <image>
-            <Image url="@../com/example/demo/images/charlot.gif" />
+            <Image url="@../com/example/demo/images/FXML_Assets/mainmenu.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="400.0" fitWidth="400.0" layoutX="450.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
@@ -21,8 +23,50 @@
             <Bloom />
          </effect>
       </ImageView>
-      <Button layoutX="550.0" layoutY="425.0" mnemonicParsing="false" onAction="#onStartButtonClicked" prefHeight="50.0" prefWidth="200.0" text="Start" />
-      <Button layoutX="550.0" layoutY="500.0" mnemonicParsing="false" onAction="#onSettingsButtonClicked" prefHeight="50.0" prefWidth="200.0" text="Settings" />
-      <Button layoutX="550.0" layoutY="575.0" mnemonicParsing="false" onAction="#onControlsButtonClicked" prefHeight="50.0" prefWidth="200.0" text="Controls" />
+      <Button cache="true" focusTraversable="false" graphicTextGap="0.0" layoutX="550.0" layoutY="425.0" mnemonicParsing="false" onAction="#onStartButtonClicked" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView disable="true" fitHeight="50.0" fitWidth="200.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../com/example/demo/images/FXML_Assets/start_fxml.png" />
+               </image>
+               <effect>
+                  <Bloom threshold="0.26" />
+               </effect>
+            </ImageView>
+         </graphic>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button focusTraversable="false" layoutX="550.0" layoutY="500.0" mnemonicParsing="false" onAction="#onSettingsButtonClicked" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="200.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../com/example/demo/images/FXML_Assets/settings_fxml.png" />
+               </image>
+               <effect>
+                  <Bloom threshold="0.26" />
+               </effect>
+            </ImageView>
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
+      <Button focusTraversable="false" layoutX="550.0" layoutY="575.0" mnemonicParsing="false" onAction="#onExitButtonClicked" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: transparent;">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="200.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../com/example/demo/images/FXML_Assets/exit_fxml.png" />
+               </image>
+               <effect>
+                  <Bloom threshold="0.26" />
+               </effect>
+            </ImageView>
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
    </children>
 </AnchorPane>
