@@ -7,6 +7,8 @@ import com.example.demo.levels.LevelParentController;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.util.Observer;
@@ -15,16 +17,20 @@ public class Controller implements Observer {
 
 	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
 	private final Stage stage;
+	private MediaPlayer mediaPlayer;
 
 	public Controller(Stage stage) {
 		this.stage = stage;
 	}
 
-	public void launchGame() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException  {
-
+	public void launchGame() {
+		try{
 			stage.show();
 			goToLevel(LEVEL_ONE_CLASS_NAME);
+		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+				 | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			handleException(e);
+		}
 	}
 
 	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
@@ -46,9 +52,17 @@ public class Controller implements Observer {
 			goToLevel(levelName);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setContentText(e.getClass().toString());
-			alert.show();
+			handleException(e);
 		}
 	}
+
+	private void handleException(Exception e) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText("An error occurred");
+		alert.setContentText(e.getClass() + ": " + e.getMessage());
+		alert.show();
+		e.printStackTrace();
+	}
+
 }
