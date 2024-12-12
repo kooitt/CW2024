@@ -17,7 +17,7 @@ public class Boss extends BossManager {
 	private static final double INITIAL_X_POSITION = 800.0;
 	private static final double INITIAL_Y_POSITION = 400;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
-	private static final double BOSS_FIRE_RATE = .004;
+	private static final double BOSS_FIRE_RATE = .03;
 	//private static final double BOSS_SHIELD_PROBABILITY = 0.02;
 	private static final int IMAGE_HEIGHT = 100;
 	private static final int VERTICAL_VELOCITY = 8;
