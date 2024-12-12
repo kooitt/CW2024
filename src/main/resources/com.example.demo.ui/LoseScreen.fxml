@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox alignment="CENTER"
+      spacing="20"
+      prefHeight="400.0" prefWidth="600.0"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.demo.ui.LoseScreenController">
+   <children>
+      <Button fx:id="playAgainButton" mnemonicParsing="false" text="Play Again" />
+      <Button fx:id="mainMenuButton" mnemonicParsing="false" text="Main Menu" />
+   </children>
+</VBox>
