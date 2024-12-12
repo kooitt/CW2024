@@ -2,12 +2,13 @@ package com.example.demo.actors.shield;
 
 import com.example.demo.actors.planes.bosses.Boss;
 import com.example.demo.actors.planes.bosses.BossManager;
+import com.example.demo.actors.planes.bosses.MonstrousNightmare;
 import javafx.scene.image.ImageView;
 
 public class ShieldManager extends ImageView {
 
-    private static final int MAX_FRAMES_WITH_SHIELD = 500; // active for ~8.33 seconds
-    private static final double BOSS_SHIELD_PROBABILITY = 0.002;
+    private static final int MAX_FRAMES_WITH_SHIELD = 300; // active for ~8.33 seconds
+    private static final double BOSS_SHIELD_PROBABILITY = 0.01;
     public boolean isShielded;
     public int framesWithShieldActivated;
     private final ShieldImage shieldImage;
@@ -21,9 +22,22 @@ public class ShieldManager extends ImageView {
     }
 
     public void updateShieldPosition(){
-        double shieldXOffset = - bossManager.getImageWidth() * 0.1;
+        double shieldXOffset;
+        double shieldYOffset;
+
+        if (bossManager instanceof Boss) {
+            shieldXOffset = - bossManager.getImageWidth() * 0.1;
+            shieldYOffset = bossManager.getImageHeight() / 4.0; // Custom offset for Boss1
+        } else if (bossManager instanceof MonstrousNightmare) {
+            shieldXOffset = - bossManager.getImageWidth() * 0.25;
+            shieldYOffset = bossManager.getImageHeight() / 20.0; // Custom offset for Boss2
+        } else {
+            shieldXOffset = - bossManager.getImageWidth() * 0.1;
+            shieldYOffset = bossManager.getImageHeight() / 4.0; // Default offset
+        }
+
         shieldImage.setLayoutX(bossManager.getLayoutX() + shieldXOffset);
-        shieldImage.setLayoutY(bossManager.getLayoutY() + bossManager.getTranslateY() - bossManager.getImageHeight() / 4.0);
+        shieldImage.setLayoutY(bossManager.getLayoutY() + bossManager.getTranslateY() - shieldYOffset);
     }
 
     public void updateShield() {

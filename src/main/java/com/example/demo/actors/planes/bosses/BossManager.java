@@ -34,6 +34,7 @@ public abstract class BossManager extends FighterPlane {
     @Override
     public void updateActor() {
         updatePosition();
+        shieldManager.updateShieldPosition();
         shieldManager.updateShield();
     }
 
@@ -47,7 +48,7 @@ public abstract class BossManager extends FighterPlane {
         if (currentPosition < getY_POSITION_UPPER_BOUND() || currentPosition > getY_POSITION_LOWER_BOUND()) {
             setTranslateY(initialTranslateY);
         }
-        shieldManager.updateShieldPosition();
+//        shieldManager.updateShieldPosition();
         updateHitboxPosition();
     }
 
