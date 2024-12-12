@@ -14,10 +14,10 @@ import java.util.*;
 public class Boss extends BossManager {
 
 	private static final String IMAGE_NAME = "bossplane.png";
-	private static final double INITIAL_X_POSITION = 1000.0;
+	private static final double INITIAL_X_POSITION = 800.0;
 	private static final double INITIAL_Y_POSITION = 400;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
-	private static final double BOSS_FIRE_RATE = .04;
+	private static final double BOSS_FIRE_RATE = .004;
 	//private static final double BOSS_SHIELD_PROBABILITY = 0.02;
 	private static final int IMAGE_HEIGHT = 100;
 	private static final int VERTICAL_VELOCITY = 8;
@@ -33,11 +33,11 @@ public class Boss extends BossManager {
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 	//private int framesWithShieldActivated;
-	//private final ShieldImage shieldImage;
+	private final ShieldImage shieldImage;
 	//private final ShieldManager shieldManager;
 	//private final ShieldFactory shieldFactory;
 
-	public Boss() {
+	public Boss(String IMAGE_NAME, int IMAGE_HEIGHT, double INITIAL_X_POSITION, double INITIAL_Y_POSITION, int HEALTH) {
 		super(
 				IMAGE_NAME,
 				IMAGE_HEIGHT,
@@ -45,6 +45,7 @@ public class Boss extends BossManager {
 				INITIAL_Y_POSITION,
 				HEALTH
 		);
+		this.shieldImage = new ShieldImage(INITIAL_X_POSITION, INITIAL_Y_POSITION);
 	}
 
 	protected boolean bossFiresInCurrentFrame() {
@@ -79,6 +80,8 @@ public class Boss extends BossManager {
 //		return Math.random() < BOSS_FIRE_RATE;
 //	};
 	protected ActiveActorDestructible createProjectile(){
-		return ProjectileFactory.createProjectile(ProjectileFactory.ProjectileType.BOSS, 950, INITIAL_Y_POSITION);
+		double projectileX = getLayoutX() + getTranslateX() + (getFitWidth() / 2.0);
+		double projectileY = getLayoutY() + getTranslateY() + (getFitHeight() / 2.0);
+		return ProjectileFactory.createProjectile(ProjectileFactory.ProjectileType.BOSS, projectileX, projectileY);
 	};
 }

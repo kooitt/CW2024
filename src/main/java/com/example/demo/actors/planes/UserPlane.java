@@ -18,7 +18,7 @@ public class UserPlane extends FighterPlane {
 	private int velocityMultiplier;
 	private int numberOfKills;
 
-	public UserPlane(int initialHealth) {
+	public UserPlane(String IMAGE_NAME, int IMAGE_HEIGHT, double INITIAL_X_POSITION, double INITIAL_Y_POSITION, int initialHealth) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
 		velocityMultiplier = 0;
 	}
