@@ -1,19 +1,26 @@
 package com.example.demo.levels;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import com.example.demo.actors.core.ActiveActorDestructible;
 import com.example.demo.actors.core.ActorManager;
 import com.example.demo.actors.planes.FighterPlane;
 import com.example.demo.actors.planes.UserPlane;
 import com.example.demo.collision.CollisionHandler;
+//import com.example.demo.util.AudioManager;
 import com.example.demo.util.ImageLoader;
 import com.example.demo.util.ObservableHelper;
 import javafx.animation.*;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+
+//import static com.example.demo.util.AudioManager.loadAudio;
 
 public abstract class LevelParent extends ObservableHelper implements LevelBehaviour {
 
@@ -28,6 +35,8 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 	private final UserPlane user;
 	private final Scene scene;
 	private final ImageView background;
+	//private final MediaPlayer bgm;
+	//private final Media media;
 
 	private final List<ActiveActorDestructible> friendlyUnits;
 	private final List<ActiveActorDestructible> enemyUnits;
@@ -40,11 +49,13 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 	private final CollisionHandler collisionHandler;
 	private final ActorManager actorManager;
 
-	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
+	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Supplier<UserPlane> userSupplier) {
         this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
-		this.user = new UserPlane(playerInitialHealth);
+		//this.user = new UserPlane(playerInitialHealth);
+		//this.user = PlaneFactory.createUserPlane();
+		this.user = userSupplier.get();
 		this.friendlyUnits = new ArrayList<>();
 		this.enemyUnits = new ArrayList<>();
 		this.userProjectiles = new ArrayList<>();
@@ -52,6 +63,10 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 		this.collisionHandler = new CollisionHandler();
 		this.actorManager = new ActorManager(root);
 		this.background = loadBackgroundImage(backgroundImageName);
+//		this.bgm = new MediaPlayer(new Media(getClass().getResource(bgm).toExternalForm()));
+//		this.bgm.setCycleCount(MediaPlayer.INDEFINITE);
+////		this.bgm = loadAudio(bgm);
+//		this.bgm.setVolume(0.5);
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
@@ -109,6 +124,20 @@ public abstract class LevelParent extends ObservableHelper implements LevelBehav
 	public void startGame() {
 		background.requestFocus();
 		timeline.play();
+		playAudio("/com/example/demo/audio/httyd.mp3", 1.0);
+	}
+
+	public void playAudio(String bgm, double volume) {
+		try {
+			// Ensure the BGM resource path is correct
+			Media media = new Media(getClass().getResource(bgm).toExternalForm());
+			MediaPlayer mediaPlayer = new MediaPlayer(media);
+			mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop indefinitely
+			mediaPlayer.setVolume(volume); // Set volume
+			mediaPlayer.play(); // Start playback
+		} catch (NullPointerException | IllegalArgumentException e) {
+			System.err.println("Error playing audio: " + e.getMessage());
+		}
 	}
 
 	public void endGame() {

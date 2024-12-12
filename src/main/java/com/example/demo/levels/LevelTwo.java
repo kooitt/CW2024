@@ -1,17 +1,25 @@
 package com.example.demo.levels;
 
-import com.example.demo.actors.planes.Boss;
+import com.example.demo.actors.planes.PlaneFactory;
+import com.example.demo.actors.planes.bosses.Boss;
 
 public class LevelTwo extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "background2.jpg";
+	private static final String BGM_NAME = "/com/example/demo/audio/httyd.mp3";
+	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelThree";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private final Boss boss;
 	private LevelTwoView levelView;
 
 	public LevelTwo(double screenHeight, double screenWidth) {
-		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
-		boss = new Boss();
+		super(
+				BACKGROUND_IMAGE_NAME,
+				//BGM_NAME,
+				screenHeight, screenWidth,
+				PLAYER_INITIAL_HEALTH,
+				() -> PlaneFactory.createUserPlane());
+		boss = PlaneFactory.createBoss();
 	}
 
 	@Override
@@ -27,7 +35,9 @@ public class LevelTwo extends LevelParent {
 			getController().loseGame();
 		}
 		else if (boss.isDestroyed()) {
-			getController().winGame();
+			//getController().winGame();
+			System.out.println("level2");
+			goToNextLevel(NEXT_LEVEL);
 		}
 	}
 
