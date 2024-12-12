@@ -1,21 +1,28 @@
 package com.example.demo.levelparent;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.example.demo.actors.*;
 import com.example.demo.actors.player.*;
+import com.example.demo.controller.Main;
+import com.example.demo.controller.SoundManager;
 import com.example.demo.levels.LevelView;
 import com.example.demo.controller.MainMenuController;
 import javafx.animation.*;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
 import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
 
 public abstract class LevelParent extends Observable {
 
@@ -48,11 +55,15 @@ public abstract class LevelParent extends Observable {
 
 	private Stage stage;
 	private static final String MAIN_MENU_FXML = "/fxml/mainmenu.fxml";
+	private Button popupButton;
 
-	//audio and sounds
+	//sounds
+	private SoundManager soundManager;
+	private static final String BG_MUSIC = "/com/example/demo/sfx/level_music/mainMenuMusic.mp3";
 	private static final String BUTTON_CLICK_SFX = "/com/example/demo/sfx/ui_sfx/buttonclick.mp3";
+	private static final String SHOOT_SFX = "/com/example/demo/sfx/level_sfx/userShootalt.mp3";
 
-	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
+	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth, Stage stage) {
 		this.root = new Group();
 		this.scene = new Scene(root, screenWidth, screenHeight);
 		this.timeline = new Timeline();
@@ -63,6 +74,7 @@ public abstract class LevelParent extends Observable {
 		this.enemyProjectiles = new ArrayList<>();
 		this.obstacles = new ArrayList<>();
 
+
         this.background = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(backgroundImageName)).toExternalForm()));
 		this.screenHeight = screenHeight;
 		this.screenWidth = screenWidth;
@@ -70,8 +82,20 @@ public abstract class LevelParent extends Observable {
 		this.levelView = instantiateLevelView();
 		this.currentNumberOfEnemies = 0;
 		this.currentNumberOfObstacles = 0;
+
+		this.stage = stage;
 		initializeTimeline();
 		friendlyUnits.add(user);
+
+		//Sound-related
+		this.soundManager = SoundManager.getInstance();
+
+		soundManager.loadSFX("button_click", BUTTON_CLICK_SFX);
+		soundManager.loadSFX("shoot", SHOOT_SFX);
+	}
+
+	protected void playShootSound() {
+		soundManager.playSFX("shoot");
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -156,6 +180,12 @@ public abstract class LevelParent extends Observable {
 			isGameActive = true;
 			timeline.play();
 			levelView.hidePauseImage();
+
+			if (popupButton != null) {
+				Group root = (Group) scene.getRoot();
+				root.getChildren().remove(popupButton);
+				popupButton = null; // Clear the reference
+			}
 		}
 	} //Pauses the game if the game is active, and starts the game again if it is already paused.
 
@@ -239,6 +269,7 @@ public abstract class LevelParent extends Observable {
 			long currentTime = System.currentTimeMillis();
 			if (currentTime - lastFiredProjectile> PROJECTILE_COOLDOWN) {
 				fireProjectile();
+				playShootSound();
 				lastFiredProjectile = currentTime;
 			}
 		} //Makes sure that the active keys don't make any weird combinations when the user is inputting as it can effectively separate the processing of keys
@@ -372,20 +403,30 @@ public abstract class LevelParent extends Observable {
 		// Create a StackPane as a parent container to center the button
 		Group root = (Group) scene.getRoot();
 
-		// Create the button for the popup
-		Button popupButton = new Button("Go Back To Main Menu");
-		popupButton.setStyle("-fx-font-size: 16px; -fx-padding: 10;");
+		if (popupButton == null) {
+			popupButton = new Button("Go Back To Main Menu");
+			popupButton.setStyle("-fx-font-size: 16px; -fx-padding: 10;");
 
-		// Position the button in the center
-		popupButton.setLayoutX(555); // X-coordinate
-		popupButton.setLayoutY(475); // Y-coordinate
+			// Position the button in the center
+			popupButton.setLayoutX(555); // X-coordinate
+			popupButton.setLayoutY(475); // Y-coordinate
 
+			popupButton.setFocusTraversable(false);
 
-		popupButton.setOnAction(event -> {
-            // Close the popup button (remove it) when clicked
-            root.getChildren().remove(popupButton);
-
-        });
+			popupButton.setOnAction(event -> {
+				cleanAssets(); //To ensure all assets will always be cleaned.
+				// Close the popup button (remove it) when clicked
+				root.getChildren().remove(popupButton);
+				soundManager.stopBackgroundMusic();
+				soundManager.playBackgroundMusic(BG_MUSIC);
+				MainMenuController mainMenuController = new MainMenuController();
+				try {
+					mainMenuController.showMainMenu(stage);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
+		}
 		// Add the popup button to the root layout (overlay)
 		root.getChildren().add(popupButton);
 	}

@@ -1,24 +1,31 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.ActiveActorDestructible;
-import com.example.demo.actors.EliteEnemyPlane;
-import com.example.demo.actors.EnemyPlane;
-import com.example.demo.actors.Asteroid;
+import com.example.demo.actors.enemies.*;
+import com.example.demo.actors.obstacles.*;
 import com.example.demo.levelparent.LevelParent;
+import com.example.demo.controller.SoundManager;
+import javafx.stage.Stage;
 
 public class LevelThree extends LevelParent {
 
-	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/background1.jpg";
+	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/Backgrounds/level3alt.png";
 	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelFour";
-	private static final int TOTAL_ENEMIES = 10;
-	private static final int TOTAL_OBSTACLES = 5;
-	private static final int KILLS_TO_ADVANCE = 3;
+	private static final int TOTAL_ENEMIES = 4;
+	private static final int MAX_OBSTACLES = 2;
+	private static final int KILLS_TO_ADVANCE = 25;
 	private static final double ENEMY_SPAWN_PROBABILITY = .15;
-	private static final double ASTEROID_SPAWN_PROBABILITY = .3;
+	private static final double OBSTACLE_SPAWN_PROBABILITY = .3;
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 
-	public LevelThree(double screenHeight, double screenWidth) {
-		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
+	//sounds
+	private SoundManager soundManager;
+	private static final String LEVEL_BG_MUSIC = "/com/example/demo/sfx/level_music/level3Music.mp3";
+
+	public LevelThree(double screenHeight, double screenWidth, Stage stage) {
+		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH, stage);
+		soundManager = SoundManager.getInstance(); // Initialize SoundManager instance
+		soundManager.playBackgroundMusic(LEVEL_BG_MUSIC); // Play background music for the level
 	}
 
 	@Override
@@ -26,8 +33,10 @@ public class LevelThree extends LevelParent {
 		if (userIsDestroyed()) {
 			loseGame();
 		}
-		else if (userHasReachedKillTarget())
+		else if (userHasReachedKillTarget()) {
+			soundManager.stopBackgroundMusic();
 			goToNextLevel(NEXT_LEVEL);
+		}
 	}
 
 	@Override
@@ -36,34 +45,44 @@ public class LevelThree extends LevelParent {
 	}
 
 	@Override
-	protected void spawnEnemyUnits() {
-		int currentNumberOfEnemies = getCurrentNumberOfEnemies();
-		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
-			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-				double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-				ActiveActorDestructible newEnemy;
-				if (Math.random() < 0.3) { // 30% chance for elite enemy
-					newEnemy = new EliteEnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
-				} else { // 70% chance for normal enemy
-					newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
-				}
-				addEnemyUnit(newEnemy);
-			}
+	protected ActiveActorDestructible createEnemy() {
+		double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
+		if (Math.random() < 0.3) {
+			return new EliteEnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+		} else {
+			return new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
 		}
 	}
 
 	@Override
-	protected void spawnObstacles() {
-		int currentNumberOfObstacles = getCurrentNumberOfObstacles();
-		for (int i = 0; i < TOTAL_OBSTACLES - currentNumberOfObstacles; i++) {
-			if (Math.random() < ASTEROID_SPAWN_PROBABILITY) {
-				double newAsteroidInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-				Asteroid asteroid = new Asteroid(getScreenWidth(), newAsteroidInitialYPosition);
-				addObstacle(asteroid); // Use a new method to handle asteroids spawning
-				System.out.println("Asteroid spawned!");
-			}
+	protected ActiveActorDestructible createObstacle() {
+		double newObstacleInitialYPosition = Math.random() * getEnemyMaximumYPosition();
+		if (Math.random() < 0.1) {
+			return new Satellite(getScreenWidth(), newObstacleInitialYPosition);
+		} else {
+			return new Asteroid(getScreenWidth(), newObstacleInitialYPosition);
 		}
 	}//Environmental hazards do not count as enemies, so a different logic is used.
+
+	@Override
+	protected double getEnemySpawnProbability() {
+		return ENEMY_SPAWN_PROBABILITY;
+	}
+
+	@Override
+	protected double getObstacleSpawnProbability() {
+		return OBSTACLE_SPAWN_PROBABILITY;
+	}
+
+	@Override
+	protected int getTotalEnemies() {
+		return TOTAL_ENEMIES;
+	}
+
+	@Override
+	protected int getTotalObstacles() {
+		return MAX_OBSTACLES;
+	}
 
 	@Override
 	protected LevelView instantiateLevelView() {
