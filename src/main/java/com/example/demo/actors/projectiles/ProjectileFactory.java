@@ -5,7 +5,10 @@ public class ProjectileFactory {
     public enum ProjectileType {
         USER,
         ENEMY,
-        BOSS
+        BOSS,
+        TOOTHLESS,
+        SEASHOCKER,
+        MONSTROUSNIGHTMARE
     }
 
     public static Projectile createProjectile(ProjectileType type, double initialX, double initialY) {
@@ -15,7 +18,13 @@ public class ProjectileFactory {
             case ENEMY:
                 return new Projectile("enemyfire.png", 25, initialX, initialY, -10);
             case BOSS:
-                return new Projectile("fireball.png", 75, 950, initialY, -15);
+                return new Projectile("fireball.png", 75, initialX, initialY, -15);
+            case TOOTHLESS:
+                return new Projectile("toothlessprojectile.png", 75, initialX, initialY, 15);
+            case SEASHOCKER:
+                return new Projectile("seashockerprojectile.png", 50, initialX, initialY, -10);
+            case MONSTROUSNIGHTMARE:
+                return new Projectile("monstrousprojectile.png", 75, 950, initialY, -15);
             default:
                 throw new IllegalArgumentException("Unsupported projectile type" + type);
         }
