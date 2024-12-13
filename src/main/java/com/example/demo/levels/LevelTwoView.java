@@ -15,6 +15,13 @@ public class LevelTwoView extends LevelParentView {
 		this.root = root;
 		this.shieldImage = new ShieldImage(SHIELD_X_POSITION, SHIELD_Y_POSITION);
 		addImagesToRoot();
+
+		//debugging shield properties
+		System.out.println("Shield X: " + shieldImage.getLayoutX());
+		System.out.println("Shield Y: " + shieldImage.getLayoutY());
+		System.out.println("Shield Visible: " + shieldImage.isVisible());
+		System.out.println("Shield Width: " + shieldImage.getFitWidth());
+		System.out.println("Shield Height: " + shieldImage.getFitHeight());
 	}
 	
 	private void addImagesToRoot() {

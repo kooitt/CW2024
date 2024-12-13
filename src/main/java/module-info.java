@@ -1,7 +1,7 @@
 module com.example.demo {
     requires javafx.controls;
     requires javafx.fxml;
-    //requires javafx.media;
+    requires javafx.media;
 
 
     exports com.example.demo.controller;

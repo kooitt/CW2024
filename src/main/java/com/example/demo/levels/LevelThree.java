@@ -6,7 +6,7 @@ import com.example.demo.actors.planes.PlaneFactory;
 public class LevelThree extends LevelParent{
 
     private static final String BACKGROUND_IMAGE_NAME = "background3.png";
-    private static final String BGM_NAME = "/com/example/demo/audio/httyd.mp4";
+    private static final String BGM_NAME = "/com/example/demo/audio/httyd.mp3";
     private static final String NEXT_LEVEL = "com.example.demo.levels.LevelFour";
     private static final int TOTAL_ENEMIES = 5;
     private static final int KILLS_TO_ADVANCE = 10;

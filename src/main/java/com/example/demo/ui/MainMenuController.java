@@ -6,9 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class MainMenuController {
     @FXML
@@ -20,17 +20,12 @@ public class MainMenuController {
     @FXML
     private Button startButton;
 
-    @FXML
-    private ImageView mainMenuBg;
-
     private Stage stage;
     private Controller controller;
 
     public void initialize(Stage stage, Controller controller) {
         this.stage = stage;
         this.controller = controller;
-
-        //mainMenuBg.setImage(new Image(getClass().getResource("/path/to/your/image.png").toExternalForm()));
 
         // Attach button actions
         startButton.setOnAction(e -> startGame());
@@ -50,7 +45,7 @@ public class MainMenuController {
         System.out.println("open settings");
         try {
             // Load the SettingsMenu FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo/ui/SettingsMenu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.example.demo.ui/SettingsMenu.fxml"));
             Parent root = loader.load();
 
             Stage settingsStage = new Stage();  // Create a new Stage for the pop-up

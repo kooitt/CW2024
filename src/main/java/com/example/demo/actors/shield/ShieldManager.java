@@ -43,23 +43,28 @@ public class ShieldManager extends ImageView {
     public void updateShield() {
         if (isShielded) {
             framesWithShieldActivated++;
+            System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
         }
         else if (shieldShouldBeActivated()) {
             activateShield();
             showShield(); // show shield when activated
+            System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
         }
         if (shieldExhausted()) {
             deactivateShield();
             hideShield(); // hide shield when exhausted
+            System.out.println("Shield Active: " + isShielded + ", Frames: " + framesWithShieldActivated);
         }
     }
 
     public void showShield() {
         shieldImage.setVisible(true);
+        System.out.println("Shield is now visible");
     }
 
     public void hideShield() {
         shieldImage.setVisible(false);
+        System.out.println("Shield is now hidden");
     }
 
     public boolean shieldShouldBeActivated() {

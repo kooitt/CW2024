@@ -6,6 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import com.example.demo.levels.LevelParentController;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.util.Observer;
@@ -14,6 +17,7 @@ public class Controller implements Observer {
 
 	private static final String LEVEL_ONE_CLASS_NAME = "com.example.demo.levels.LevelOne";
 	private final Stage stage;
+	private MediaPlayer mediaPlayer;
 
 	public Controller(Stage stage) {
 		this.stage = stage;
