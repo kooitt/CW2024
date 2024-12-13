@@ -38,18 +38,15 @@ public class MonstrousNightmare extends BossManager{
         );
     }
 
+    protected ActiveActorDestructible createProjectile(){
+        double projectileX = getLayoutX() + getTranslateX() + (getFitWidth() / 2.0);
+        double projectileY = getLayoutY() + getTranslateY() + (getFitHeight() / 2.0);
+        return ProjectileFactory.createProjectile(ProjectileFactory.ProjectileType.MONSTROUSNIGHTMARE , projectileX, projectileY);
+    };
+
     protected boolean bossFiresInCurrentFrame() {
         return Math.random() < BOSS_FIRE_RATE;
     }
-
-//	@Override
-//	public double getImageHeight(){
-//		return getImage().getHeight();
-//	}
-//
-//	public double getImageWidth(){
-//		return getImage().getWidth();
-//	}
 
     protected int getY_POSITION_UPPER_BOUND(){
         return Y_POSITION_UPPER_BOUND;
@@ -66,12 +63,6 @@ public class MonstrousNightmare extends BossManager{
     protected int get_MAX_FRAMES_WITH_SAME_MOVE(){
         return MAX_FRAMES_WITH_SAME_MOVE;
     };
-    //	protected boolean shouldFireProjectile(){
-//		return Math.random() < BOSS_FIRE_RATE;
-//	};
-    protected ActiveActorDestructible createProjectile(){
-        double projectileX = getLayoutX() + getTranslateX() + (getFitWidth() / 2.0);
-        double projectileY = getLayoutY() + getTranslateY() + (getFitHeight() / 2.0);
-        return ProjectileFactory.createProjectile(ProjectileFactory.ProjectileType.MONSTROUSNIGHTMARE , projectileX, projectileY);
-    };
+
+
 }

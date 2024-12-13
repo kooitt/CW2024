@@ -1,7 +1,6 @@
 package com.example.demo.actors.planes;
 
 import com.example.demo.actors.core.ActiveActorDestructible;
-//import com.example.demo.actors.projectiles.EnemyProjectile;
 import com.example.demo.actors.projectiles.ProjectileFactory;
 
 public class EnemyPlane extends FighterPlane {

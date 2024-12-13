@@ -12,7 +12,6 @@ public class WinScreen {
     private static WinScreen instance;
     private Stage stage;
     private Controller controller;
-    //private Scene MainMenuScene;
 
     private WinScreen() {}
 
@@ -26,12 +25,11 @@ public class WinScreen {
     public void initialize(Stage stage, Controller controller) {
         this.stage = stage;
         this.controller = controller;
-        //this.MainMenuScene = mainMenuScene;
     }
 
     public void showWinScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.example.demo.ui/WinScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo/ui/WinScreen.fxml"));
             Parent root = loader.load();
 
             // Get the WinScreenController and initialize it

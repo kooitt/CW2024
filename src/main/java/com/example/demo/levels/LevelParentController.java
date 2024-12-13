@@ -1,7 +1,6 @@
 package com.example.demo.levels;
 
 import com.example.demo.actors.core.ActiveActorDestructible;
-import com.example.demo.ui.WinScreen;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 

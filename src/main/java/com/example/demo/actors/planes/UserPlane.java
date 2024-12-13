@@ -2,7 +2,6 @@ package com.example.demo.actors.planes;
 
 import com.example.demo.actors.core.ActiveActorDestructible;
 import com.example.demo.actors.projectiles.ProjectileFactory;
-//import com.example.demo.actors.projectiles.UserProjectile;
 
 public class UserPlane extends FighterPlane {
 
@@ -22,7 +21,7 @@ public class UserPlane extends FighterPlane {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, initialHealth);
 		velocityMultiplier = 0;
 	}
-	
+
 	@Override
 	public void updatePosition() {
 		if (isMoving()) {
@@ -34,12 +33,12 @@ public class UserPlane extends FighterPlane {
 			}
 		}
 	}
-	
+
 	@Override
 	public void updateActor() {
 		updatePosition();
 	}
-	
+
 	@Override
 	public ActiveActorDestructible fireProjectile() {
 		return ProjectileFactory.createProjectile(ProjectileFactory.ProjectileType.USER, PROJECTILE_X_POSITION, getProjectileYPosition());

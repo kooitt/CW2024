@@ -7,12 +7,11 @@ import com.example.demo.ui.LoseScreen;
 import com.example.demo.ui.MainMenu;
 import com.example.demo.ui.WinScreen;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-//comment
+	//comment
 	private static final int SCREEN_WIDTH = 1300;
 	private static final int SCREEN_HEIGHT = 750;
 	private static final String TITLE = "Sky Battle";

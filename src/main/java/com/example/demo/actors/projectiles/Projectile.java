@@ -16,9 +16,6 @@ public class Projectile extends ActiveActorDestructible {
 		this.destroy();
 	}
 
-//	@Override
-//	public abstract void updatePosition();
-
 	@Override
 	public void updatePosition() {
 		moveHorizontally(horizontalVelocity);
