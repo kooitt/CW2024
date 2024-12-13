@@ -12,7 +12,7 @@ public class MainMenu {
     public Scene createMainMenu(Stage stage, Controller controller) {
         try {
             // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.example.demo.ui/MainMenu.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo/ui/MainMenu.fxml"));
             Parent root = loader.load();
 
             // Access controller to set actions or initialize behavior

@@ -29,7 +29,7 @@ public class LoseScreen {
 
     public void showLoseScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.example.demo.ui/LoseScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demo/ui/LoseScreen.fxml"));
             Parent root = loader.load();
 
             // Get the LoseScreenController and initialize it

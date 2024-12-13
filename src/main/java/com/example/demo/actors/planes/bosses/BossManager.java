@@ -48,12 +48,8 @@ public abstract class BossManager extends FighterPlane {
         if (currentPosition < getY_POSITION_UPPER_BOUND() || currentPosition > getY_POSITION_LOWER_BOUND()) {
             setTranslateY(initialTranslateY);
         }
-//        shieldManager.updateShieldPosition();
         updateHitboxPosition();
     }
-
-    protected abstract int getY_POSITION_UPPER_BOUND();
-    protected abstract int getY_POSITION_LOWER_BOUND();
 
     private void initializeMovePattern() {
         for (int i = 0; i < get_MOVE_FREQUENCY_PER_CYCLE(); i++) {
@@ -64,9 +60,6 @@ public abstract class BossManager extends FighterPlane {
         }
         Collections.shuffle(movePattern);
     }
-
-    protected abstract int get_MOVE_FREQUENCY_PER_CYCLE();
-    protected abstract int get_VERTICAL_VELOCITY();
 
     private int getNextMove() {
         int currentMove = movePattern.get(indexOfCurrentMove); //fetches current move from movePattern list
@@ -82,39 +75,16 @@ public abstract class BossManager extends FighterPlane {
         return currentMove;
     }
 
-    protected abstract int get_MAX_FRAMES_WITH_SAME_MOVE();
-
     // Projectile Logic
-
     @Override
     public ActiveActorDestructible fireProjectile() {
         return bossFiresInCurrentFrame() ? createProjectile() : null;
     }
 
-    protected abstract boolean bossFiresInCurrentFrame();
-    protected abstract ActiveActorDestructible createProjectile();
-
     // Shield Logic
     public ShieldImage getShieldImage(){
         return shieldImage;
     }
-
-//    public void updateShield() {
-//        if (isShielded) {
-//            shieldManager.framesWithShieldActivated++;
-//            System.out.println("Shield Active: " + isShielded + ", Frames: " + shieldManager.framesWithShieldActivated);
-//        }
-//        else if (shieldManager.shieldShouldBeActivated()) {
-//            shieldManager.activateShield();
-//            shieldManager.showShield(); // show shield when activated
-//            System.out.println("Shield Active: " + isShielded + ", Frames: " + shieldManager.framesWithShieldActivated);
-//        }
-//        if (shieldManager.shieldExhausted()) {
-//            shieldManager.deactivateShield();
-//            shieldManager.hideShield(); // hide shield when exhausted
-//            System.out.println("Shield Active: " + isShielded + ", Frames: " + shieldManager.framesWithShieldActivated);
-//        }
-//    }
 
     @Override
     public void takeDamage() {
@@ -133,4 +103,17 @@ public abstract class BossManager extends FighterPlane {
         return getImage().getWidth();
     }
 
+    protected abstract int getY_POSITION_UPPER_BOUND();
+
+    protected abstract int getY_POSITION_LOWER_BOUND();
+
+    protected abstract int get_MOVE_FREQUENCY_PER_CYCLE();
+
+    protected abstract int get_VERTICAL_VELOCITY();
+
+    protected abstract int get_MAX_FRAMES_WITH_SAME_MOVE();
+
+    protected abstract boolean bossFiresInCurrentFrame();
+
+    protected abstract ActiveActorDestructible createProjectile();
 }

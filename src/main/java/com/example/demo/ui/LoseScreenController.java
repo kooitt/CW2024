@@ -30,7 +30,6 @@ public class LoseScreenController {
 
     // Logic for "Main Menu" button
     private void goToMainMenu() {
-        //MainMenu mainMenu = new MainMenu();
         Scene mainMenuScene = mainMenu.createMainMenu(stage, controller);
         stage.setScene(mainMenuScene); // Switch to main menu scene
     }

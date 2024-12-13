@@ -6,7 +6,7 @@ import com.example.demo.actors.planes.bosses.Boss;
 public class LevelTwo extends LevelParent {
 
 	private static final String BACKGROUND_IMAGE_NAME = "background2.jpg";
-	private static final String BGM_NAME = "/com/example/demo/audio/httyd.mp3";
+	//private static final String BGM_NAME = "/com/example/demo/audio/httyd.mp4";
 	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelThree";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private final Boss boss;
@@ -16,7 +16,8 @@ public class LevelTwo extends LevelParent {
 		super(
 				BACKGROUND_IMAGE_NAME,
 				//BGM_NAME,
-				screenHeight, screenWidth,
+				screenHeight,
+				screenWidth,
 				PLAYER_INITIAL_HEALTH,
 				() -> PlaneFactory.createUserPlane());
 		boss = PlaneFactory.createBoss();
